@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { IoMdHeartEmpty } from 'react-icons/io';
-import { MdOutlineLocalFireDepartment, MdOutlineCardGiftcard, MdOutlineHome, MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
+import {
+  MdOutlineLocalFireDepartment,
+  MdOutlineCardGiftcard,
+  MdOutlineHome,
+  MdOutlineKeyboardDoubleArrowRight,
+} from 'react-icons/md';
 import { FiSearch } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
+import { RxCross2 } from 'react-icons/rx';
 
 const navItems = [
   { label: 'Home', icon: <MdOutlineHome size={28} />, badge: null, badgePosition: '' },
-  { label: 'Offers', icon: <MdOutlineCardGiftcard size={28} />, badge: 3, badgePosition: '-right-1' },
-  { label: 'Hot Deals', icon: <MdOutlineLocalFireDepartment size={28} />, badge: 3, badgePosition: 'right-2' },
+  {
+    label: 'Offers',
+    icon: <MdOutlineCardGiftcard size={28} />,
+    badge: 3,
+    badgePosition: '-right-1',
+  },
+  {
+    label: 'Hot Deals',
+    icon: <MdOutlineLocalFireDepartment size={28} />,
+    badge: 3,
+    badgePosition: 'right-2',
+  },
   { label: 'Wish List', icon: <IoMdHeartEmpty size={28} />, badge: 5, badgePosition: 'right-1.5' },
 ];
 
@@ -14,9 +31,13 @@ const BottomNav = () => {
   const [isSearchBoxOpen, setIsSearchBoxOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState('home');
+  const router = useRouter();
+  const isActive = (label: string) => selected === label.toLowerCase();
 
-  const isActive = (label:string) => selected === label.toLowerCase();
-
+  const handleSearch = () => {
+    router.push(`/products?searchTerm=${searchTerm}`);
+    setIsSearchBoxOpen(false);
+  };
   return (
     <div>
       {/* Search Box */}
@@ -25,15 +46,29 @@ const BottomNav = () => {
           isSearchBoxOpen ? 'scale-100 h-12' : 'scale-0 h-0 pointer-events-none'
         }`}
       >
-        <input
-          placeholder="Search"
-          className="text-black w-full px-4 h-full outline-0"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={searchTerm}
-        />
+        <div className="relative w-full">
+          <input
+            placeholder="Search"
+            className="text-black w-full px-4 h-full outline-0"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          {searchTerm && (
+            <div
+              onClick={() => {
+                setSearchTerm('');
+                router.push('/products');
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex shrink-0 rounded-full items-center justify-center border border-gray-300 hover:bg-gray-300 duration-300 cursor-pointer"
+            >
+              <RxCross2 size={22} />
+            </div>
+          )}
+        </div>
         <button
           className="group bg-green hover:bg-hGreen active:bg-hGreen duration-200 px-4 py-2"
-          onClick={() => console.log(`Search: ${searchTerm}`)}
+          onClick={handleSearch}
         >
           <MdOutlineKeyboardDoubleArrowRight
             color="white"
@@ -48,8 +83,11 @@ const BottomNav = () => {
         {navItems.map(({ label, icon, badge, badgePosition }) => (
           <div
             key={label}
-            onClick={() => setSelected(label.toLowerCase())}
-            className={`flex flex-col gap-1 items-center justify-between relative ${
+            onClick={() => {
+              setSelected(label.toLowerCase());
+              setIsSearchBoxOpen(false);
+            }}
+            className={`cursor-pointer flex flex-col gap-1 items-center justify-between relative ${
               isActive(label) ? 'text-green' : 'text-white'
             }`}
           >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, SlidersHorizontal, Grid3X3, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { PRODUCTS } from '@/docs/products';
 import ProductCardList from './ProductCardList';
 import ProductCardGrid from './ProductCardGrid';
-
+import { useSearchParams } from 'next/navigation';
 
 const CATEGORIES = ['Electronics', 'Clothing', 'Accessories', 'Home & Kitchen'];
 const BRANDS = [
@@ -41,6 +41,13 @@ export default function Products() {
   const [sortBy, setSortBy] = useState('featured');
   const [showInStockOnly, setShowInStockOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get('searchTerm') || '';
+
+  useEffect(() => {
+    setSearchQuery(searchTerm);
+  }, [searchTerm]);
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = PRODUCTS.filter((product) => {
@@ -102,7 +109,34 @@ export default function Products() {
 
   const FilterContent = () => (
     <div className="space-y-6">
-      {/* Categories */}
+      <h3 className="font-semibold mb-3">Filters</h3>
+      <div className="flex gap-2">
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="featured">Featured</SelectItem>
+            <SelectItem value="price-low">Price: Low to High</SelectItem>
+            <SelectItem value="price-high">Price: High to Low</SelectItem>
+            <SelectItem value="rating">Highest Rating</SelectItem>
+            <SelectItem value="name">Name A-Z</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* View Mode */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setViewMode((prev) => (prev === 'grid' ? (prev = 'list') : 'grid'))}
+          >
+            {viewMode === 'grid' ? <Grid3X3 className="w-4 h-4" /> : <List className="w-4 h-4" />}
+          </Button>
+        </div>
+      </div>
+      <Button variant="outline" onClick={clearAllFilters} className="w-full bg-transparent">
+        Clear All Filters
+      </Button>
       <div>
         <h3 className="font-semibold mb-3">Categories</h3>
         <div className="space-y-2">
@@ -172,15 +206,8 @@ export default function Products() {
           </Label>
         </div>
       </div>
-
-      {/* Clear Filters */}
-      <Button variant="outline" onClick={clearAllFilters} className="w-full bg-transparent">
-        Clear All Filters
-      </Button>
     </div>
   );
-
-  
 
   const ProductCards = ({ product }: { product: (typeof PRODUCTS)[0] }) => {
     const discount = Math.round(
@@ -189,7 +216,9 @@ export default function Products() {
     if (viewMode === 'list') {
       return <ProductCardList discount={discount} product={product}></ProductCardList>;
     }
-    return <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b"></ProductCardGrid>;
+    return (
+      <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b"></ProductCardGrid>
+    );
   };
 
   return (
@@ -204,7 +233,7 @@ export default function Products() {
         {/* Search and Controls */}
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
           {/* Search */}
-          <div className="relative flex-1">
+          {/* <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               type="text"
@@ -213,39 +242,7 @@ export default function Products() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
-          </div>
-
-          {/* Sort By */}
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full lg:w-48">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="featured">Featured</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="rating">Highest Rating</SelectItem>
-              <SelectItem value="name">Name A-Z</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* View Mode */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setViewMode('grid')}
-            >
-              <Grid3X3 className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setViewMode('list')}
-            >
-              <List className="w-4 h-4" />
-            </Button>
-          </div>
+          </div> */}
 
           {/* Filter (Mobile) */}
           <Sheet>

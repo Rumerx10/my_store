@@ -9,7 +9,13 @@ import { PiShoppingCart } from 'react-icons/pi';
 import { HiUser } from 'react-icons/hi2';
 import { NavLinks } from '@/docs/navLinks';
 
-const MobileNav = () => {
+const MobileNav = ({
+  searchTerm,
+  setSearchTerm,
+}: {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+}) => {
   const [isOpen, setOpen] = useState(false);
   const pathname = usePathname();
 
