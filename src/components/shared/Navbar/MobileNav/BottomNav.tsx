@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import {
   MdOutlineLocalFireDepartment,
@@ -9,22 +9,31 @@ import {
 import { FiSearch } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { RxCross2 } from 'react-icons/rx';
+import Link from 'next/link';
 
 const navItems = [
-  { label: 'Home', icon: <MdOutlineHome size={28} />, badge: null, badgePosition: '' },
+  { label: 'Home', src: '/', icon: <MdOutlineHome size={28} />, badge: null, badgePosition: '' },
   {
     label: 'Offers',
+    src: '/offers',
     icon: <MdOutlineCardGiftcard size={28} />,
     badge: 3,
     badgePosition: '-right-1',
   },
   {
     label: 'Hot Deals',
+    src: 'hot-deals',
     icon: <MdOutlineLocalFireDepartment size={28} />,
     badge: 3,
     badgePosition: 'right-2',
   },
-  { label: 'Wish List', icon: <IoMdHeartEmpty size={28} />, badge: 5, badgePosition: 'right-1.5' },
+  {
+    label: 'Wish List',
+    src: 'wish-list',
+    icon: <IoMdHeartEmpty size={28} />,
+    badge: 5,
+    badgePosition: 'right-1.5',
+  },
 ];
 
 const BottomNav = () => {
@@ -32,6 +41,7 @@ const BottomNav = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState('home');
   const router = useRouter();
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const isActive = (label: string) => selected === label.toLowerCase();
 
   const handleSearch = () => {
@@ -48,6 +58,7 @@ const BottomNav = () => {
       >
         <div className="relative w-full">
           <input
+            ref={searchInputRef}
             placeholder="Search"
             className="text-black w-full px-4 h-full outline-0"
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -59,6 +70,7 @@ const BottomNav = () => {
               onClick={() => {
                 setSearchTerm('');
                 router.push('/products');
+                searchInputRef.current?.focus();
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex shrink-0 rounded-full items-center justify-center border border-gray-300 hover:bg-gray-300 duration-300 cursor-pointer"
             >
@@ -80,9 +92,10 @@ const BottomNav = () => {
 
       {/* Bottom Navigation */}
       <div className="lg:hidden z-40 fixed text-white bg-base bottom-0 w-full flex items-center justify-between px-8 py-4 gap-5">
-        {navItems.map(({ label, icon, badge, badgePosition }) => (
-          <div
+        {navItems.map(({ label, src, icon, badge, badgePosition }) => (
+          <Link
             key={label}
+            href={src}
             onClick={() => {
               setSelected(label.toLowerCase());
               setIsSearchBoxOpen(false);
@@ -108,15 +121,16 @@ const BottomNav = () => {
             >
               {label}
             </p>
-          </div>
+          </Link>
         ))}
 
         {/* Search Icon */}
         <div
-          className="text-black flex flex-col gap-1 items-center justify-between relative"
+          className="text-black cursor-pointer flex flex-col gap-1 items-center justify-between relative"
           onClick={() => {
             setIsSearchBoxOpen(!isSearchBoxOpen);
             setSelected('search');
+            searchInputRef.current?.focus();
           }}
         >
           <div className={`relative ${isActive('search') ? 'text-green' : ''}`}>

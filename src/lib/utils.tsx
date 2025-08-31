@@ -101,3 +101,19 @@ export const getStatusBadge = (status: string) => {
 export const CapFirstLetter=(str:string)=>{
   return str[0].toUpperCase()+str.slice(1);
 }
+
+
+  // export const getStatusIcon = (status: string) => {
+  //   switch (status) {
+  //     case 'delivered':
+  //       return <CheckCircle className="w-4 h-4 text-green-600" />;
+  //     case 'shipped':
+  //       return <Truck className="w-4 h-4 text-blue-600" />;
+  //     case 'pending':
+  //       return <Clock className="w-4 h-4 text-yellow-600" />;
+  //     case 'canceled':
+  //       return <XCircle className="w-4 h-4 text-red-600" />;
+  //     default:
+  //       return <AlertCircle className="w-4 h-4 text-gray-600" />;
+  //   }
+  // };

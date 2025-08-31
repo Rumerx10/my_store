@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Search, SlidersHorizontal, Grid3X3, List } from 'lucide-react';
+import { SlidersHorizontal, Grid3X3, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
@@ -15,11 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+
 import { PRODUCTS } from '@/docs/products';
 import ProductCardList from './ProductCardList';
 import ProductCardGrid from './ProductCardGrid';
 import { useSearchParams } from 'next/navigation';
+import { Badge } from '../ui/badge';
+import { RxCross2 } from 'react-icons/rx';
 
 const CATEGORIES = ['Electronics', 'Clothing', 'Accessories', 'Home & Kitchen'];
 const BRANDS = [
@@ -41,6 +42,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState('featured');
   const [showInStockOnly, setShowInStockOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get('searchTerm') || '';
@@ -108,7 +110,7 @@ export default function Products() {
   };
 
   const FilterContent = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-6">
       <h3 className="font-semibold mb-3">Filters</h3>
       <div className="flex gap-2">
         <Select value={sortBy} onValueChange={setSortBy}>
@@ -222,46 +224,31 @@ export default function Products() {
   };
 
   return (
-    <div className="min-h-screen border-2 border-red-500">
-      <div className="container mx-auto px-4 flex flex-col bg-white">
-        {/* Header */}
-        <div className="my-8">
-          <h1 className="text-3xl font-bold mb-2">Products</h1>
-          <p className="text-muted-foreground">Discover our amazing collection of products</p>
+    <div className="relative min-h-screen border-2 border-red-500">
+      <div
+        className={`lg:hidden fixed top-20 cursor-pointer z-50 inset-0 backdrop-blur-sm ${isFilterOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setIsFilterOpen(!isFilterOpen)}
+      ></div>
+      <div
+        className={`lg:hidden fixed z-50 cursor-pointer p-4 w-[60vw] right-0 bottom-0 top-20 bg-black  duration-300 ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <FilterContent />
+      </div>
+
+      <div className="container min-h-screen mx-auto px-4 flex flex-col bg-white">
+        <div className="flex flex-col lg:hidden gap-4 mt-4">
+          <div className="flex  p-2 items-center border rounded-lg justify-between">
+            <h1>Filter Products</h1>
+            <Button
+              variant="outline"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
-
-        {/* Search and Controls */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-6">
-          {/* Search */}
-          {/* <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div> */}
-
-          {/* Filter (Mobile) */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="lg:hidden">
-                <SlidersHorizontal className="w-4 h-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80 sm:w-96">
-              <SheetHeader>
-                <SheetTitle>Filters</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6">
-                <FilterContent />
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-
         {/* Main Content */}
         <div className="flex gap-6 mb-10">
           {/* Filters (Desktop) */}
@@ -271,10 +258,24 @@ export default function Products() {
 
           {/* Products */}
           <main className="flex-1">
+            {searchQuery && (
+              <div className="flex flex-wrap items-center gap-2 pt-6 border-gray-200">
+                <span className="text-sm font-medium text-gray-700">Active Filters:</span>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  Search: &quot;{searchTerm}&quot;
+                  <div
+                    onClick={() => setSearchQuery('')}
+                    className="cursor-pointer flex items-center justify-center h-5 w-5 rounded-full bg-blue-200 hover:text-blue-900"
+                  >
+                    <RxCross2 />
+                  </div>
+                </Badge>
+              </div>
+            )}
             {filteredAndSortedProducts.length === 0 ? (
               <p className="text-muted-foreground">No products found.</p>
             ) : viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {filteredAndSortedProducts.map((product) => (
                   <ProductCards key={product.id} product={product} />
                 ))}

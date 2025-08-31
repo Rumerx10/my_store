@@ -14,20 +14,7 @@ export default function SellerDashboard() {
   const [activeTab, setActiveTab] = useState('/seller');
   const [timeRange, setTimeRange] = useState('month');
 
-  // const getStatusIcon = (status: string) => {
-  //   switch (status) {
-  //     case 'delivered':
-  //       return <CheckCircle className="w-4 h-4 text-green-600" />;
-  //     case 'shipped':
-  //       return <Truck className="w-4 h-4 text-blue-600" />;
-  //     case 'pending':
-  //       return <Clock className="w-4 h-4 text-yellow-600" />;
-  //     case 'canceled':
-  //       return <XCircle className="w-4 h-4 text-red-600" />;
-  //     default:
-  //       return <AlertCircle className="w-4 h-4 text-gray-600" />;
-  //   }
-  // };
+
 
 
   console.log(setActiveTab("/seller"));
@@ -44,15 +31,8 @@ export default function SellerDashboard() {
 
       {/* Main Content */}
       <div className="w-full flex flex-col min-w-0">
-        {/* <Header setSidebarOpen={setSidebarOpen} activeTab={activeTab} /> */}
         <main className="p-0 lg:p-6 overflow-auto w-full">
-          {activeTab === 'overview' && (
-            <Dashboard timeRange={timeRange} setTimeRange={setTimeRange} />
-          )}
-          {activeTab === 'products' && <Products />}
-          {activeTab === 'orders' && <Orders />}
-          {activeTab === 'payments' && <Payments />}
-          {activeTab === 'settings' && <SellerSettings />}
+          <Dashboard timeRange={timeRange} setTimeRange={setTimeRange} />
         </main>
       </div>
     </div>
