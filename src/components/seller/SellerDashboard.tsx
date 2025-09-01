@@ -1,25 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Products from './Products/Products';
-import Orders from './Orders/Orders';
-import Payments from './Payments';
-import SellerSettings from './SellerSettings';
 import Dashboard from './DashboardContent/Dashboard';
-
-
 
 export default function SellerDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('/seller');
   const [timeRange, setTimeRange] = useState('month');
-
-
-
-
-  console.log(setActiveTab("/seller"));
-
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {sidebarOpen && (

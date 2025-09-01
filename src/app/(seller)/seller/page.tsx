@@ -1,10 +1,8 @@
-import SellerDashboard from '@/components/seller/SellerDashboard'
-import React from 'react'
+import SellerDashboard from '@/components/seller/SellerDashboard';
+import React from 'react';
 
 const page = () => {
-  return (
-    <h1>Hello World</h1>
-  )
-}
+  return <SellerDashboard />;
+};
 
-export default page
+export default page;
