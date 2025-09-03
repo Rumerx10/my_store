@@ -36,9 +36,8 @@ const navItems = [
   },
 ];
 
-const BottomNav = () => {
+const BottomNav = ({searchTerm, setSearchTerm}:{searchTerm:string, setSearchTerm:(value:string)=>void}) => {
   const [isSearchBoxOpen, setIsSearchBoxOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState('home');
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);

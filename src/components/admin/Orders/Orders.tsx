@@ -3,22 +3,6 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Label } from '@/components/ui/label';
-import { Search, Eye, MoreHorizontal } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
-import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -29,9 +13,7 @@ import {
   type ColumnFiltersState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -40,14 +22,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { Order, OrderStatus } from '@/types/order';
+import type { Order } from '@/types/order';
 import { MockOrders } from '@/docs/Orders';
 import OrderStatisticsCards from './OrderStatisticsCards';
 import OrdersColumns from './OrdersColumns';
 import Pagination from '../../Pagination';
-import TabsList from './OrderTabsList';
-import { Button } from '@/components/ui/button';
-import { FILTER_CATEGORIES } from '@/docs/categories';
+import DataTableHeader from '@/components/DataTableHeader';
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -56,7 +36,7 @@ export default function OrdersPage() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = useState('');
-  const [activeTab, setActiveTab] = useState<OrderStatus>('all');
+  const [activeTab, setActiveTab] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('All Categories');
 
   const handleShipOrder = (orderId: string) => {
@@ -124,88 +104,16 @@ export default function OrdersPage() {
 
         {/* Search and Filters */}
         <Card>
-          <CardHeader className="One">
-            <div className="flex gap-16 items-center justify-between">
-              <div className="shrink-0">
-                <CardTitle>Order Management</CardTitle>
-                <CardDescription className="mt-2">View and manage all your orders</CardDescription>
-              </div>
-            </div>
-            <div className="flex gap-5 w-full mt-10">
-              <div className="w-1/2">
-                <Label className="text-sm font-medium mb-2 block">Search</Label>
-                <div className="relative">
-                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search orders..."
-                    value={globalFilter ?? ''}
-                    onChange={(event) => setGlobalFilter(String(event.target.value))}
-                    className="pl-8 w-full h-10"
-                  />
-                </div>
-              </div>
-              <div className="w-1/2 flex gap-5">
-                <div className="w-full">
-                  <Label className="text-sm font-medium mb-2 block">Show Columns</Label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="h-10 px-3 w-full justify-between bg-transparent"
-                      >
-                        <span className="flex items-center">
-                          <Eye className="w-4 h-4 mr-2" />
-                          Columns
-                        </span>
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      {table
-                        .getAllColumns()
-                        .filter((column) => column.getCanHide())
-                        .map((column) => {
-                          return (
-                            <DropdownMenuCheckboxItem
-                              key={column.id}
-                              className="capitalize"
-                              checked={column.getIsVisible()}
-                              onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                            >
-                              {column.id}
-                            </DropdownMenuCheckboxItem>
-                          );
-                        })}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className="w-full">
-                  <Label className="text-sm font-medium mb-2 block">Category</Label>
-                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FILTER_CATEGORIES.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            <div className='mt-5'>
-              <Label className="text-sm font-medium mb-2 block">Status</Label>
-              <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as OrderStatus)}>
-                <TabsList orderCounts={orderCounts} />
-                <TabsContent value={activeTab} className="space-y-4"></TabsContent>
-              </Tabs>
-            </div>
-          </CardHeader>
-
+          <DataTableHeader
+            table={table}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            orderCounts={orderCounts}
+          />
           <CardContent>
             <div className="rounded-md border">
               <Table>

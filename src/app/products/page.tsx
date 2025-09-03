@@ -1,9 +1,12 @@
-import Products from "@/components/products/Products"
+import Products from '@/components/products/Products';
+import { Suspense } from 'react';
 
 const page = () => {
   return (
-    <Products />
-  )
-}
+    <Suspense fallback={<div>Loading...</div>}>
+      <Products />
+    </Suspense>
+  );
+};
 
-export default page
+export default page;

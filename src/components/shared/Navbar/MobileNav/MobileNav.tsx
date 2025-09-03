@@ -56,7 +56,7 @@ const MobileNav = ({
           </div>
         </div>
       </div>
-      <BottomNav />
+      <BottomNav searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <Sidebar isOpen={isOpen} setOpen={setOpen} activeLabel={activeLabel} mobile={true} />
     </div>
   );

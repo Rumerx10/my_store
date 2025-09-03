@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Star, ShoppingCart, Heart, Eye, Trash2 } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

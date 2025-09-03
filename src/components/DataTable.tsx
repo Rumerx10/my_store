@@ -11,18 +11,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Product } from '@/types/product';
 import { flexRender } from '@tanstack/react-table';
 import Pagination from './Pagination';
 
-const DataTable = ({
+const DataTable = <T,>({
   table,
   globalFilter,
   categoryFilter,
   stockStatusFilter,
   columnLength,
 }: {
-  table: TanstackTable<Product>;
+  table: TanstackTable<T>;
   globalFilter: string;
   categoryFilter: string;
   stockStatusFilter: string;

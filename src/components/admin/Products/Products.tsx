@@ -17,7 +17,6 @@ import { SAMPLE_PRODUCTS } from '@/docs/products';
 import { Product } from '@/types/product';
 import ProductsFilters from './ProductsFilters';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
-import Pagination from '../../Pagination';
 import { getProductStatus } from '@/lib/utils';
 import DataTable from '../../DataTable';
 import ProductColumns from './ProductColumns';
