@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const DataTableHeader = ({
+const DataTableHeader = <T,>({
   table,
   globalFilter,
   setGlobalFilter,
@@ -32,28 +32,25 @@ const DataTableHeader = ({
   setCategoryFilter,
   activeTab,
   setActiveTab,
+  title,
+  desc,
 }: {
-  table: TanstackTable<Order>;
+  table: TanstackTable<T>;
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
   categoryFilter?: string;
-  setCategoryFilter: (value: string) => void;
+  setCategoryFilter?: (value: string) => void;
   activeTab: string;
   setActiveTab: (value: string) => void;
-  orderCounts: {
-    all: number;
-    pending: number;
-    shipped: number;
-    delivered: number;
-    cancelled: number;
-  };
+  title: string;
+  desc: string;
 }) => {
   return (
-    <CardHeader className="One">
+    <CardHeader>
       <div className="flex gap-16 items-center justify-between">
         <div className="shrink-0">
-          <CardTitle>Order Management</CardTitle>
-          <CardDescription className="mt-2">View and manage all your orders</CardDescription>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription className="mt-2">{desc}</CardDescription>
         </div>
       </div>
       <div className="flex gap-5 w-full mt-10">
@@ -104,21 +101,23 @@ const DataTableHeader = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="w-full">
-            <Label className="text-sm font-medium mb-2 block">Category</Label>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {FILTER_CATEGORIES.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {categoryFilter && (
+            <div className="w-full">
+              <Label className="text-sm font-medium mb-2 block">Category</Label>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FILTER_CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       </div>
 

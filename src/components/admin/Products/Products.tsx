@@ -18,9 +18,12 @@ import { Product } from '@/types/product';
 import ProductsFilters from './ProductsFilters';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { getProductStatus } from '@/lib/utils';
-import DataTable from '../../DataTable';
+// import DataTable from '../../DataTableX';
 import ProductColumns from './ProductColumns';
 import ProductStatisticsCards from './ProductStatisticsCards';
+import { Card } from '@/components/ui/card';
+import DataTable from '@/components/DataTable';
+// import DataTableHeader from '@/components/DataTableHeader';
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>(SAMPLE_PRODUCTS);
@@ -33,6 +36,7 @@ const Products = () => {
     category: false,
     createdAt: false,
   });
+  const [activeTab, setActiveTab] = useState('all');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
@@ -112,25 +116,22 @@ const Products = () => {
 
         {/* Statistics Cards */}
         <ProductStatisticsCards />
-        {/* Filters and Search */}
-        <ProductsFilters
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          stockStatusFilter={stockStatusFilter}
-          setStockStatusFilter={setStockStatusFilter}
-          table={table}
-        />
 
         {/* Products Table */}
         <DataTable
           table={table}
           globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
           categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
           stockStatusFilter={stockStatusFilter}
           columnLength={columns.length}
+          title="Products Management"
+          desc="Manage your product inventory"
         />
+
         {/* Delete Confirmation Dialog */}
         <DeleteConfirmationDialog
           deleteDialogOpen={deleteDialogOpen}
