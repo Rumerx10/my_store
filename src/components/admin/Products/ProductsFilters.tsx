@@ -22,7 +22,6 @@ import { FILTER_CATEGORIES, STOCK_STATUS_OPTIONS } from '@/docs/categories';
 import { Table as TanstackTable } from '@tanstack/react-table';
 import { Product } from '@/types/product';
 
-
 const ProductsFilters = ({
   globalFilter,
   setGlobalFilter,
@@ -30,7 +29,7 @@ const ProductsFilters = ({
   setCategoryFilter,
   stockStatusFilter,
   setStockStatusFilter,
-  table
+  table,
 }: {
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
@@ -38,14 +37,12 @@ const ProductsFilters = ({
   setCategoryFilter: (value: string) => void;
   stockStatusFilter: string;
   setStockStatusFilter: (value: string) => void;
-  table: TanstackTable<Product>
+  table: TanstackTable<Product>;
 }) => {
   return (
     <Card className="mb-6">
       <CardHeader>
         <CardTitle className="text-lg">Filters & Search</CardTitle>
-      </CardHeader>
-      <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div className="lg:col-span-2">
@@ -108,7 +105,10 @@ const ProductsFilters = ({
             <Label className="text-sm font-medium mb-2 block">Show Columns</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="h-10 w-full justify-between bg-transparent">
+                <Button
+                  variant="outline"
+                  className="h-10 px-3 w-full justify-between bg-transparent"
+                >
                   <span className="flex items-center">
                     <Eye className="w-4 h-4 mr-2" />
                     Columns
@@ -136,7 +136,8 @@ const ProductsFilters = ({
             </DropdownMenu>
           </div>
         </div>
-
+      </CardHeader>
+      <CardContent>
         {/* Active Filters */}
         {(globalFilter ||
           categoryFilter !== 'All Categories' ||

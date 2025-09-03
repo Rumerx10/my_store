@@ -13,13 +13,14 @@ import {
 } from '@/components/ui/table';
 import { Product } from '@/types/product';
 import { flexRender } from '@tanstack/react-table';
+import Pagination from './Pagination';
 
 const DataTable = ({
   table,
   globalFilter,
   categoryFilter,
   stockStatusFilter,
-  columnLength
+  columnLength,
 }: {
   table: TanstackTable<Product>;
   globalFilter: string;
@@ -68,7 +69,7 @@ const DataTable = ({
                         ? 'Try adjusting your search or filter criteria'
                         : 'Get started by adding your first product'}
                     </p>
-                    <Link href="/seller/products/add">
+                    <Link href="/admin/products/add">
                       <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
                         <Plus className="w-4 h-4 mr-2" />
                         Add Product
@@ -81,6 +82,9 @@ const DataTable = ({
           </Table>
         </div>
       </CardContent>
+      <div className="border-t bg-white px-4 mx-4 mb-6 pb-6 mt-10">
+        <Pagination table={table} />
+      </div>
     </Card>
   );
 };

@@ -164,7 +164,7 @@ const ProductColumns = (handleDeleteClick: (product: Product) => void) => {
       header: 'Actions',
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Link href={`/seller/products/edit-product/${row.original.id}`}>
+          <Link href={`/admin/products/edit-product/${row.original.id}`}>
             <Button
               variant="ghost"
               size="sm"

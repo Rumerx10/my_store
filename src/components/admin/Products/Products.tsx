@@ -14,13 +14,12 @@ import {
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { SAMPLE_PRODUCTS } from '@/docs/products';
-
 import { Product } from '@/types/product';
 import ProductsFilters from './ProductsFilters';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import Pagination from '../../Pagination';
 import { getProductStatus } from '@/lib/utils';
-import DataTable from './DataTable';
+import DataTable from '../../DataTable';
 import ProductColumns from './ProductColumns';
 import ProductStatisticsCards from './ProductStatisticsCards';
 
@@ -42,6 +41,14 @@ const Products = () => {
   const handleDeleteClick = (product: Product) => {
     setProductToDelete(product);
     setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (productToDelete) {
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      setDeleteDialogOpen(false);
+      setProductToDelete(null);
+    }
   };
 
   // Define columns
@@ -85,14 +92,6 @@ const Products = () => {
     },
   });
 
-  const handleDeleteConfirm = () => {
-    if (productToDelete) {
-      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
-      setDeleteDialogOpen(false);
-      setProductToDelete(null);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container flex flex-col py-8">
@@ -104,8 +103,8 @@ const Products = () => {
               Manage your product inventory ({table.getFilteredRowModel().rows.length} products)
             </p>
           </div>
-          <Link href="/seller/products/add-product">
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
+          <Link href="/admin/products/add-product">
+            <Button className="w-40 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
               <Plus className="w-4 h-4 mr-2" />
               Add Product
             </Button>
@@ -133,10 +132,6 @@ const Products = () => {
           stockStatusFilter={stockStatusFilter}
           columnLength={columns.length}
         />
-
-        {/* Pagination */}
-        <Pagination table={table} />
-
         {/* Delete Confirmation Dialog */}
         <DeleteConfirmationDialog
           deleteDialogOpen={deleteDialogOpen}

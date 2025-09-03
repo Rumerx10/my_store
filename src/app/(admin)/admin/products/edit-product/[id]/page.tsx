@@ -1,4 +1,4 @@
-import EditProduct from '@/components/seller/Products/EditProduct/EditProduct'
+import EditProduct from '@/components/admin/Products/EditProduct/EditProduct'
 
 const page = () => {
   return (

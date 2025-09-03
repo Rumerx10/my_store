@@ -60,7 +60,6 @@ const Pagination = <TData,>({table}: PaginationProps<TData>) => {
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              size="sm"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
@@ -68,7 +67,6 @@ const Pagination = <TData,>({table}: PaginationProps<TData>) => {
             </Button>
             <Button
               variant="outline"
-              size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -95,9 +93,7 @@ const Pagination = <TData,>({table}: PaginationProps<TData>) => {
                   <Button
                     key={pageNumber}
                     variant={currentPage === pageNumber ? 'default' : 'outline'}
-                    size="sm"
                     onClick={() => table.setPageIndex(pageNumber)}
-                    className="w-8 h-8 p-0"
                   >
                     {pageNumber + 1}
                   </Button>
@@ -107,7 +103,6 @@ const Pagination = <TData,>({table}: PaginationProps<TData>) => {
 
             <Button
               variant="outline"
-              size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
@@ -115,7 +110,6 @@ const Pagination = <TData,>({table}: PaginationProps<TData>) => {
             </Button>
             <Button
               variant="outline"
-              size="sm"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >

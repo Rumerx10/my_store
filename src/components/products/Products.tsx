@@ -1,115 +1,135 @@
-"use client"
+'use client';
 
-import { useState, useMemo, useEffect } from "react"
-import { Search, SlidersHorizontal, Grid3X3, List } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Slider } from "@/components/ui/slider"
+import { useState, useMemo, useEffect } from 'react';
+import { Search, SlidersHorizontal, Grid3X3, List } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { PRODUCTS } from "@/docs/products"
-import ProductCardList from "./ProductCardList"
-import ProductCardGrid from "./ProductCardGrid"
-import { useSearchParams } from "next/navigation"
-import { Badge } from "@/components/ui/badge"
-import { RxCross2 } from "react-icons/rx"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { PRODUCTS } from '@/docs/products';
+import ProductCardList from './ProductCardList';
+import ProductCardGrid from './ProductCardGrid';
+import { useSearchParams } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
+import { RxCross2 } from 'react-icons/rx';
 
-const CATEGORIES = ["Electronics", "Clothing", "Accessories", "Home & Kitchen"]
-const BRANDS = ["TechSound", "EcoWear", "FitTech", "StyleCraft", "HomeEssentials", "SportMax", "PowerUp", "AromaBliss"]
+const CATEGORIES = ['Electronics', 'Clothing', 'Accessories', 'Home & Kitchen'];
+const BRANDS = [
+  'TechSound',
+  'EcoWear',
+  'FitTech',
+  'StyleCraft',
+  'HomeEssentials',
+  'SportMax',
+  'PowerUp',
+  'AromaBliss',
+];
 
 export default function Products() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([])
-  const [priceRange, setPriceRange] = useState([0, 300])
-  const [sortBy, setSortBy] = useState("featured")
-  const [showInStockOnly, setShowInStockOnly] = useState(false)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState([0, 300]);
+  const [sortBy, setSortBy] = useState('featured');
+  const [showInStockOnly, setShowInStockOnly] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const searchParams = useSearchParams()
-  const searchTerm = searchParams.get("searchTerm") || ""
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get('searchTerm') || '';
 
   useEffect(() => {
-    setSearchQuery(searchTerm)
-  }, [searchTerm])
+    setSearchQuery(searchTerm);
+  }, [searchTerm]);
 
   useEffect(() => {
     if (isFilterOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "unset"
+      document.body.style.overflow = 'unset';
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isFilterOpen])
+      document.body.style.overflow = 'unset';
+    };
+  }, [isFilterOpen]);
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = PRODUCTS.filter((product) => {
       const matchesSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category)
-      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand)
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1]
-      const matchesStock = !showInStockOnly || product.inStock
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategories.length === 0 || selectedCategories.includes(product.category);
+      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      const matchesStock = !showInStockOnly || product.inStock;
 
-      return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock
-    })
+      return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock;
+    });
 
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case "price-low":
-          return a.price - b.price
-        case "price-high":
-          return b.price - a.price
-        case "rating":
-          return b.rating - a.rating
-        case "name":
-          return a.name.localeCompare(b.name)
-        case "featured":
+        case 'price-low':
+          return a.price - b.price;
+        case 'price-high':
+          return b.price - a.price;
+        case 'rating':
+          return b.rating - a.rating;
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'featured':
         default:
-          return b.featured ? 1 : -1
+          return b.featured ? 1 : -1;
       }
-    })
+    });
 
-    return filtered
-  }, [searchQuery, selectedCategories, selectedBrands, priceRange, sortBy, showInStockOnly])
+    return filtered;
+  }, [searchQuery, selectedCategories, selectedBrands, priceRange, sortBy, showInStockOnly]);
 
   const handleCategoryChange = (category: string, checked: boolean) => {
     if (checked) {
-      setSelectedCategories([...selectedCategories, category])
+      setSelectedCategories([...selectedCategories, category]);
     } else {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category))
+      setSelectedCategories(selectedCategories.filter((c) => c !== category));
     }
-  }
+  };
 
   const handleBrandChange = (brand: string, checked: boolean) => {
     if (checked) {
-      setSelectedBrands([...selectedBrands, brand])
+      setSelectedBrands([...selectedBrands, brand]);
     } else {
-      setSelectedBrands(selectedBrands.filter((b) => b !== brand))
+      setSelectedBrands(selectedBrands.filter((b) => b !== brand));
     }
-  }
+  };
 
   const clearAllFilters = () => {
-    setSearchQuery("")
-    setSelectedCategories([])
-    setSelectedBrands([])
-    setPriceRange([0, 300])
-    setShowInStockOnly(false)
-    setSortBy("featured")
-  }
+    setSearchQuery('');
+    setSelectedCategories([]);
+    setSelectedBrands([]);
+    setPriceRange([0, 300]);
+    setShowInStockOnly(false);
+    setSortBy('featured');
+  };
 
   const FilterContent = () => (
     <div className="space-y-6 mt-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-        <Button variant="outline" className="lg:hidden bg-gray-100" onClick={() => setIsFilterOpen(false)}>
+        <h3 className="text-2xl w-full text-center font-semibold text-gray-900">Filters</h3>
+        <Button
+          variant="outline"
+          className="lg:hidden bg-gray-100"
+          onClick={() => setIsFilterOpen(false)}
+        >
           <RxCross2 className="w-4 h-4" />
         </Button>
       </div>
@@ -128,14 +148,13 @@ export default function Products() {
           </SelectContent>
         </Select>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center">
           <Button
             variant="outline"
-            size="sm"
-            onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
             className="px-3"
           >
-            {viewMode === "grid" ? <List className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
+            {viewMode === 'grid' ? <List className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
           </Button>
         </div>
       </div>
@@ -159,7 +178,10 @@ export default function Products() {
                 onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
                 className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
               />
-              <Label htmlFor={`category-${category}`} className="text-sm font-normal text-gray-700 cursor-pointer">
+              <Label
+                htmlFor={`category-${category}`}
+                className="text-sm font-normal text-gray-700 cursor-pointer"
+              >
                 {category}
               </Label>
             </div>
@@ -178,7 +200,10 @@ export default function Products() {
                 onCheckedChange={(checked) => handleBrandChange(brand, checked as boolean)}
                 className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
               />
-              <Label htmlFor={`brand-${brand}`} className="text-sm font-normal text-gray-700 cursor-pointer">
+              <Label
+                htmlFor={`brand-${brand}`}
+                className="text-sm font-normal text-gray-700 cursor-pointer"
+              >
                 {brand}
               </Label>
             </div>
@@ -224,15 +249,19 @@ export default function Products() {
         </div>
       </div>
     </div>
-  )
+  );
 
   const ProductCards = ({ product }: { product: (typeof PRODUCTS)[0] }) => {
-    const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    if (viewMode === "list") {
-      return <ProductCardList discount={discount} product={product}></ProductCardList>
+    const discount = Math.round(
+      ((product.originalPrice - product.price) / product.originalPrice) * 100,
+    );
+    if (viewMode === 'list') {
+      return <ProductCardList discount={discount} product={product}></ProductCardList>;
     }
-    return <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b"></ProductCardGrid>
-  }
+    return (
+      <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b"></ProductCardGrid>
+    );
+  };
 
   return (
     <div className="relative min-h-screen bg-gray-50">
@@ -245,7 +274,7 @@ export default function Products() {
 
       <div
         className={`lg:hidden fixed z-50 w-80 right-0 bottom-0 top-20 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
-          isFilterOpen ? "translate-x-0" : "translate-x-full"
+          isFilterOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="p-6">
@@ -258,7 +287,9 @@ export default function Products() {
           <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div>
               <h2 className="font-semibold text-gray-900">Filter Products</h2>
-              <p className="text-sm text-gray-500">{filteredAndSortedProducts.length} products found</p>
+              <p className="text-sm text-gray-500">
+                {filteredAndSortedProducts.length} products found
+              </p>
             </div>
             <Button
               variant="outline"
@@ -283,10 +314,13 @@ export default function Products() {
             {searchQuery && (
               <div className="flex flex-wrap items-center gap-2 pt-6 pb-4 border-b border-gray-200">
                 <span className="text-sm font-medium text-gray-700">Active Filters:</span>
-                <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-2">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-2"
+                >
                   Search: &quot;{searchTerm}&quot;
                   <button
-                    onClick={() => setSearchQuery("")}
+                    onClick={() => setSearchQuery('')}
                     className="flex items-center justify-center w-4 h-4 rounded-full bg-blue-200 hover:bg-blue-300 transition-colors"
                   >
                     <RxCross2 className="w-3 h-3" />
@@ -306,7 +340,7 @@ export default function Products() {
                   Clear all filters
                 </Button>
               </div>
-            ) : viewMode === "grid" ? (
+            ) : viewMode === 'grid' ? (
               <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredAndSortedProducts.map((product) => (
                   <ProductCards key={product.id} product={product} />
@@ -323,5 +357,5 @@ export default function Products() {
         </div>
       </div>
     </div>
-  )
+  );
 }

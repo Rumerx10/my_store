@@ -47,7 +47,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <p className={`font-semibold ${sidebarOpen ? '' : 'hidden'}`}>Navigation</p>
               </div>
               <div className="mt-6 px-3  flex flex-col gap-3">
-                {SidebarItems.map((item) => (
+                {SidebarItems("admin").map((item) => (
                   <Link
                     href={`/${userType}/${item.name}`}
                     key={item.label}

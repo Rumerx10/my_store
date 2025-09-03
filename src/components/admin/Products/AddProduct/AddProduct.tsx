@@ -151,7 +151,7 @@ export default function AddProduct() {
     console.log("Submitting product:", { ...formData, status, images })
 
     setIsSubmitting(false)
-    router.push("/seller/products")
+    router.push("/admin/products")
   }
 
   const generateSKU = () => {
@@ -167,7 +167,7 @@ export default function AddProduct() {
       <div className="container flex flex-col py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/seller/products">
+          <Link href="/admin/products">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Products

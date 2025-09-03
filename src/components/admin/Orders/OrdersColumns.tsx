@@ -98,7 +98,7 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
             <Button
               title="Order Details"
               variant="outline"
-              onClick={() => router.push(`/seller/orders/${order.id}`)}
+              onClick={() => router.push(`/admin/orders/${order.id}`)}
               className="flex items-center"
             >
               <Eye className="h-4 w-4" />
