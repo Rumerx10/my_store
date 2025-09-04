@@ -322,5 +322,3 @@ export const MockOrders: Order[] = [
     timeline: [],
   },
 ];
-
-

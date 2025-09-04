@@ -120,7 +120,7 @@ const Products = () => {
         {/* Products Table */}
         <DataTable
           table={table}
-          globalFilter={globalFilter}
+          globalFilter={globalFilter} 
           setGlobalFilter={setGlobalFilter}
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}

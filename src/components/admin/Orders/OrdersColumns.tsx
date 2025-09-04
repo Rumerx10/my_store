@@ -14,56 +14,53 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
   return [
     columnHelper.accessor('id', {
       header: ({ column }) => (
-        <Button
-          variant="ghost"
+        <div
+          // variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="h-8 px-2 lg:px-3"
+          className="h-8 px-2 lg:px-3 flex items-center gap-2 "
         >
           Order ID
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
       cell: ({ row }) => <div className="font-medium">{row.getValue('id')}</div>,
     }),
 
     columnHelper.accessor('date', {
       header: ({ column }) => (
-        <Button
-          variant="ghost"
+        <div
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="h-8 px-2 lg:px-3"
+          className="h-8 px-2 lg:px-3 flex items-center gap-2 "
         >
           Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
       cell: ({ row }) => <div>{new Date(row.getValue('date')).toLocaleDateString()}</div>,
     }),
 
     columnHelper.accessor('buyerName', {
       header: ({ column }) => (
-        <Button
-          variant="ghost"
+        <div
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="h-8 px-2 lg:px-3"
+          className="h-8 px-2 lg:px-3 flex items-center gap-2 "
         >
           Buyer Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
       cell: ({ row }) => <div className="font-medium">{row.getValue('buyerName')}</div>,
     }),
 
     columnHelper.accessor('amount', {
       header: ({ column }) => (
-        <Button
-          variant="ghost"
+        <div
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="h-8 px-2 lg:px-3"
+          className="h-8 px-2 lg:px-3 flex items-center gap-2 "
         >
           Amount
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       ),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue('amount'));
@@ -76,7 +73,10 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
     }),
 
     columnHelper.accessor('status', {
-      header: 'Status',
+      // header: 'Status',
+      header: ({ column }) => (
+        <div className="h-8 px-2 lg:px-3 flex items-center gap-2 ">Status</div>
+      ),
       cell: ({ row }) => {
         const status = row.getValue('status') as Order['status'];
         return (
@@ -90,7 +90,10 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
 
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      // header: 'Actions',
+      header: ({ column }) => (
+        <div className="h-8 px-2 lg:px-3 flex items-center gap-2 ">Actions</div>
+      ),
       cell: ({ row }) => {
         const order = row.original;
         return (

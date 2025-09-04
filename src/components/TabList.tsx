@@ -1,14 +1,7 @@
-import { Clock, CheckCircle, XCircle, Package } from 'lucide-react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabsDataType } from '@/types/Types';
 
-const TabList = () => {
-  const tabsData = [
-    { value: 'all', label: 'All', count: 10 },
-    { value: 'pending', label: 'Pending', count: 10, icon: Clock },
-    { value: 'shipped', label: 'Shipped', count: 10, icon: Package },
-    { value: 'delivered', label: 'Delivered', count: 10, icon: CheckCircle },
-    { value: 'cancelled', label: 'Cancelled', count: 10, icon: XCircle },
-  ];
+const TabList = ({ tabsData }: { tabsData: TabsDataType[] }) => {
   return (
     <TabsList className="grid w-full grid-cols-5">
       {tabsData.map(({ value, label, count, icon: Icon }) => (

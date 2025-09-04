@@ -1,5 +1,5 @@
 'use client';
-
+import { Clock, CheckCircle, XCircle, Package, LucideIcon } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -25,8 +25,37 @@ export default function OrdersPage() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
-  const [categoryFilter, setCategoryFilter] = useState<string>('All Categories');
+  const [activeStatus, setActiveStatus] = useState('all');
+
+  // const [categoryFilter, setCategoryFilter] = useState<string>('All Categories');
+
+  const OrderTabsData = [
+    { value: 'all', label: 'All', count: orders.length, icon: undefined },
+    {
+      value: 'pending',
+      label: 'Pending',
+      count: orders.filter((o) => o.status === 'pending').length,
+      icon: Clock,
+    },
+    {
+      value: 'shipped',
+      label: 'Shipped',
+      count: orders.filter((o) => o.status === 'shipped').length,
+      icon: Package,
+    },
+    {
+      value: 'delivered',
+      label: 'Delivered',
+      count: orders.filter((o) => o.status === 'delivered').length,
+      icon: CheckCircle,
+    },
+    {
+      value: 'cancelled',
+      label: 'Cancelled',
+      count: orders.filter((o) => o.status === 'cancelled').length,
+      icon: XCircle,
+    },
+  ];
 
   const handleShipOrder = (orderId: string) => {
     setOrders((prevOrders) =>
@@ -38,10 +67,13 @@ export default function OrdersPage() {
 
   const columns = useMemo(() => OrdersColumns(handleShipOrder, router), [router]);
 
+  // const totalRevenue = orders.reduce((sum, order) => sum + order.amount, 0);
+  // const avgOrderValue = totalRevenue / orders.length;
+
   const filteredOrders = useMemo(() => {
-    if (activeTab === 'all') return orders;
-    return orders.filter((order) => order.status === activeTab);
-  }, [orders, activeTab]);
+    if (activeStatus === 'all') return orders;
+    return orders.filter((order) => order.status === activeStatus);
+  }, [orders, activeStatus]);
 
   const table = useReactTable({
     data: filteredOrders,
@@ -63,20 +95,6 @@ export default function OrdersPage() {
     },
   });
 
-  const getOrderCounts = () => {
-    return {
-      all: orders.length,
-      pending: orders.filter((o) => o.status === 'pending').length,
-      shipped: orders.filter((o) => o.status === 'shipped').length,
-      delivered: orders.filter((o) => o.status === 'delivered').length,
-      cancelled: orders.filter((o) => o.status === 'cancelled').length,
-    };
-  };
-
-  const orderCounts = getOrderCounts();
-  // const totalRevenue = orders.reduce((sum, order) => sum + order.amount, 0);
-  // const avgOrderValue = totalRevenue / orders.length;
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container flex flex-col mx-auto p-6 space-y-6">
@@ -93,14 +111,14 @@ export default function OrdersPage() {
 
         <DataTable
           table={table}
-          columnLength={columns.length}
-          stockStatusFilter={activeTab}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
           title="Order Management"
           desc="View and manage all your orders"
+          statusTabsData={OrderTabsData}
+          activeStatus={activeStatus}
+          setActiveStatus={setActiveStatus}
+          columnLength={columns.length}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
         />
       </div>
     </div>
