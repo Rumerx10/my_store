@@ -1,7 +1,4 @@
-import { LucideIcon } from 'lucide-react';
-
 export type OrderStatus = 'all' | 'pending' | 'shipped' | 'delivered' | 'cancelled';
-
 export interface Order {
   id: string;
   date: string;

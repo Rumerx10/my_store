@@ -1,10 +1,10 @@
 'use client';
-import { LucideIcon } from 'lucide-react';
+
 import { Label } from '@/components/ui/label';
 import { Search, Eye, MoreHorizontal, Plus, Package } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardDescription, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Tabs } from '@/components/ui/tabs';
 import { Table as TanstackTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { FILTER_CATEGORIES } from '@/docs/categories';

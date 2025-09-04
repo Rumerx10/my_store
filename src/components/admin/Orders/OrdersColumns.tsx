@@ -74,9 +74,7 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
 
     columnHelper.accessor('status', {
       // header: 'Status',
-      header: ({ column }) => (
-        <div className="h-8 px-2 lg:px-3 flex items-center gap-2 ">Status</div>
-      ),
+      header: () => <div className="h-8 px-2 lg:px-3 flex items-center gap-2 ">Status</div>,
       cell: ({ row }) => {
         const status = row.getValue('status') as Order['status'];
         return (
@@ -91,9 +89,7 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
     columnHelper.display({
       id: 'actions',
       // header: 'Actions',
-      header: ({ column }) => (
-        <div className="h-8 px-2 lg:px-3 flex items-center gap-2 ">Actions</div>
-      ),
+      header: () => <div className="h-8 px-2 lg:px-3 flex items-center gap-2 ">Actions</div>,
       cell: ({ row }) => {
         const order = row.original;
         return (

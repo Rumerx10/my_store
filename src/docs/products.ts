@@ -234,7 +234,6 @@ export const TABSTITLES = [
   { value: 'shipping', label: 'Shipping & Returns' },
 ];
 
-
 export const SAMPLE_PRODUCTS = [
   {
     id: 1,
@@ -346,4 +345,16 @@ export const SAMPLE_PRODUCTS = [
     createdAt: '2023-12-22',
     updatedAt: '2023-12-30',
   },
+];
+
+export const CATEGORIES = ['Electronics', 'Clothing', 'Accessories', 'Home & Kitchen'];
+export const BRANDS = [
+  'TechSound',
+  'EcoWear',
+  'FitTech',
+  'StyleCraft',
+  'HomeEssentials',
+  'SportMax',
+  'PowerUp',
+  'AromaBliss',
 ];

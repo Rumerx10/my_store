@@ -9,9 +9,7 @@ export interface TabsDataType {
 
 export interface FilterContentProps {
   selectedBrands: string[];
-  setSelectedBrands: (value: string[]) => void;
   selectedCategories: string[];
-  setSelectedCategories: (value: string[]) => void;
   priceRange: number[];
   setPriceRange: (value: number[]) => void;
   sortBy: string;

@@ -4,16 +4,7 @@ import { SidebarItems } from '@/docs/dashboard';
 import { PanelLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { usePathname } from 'next/navigation';
-import { CapFirstLetter } from '@/lib/utils';
 import BreadcrumbComponent from './BreadcrumbComponent';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
@@ -21,15 +12,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [activeTab, setActiveTab] = useState('/');
   const pathName = usePathname();
 
-  const segments = pathName.split('/').filter(Boolean); // remove empty segments
-  const userType = segments[0];
-  const breadcrumbItems = segments.map((segment, idx) => {
-    const href = '/' + segments.slice(0, idx + 1).join('/');
-    return {
-      href,
-      label: CapFirstLetter(segment),
-    };
-  });
+  const userType = pathName.split('/').filter(Boolean)[0]; // remove empty segments
 
   return (
     <div className="bg-white flex w-full">
@@ -48,7 +31,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <p className={`font-semibold ${sidebarOpen ? '' : 'hidden'}`}>Navigation</p>
               </div>
               <div className="mt-6 px-3  flex flex-col gap-3">
-                {SidebarItems("admin").map((item) => (
+                {SidebarItems('admin').map((item) => (
                   <Link
                     href={`/${userType}/${item.name}`}
                     key={item.label}

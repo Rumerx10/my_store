@@ -11,18 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import { RxCross2 } from 'react-icons/rx';
 import FilterContent from '../FilterContent';
 
-const CATEGORIES = ['Electronics', 'Clothing', 'Accessories', 'Home & Kitchen'];
-const BRANDS = [
-  'TechSound',
-  'EcoWear',
-  'FitTech',
-  'StyleCraft',
-  'HomeEssentials',
-  'SportMax',
-  'PowerUp',
-  'AromaBliss',
-];
-
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -32,7 +20,6 @@ export default function Products() {
   const [showInStockOnly, setShowInStockOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get('searchTerm') || '';
 
@@ -166,9 +153,7 @@ export default function Products() {
               {/* <FilterContent /> */}
               <FilterContent
                 selectedBrands={selectedBrands}
-                setSelectedBrands={setSelectedBrands}
                 selectedCategories={selectedCategories}
-                setSelectedCategories={setSelectedCategories}
                 priceRange={priceRange}
                 setPriceRange={setPriceRange}
                 sortBy={sortBy}
@@ -212,7 +197,7 @@ export default function Products() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
                 <p className="text-gray-500 mb-4">Try adjusting your filters or search terms</p>
-                <Button onClick={clearAllFilters} variant="outline">
+                <Button className="w-40" onClick={clearAllFilters} variant="outline">
                   Clear all filters
                 </Button>
               </div>
