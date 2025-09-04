@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { usePathname } from 'next/navigation';
 import { CapFirstLetter } from '@/lib/utils';
+import BreadcrumbComponent from './BreadcrumbComponent';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -73,24 +74,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   <PanelLeftIcon size={20} />
                 </div>
                 <div className="w-1 h-6 rounded-sm bg-gray-300" />
-                <div className="text-2xl font-semibold">
-                  <Breadcrumb>
-                    <BreadcrumbList>
-                      {breadcrumbItems.map((item, idx) => (
-                        <BreadcrumbItem key={item.href}>
-                          {idx === breadcrumbItems.length - 1 ? (
-                            <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                          ) : (
-                            <>
-                              <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
-                              <BreadcrumbSeparator />
-                            </>
-                          )}
-                        </BreadcrumbItem>
-                      ))}
-                    </BreadcrumbList>
-                  </Breadcrumb>
-                </div>
+                <BreadcrumbComponent />
               </div>
             </div>
             <div className="flex">{children}</div>

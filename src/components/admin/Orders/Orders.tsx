@@ -1,5 +1,5 @@
 'use client';
-import { Clock, CheckCircle, XCircle, Package, LucideIcon } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Package } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -116,9 +116,9 @@ export default function OrdersPage() {
           statusTabsData={OrderTabsData}
           activeStatus={activeStatus}
           setActiveStatus={setActiveStatus}
-          columnLength={columns.length}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
+          columnLength={columns.length}
         />
       </div>
     </div>

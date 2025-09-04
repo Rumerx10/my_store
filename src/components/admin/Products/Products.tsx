@@ -1,7 +1,8 @@
 'use client';
+import { CheckCircle, XCircle, Plus, AlertTriangle } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import {} from 'lucide-react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,32 +16,49 @@ import {
 import { Button } from '@/components/ui/button';
 import { SAMPLE_PRODUCTS } from '@/docs/products';
 import { Product } from '@/types/product';
-import ProductsFilters from './ProductsFilters';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { getProductStatus } from '@/lib/utils';
-// import DataTable from '../../DataTableX';
 import ProductColumns from './ProductColumns';
 import ProductStatisticsCards from './ProductStatisticsCards';
-import { Card } from '@/components/ui/card';
 import DataTable from '@/components/DataTable';
-// import DataTableHeader from '@/components/DataTableHeader';
+
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>(SAMPLE_PRODUCTS);
   const [globalFilter, setGlobalFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
-  const [stockStatusFilter, setStockStatusFilter] = useState('All Status');
+  const [stockStatusFilter, setStockStatusFilter] = useState('all');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     category: false,
     createdAt: false,
   });
-  const [activeTab, setActiveTab] = useState('all');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  // Handle delete
+  const ProductTabsData = [
+    { value: 'all', label: 'All', count: products.length, icon: undefined },
+    {
+      value: 'active',
+      label: 'Active',
+      count: products.filter((p) => getProductStatus(p.stock) === 'active').length,
+      icon: CheckCircle,
+    },
+    {
+      value: 'low_stock',
+      label: 'Low Stock',
+      count: products.filter((p) => getProductStatus(p.stock) === 'active').length,
+      icon: AlertTriangle,
+    },
+    {
+      value: 'out_of_stock',
+      label: 'Out of Stock',
+      count: products.filter((p) => getProductStatus(p.stock) === 'active').length,
+      icon: XCircle,
+    },
+  ];
+
   const handleDeleteClick = (product: Product) => {
     setProductToDelete(product);
     setDeleteDialogOpen(true);
@@ -63,8 +81,7 @@ const Products = () => {
       const matchesCategory =
         categoryFilter === 'All Categories' || product.category === categoryFilter;
       const productStatus = getProductStatus(product.stock);
-      const matchesStockStatus =
-        stockStatusFilter === 'All Status' || productStatus === stockStatusFilter;
+      const matchesStockStatus = stockStatusFilter === 'all' || productStatus === stockStatusFilter;
       return matchesCategory && matchesStockStatus;
     });
   }, [products, categoryFilter, stockStatusFilter]);
@@ -120,16 +137,16 @@ const Products = () => {
         {/* Products Table */}
         <DataTable
           table={table}
-          globalFilter={globalFilter} 
+          title="Products Management"
+          desc="Manage your product inventory"
+          statusTabsData={ProductTabsData}
+          activeStatus={stockStatusFilter}
+          setActiveStatus={setStockStatusFilter}
+          globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          stockStatusFilter={stockStatusFilter}
           columnLength={columns.length}
-          title="Products Management"
-          desc="Manage your product inventory"
         />
 
         {/* Delete Confirmation Dialog */}
