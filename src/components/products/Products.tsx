@@ -124,7 +124,25 @@ export default function Products() {
           isFilterOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-6">{/* <FilterContent /> */}</div>
+        <div className="p-6">
+          {' '}
+          <FilterContent
+            selectedBrands={selectedBrands}
+            selectedCategories={selectedCategories}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            showInStockOnly={showInStockOnly}
+            setShowInStockOnly={setShowInStockOnly}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            setIsFilterOpen={setIsFilterOpen}
+            handleCategoryChange={handleCategoryChange}
+            handleBrandChange={handleBrandChange}
+            clearAllFilters={clearAllFilters}
+          />{' '}
+        </div>
       </div>
 
       <div className="container min-h-screen mx-auto px-4 flex flex-col bg-white">
