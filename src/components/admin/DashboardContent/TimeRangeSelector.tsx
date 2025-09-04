@@ -30,12 +30,12 @@ const TimeRangeSelector = (props: TimeRangeSelectorProps) => {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex md:justify-end items-center gap-2 w-5/12">
-        <Button variant="outline" size="sm">
+      <div className="flex md:justify-end items-center gap-2 lg:w-5/12">
+        <Button variant="outline" className='w-auto px-3'>
           <Download className="w-4 h-4 mr-2" />
           Export
         </Button>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" className='w-auto px-3'>
           <Filter className="w-4 h-4 mr-2" />
           Filter
         </Button>
