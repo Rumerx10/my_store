@@ -68,10 +68,11 @@ const CancelOrderModal = ({ open, onOpenChange, onConfirm, orderId }: CancelOrde
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
+          <Button className="w-1/2" variant="outline" onClick={handleCancel} disabled={isLoading}>
             Keep Order
           </Button>
           <Button
+            className="w-1/2"
             variant="destructive"
             onClick={handleConfirm}
             disabled={!reason.trim() || isLoading}

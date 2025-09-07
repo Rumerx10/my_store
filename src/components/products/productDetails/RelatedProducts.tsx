@@ -12,7 +12,7 @@ export function RelatedProducts() {
         <Link href="/products">
           <Button
             variant="outline"
-            className="text-blue-600 border-blue-200 hover:bg-blue-50 bg-transparent"
+            className="w-44 text-blue-600 border-blue-200 hover:bg-blue-50 bg-transparent"
           >
             View All Products
             <ChevronRight className="w-4 h-4 ml-2" />

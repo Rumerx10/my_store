@@ -1,46 +1,91 @@
-import { CheckCircle, Clock } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import type { TimelineEvent } from '@/types/order';
+import { MdOutlinePendingActions } from 'react-icons/md';
+import { GoChecklist } from 'react-icons/go';
+import { TbTruckDelivery } from 'react-icons/tb';
+import DeliveredSvg from '@/svg/DeliveredSvg';
+import { PiShippingContainer } from 'react-icons/pi';
 
-const getTimelineIcon = (status: 'completed' | 'current' | 'pending') => {
-  switch (status) {
-    case 'completed':
-      return <CheckCircle className="h-5 w-5 text-green-600" />;
-    case 'current':
-      return <Clock className="h-5 w-5 text-blue-600" />;
-    case 'pending':
-      return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />;
-    default:
-      return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />;
-  }
-};
+import React from 'react';
+import { Card, CardContent } from '../ui/card';
+import { CardHeader } from '@/components/ui/card';
 
-const OrderTimeline = ({ timeline, length }: { timeline: TimelineEvent[]; length: number }) => {
+const OrderTimeline = ({ orderId, date }: { orderId: string; date: string }) => {
+  const steps = [
+    {
+      label: 'Pending',
+      date: '03 July,2025',
+      icon: <MdOutlinePendingActions size={32} />,
+      status: 'completed',
+    },
+    {
+      label: 'Confirmed',
+      date: '03 July,2025',
+      icon: <GoChecklist size={32} />,
+      status: 'completed',
+    },
+    {
+      label: 'Shipping',
+      date: '03 July,2025',
+      icon: <PiShippingContainer size={32} />,
+      status: 'current',
+    },
+    {
+      label: 'Out for Delivery',
+      date: '03 July,2025',
+      icon: <TbTruckDelivery size={32} />,
+      status: 'pending',
+    },
+    {
+      label: 'Delivered',
+      date: '03 July,2025',
+      icon: <DeliveredSvg />,
+      status: 'pending',
+    },
+  ];
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order Timeline</CardTitle>
-        <CardDescription>Track the progress of this order</CardDescription>
+        <div className="flex justify-between items-center">
+          <h3>
+            Order :: <span className="text-teal-700">{orderId}</span>
+          </h3>
+          <div>
+            <p className="bg-teal-100 text-teal-700 px-4 flex items-center justify-center font-medium py-1 rounded-sm text-xs ">
+              {date}
+            </p>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {timeline.map((event, index) => (
-            <div key={event.id} className="flex items-start space-x-4">
-              <div className="flex flex-col items-center">
-                {getTimelineIcon(event.status)}
-                {index < length - 1 && <div className="w-px h-8 bg-gray-200 mt-2" />}
-              </div>
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium">{event.title}</p>
-                <p className="text-sm text-muted-foreground">{event.description}</p>
-                {event.date && (
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(event.date).toLocaleString()}
-                  </p>
+      <CardContent className="py-10">
+        <div className="flex items-center justify-between">
+          {steps.map((step, i) => {
+            const isCompleted = step.status === 'completed';
+
+            return (
+              <div key={i} className={`relative flex flex-col justify-center items-center w-full`}>
+                {i !== 0 && (
+                  <div
+                    className={`absolute top-[80%] -translate-y-1/2 right-[65%] w-[70%] h-[2px] 
+                      ${isCompleted ? 'bg-teal-700' : 'bg-gray-300'}`}
+                  />
                 )}
+
+                <p className={`${isCompleted ? 'text-black' : 'text-gray-300'} font-medium mt-3`}>
+                  {step.label}
+                </p>
+                <p
+                  className={`font-normal font-inter ${isCompleted ? 'text-teal-700' : 'text-gray-300'}  mt-[2px] leading-none`}
+                >
+                  {step.date}
+                </p>
+
+                <div
+                  className={`mt-5 rounded-full ${isCompleted ? 'bg-teal-700 text-white' : 'text-gray-300 ring-2 ring-gray-300'}  inline-flex items-center justify-center  p-2`}
+                >
+                  {step.icon}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </CardContent>
     </Card>

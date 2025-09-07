@@ -1,16 +1,19 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { Eye, Truck, ArrowUpDown } from 'lucide-react';
+import { Eye, ArrowUpDown, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Order } from '@/types/order';
 import { getStatusColor, getStatusIcon } from '@/lib/utils';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useRouter } from 'next/navigation';
+import { TbTruckDelivery } from 'react-icons/tb';
+import { PiShippingContainer } from 'react-icons/pi';
 
-const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRouterInstance) => {
+
+const OrdersColumns = () => {
   const columnHelper = createColumnHelper<Order>();
-
+  const router = useRouter();
   return [
     columnHelper.accessor('id', {
       header: ({ column }) => (
@@ -93,7 +96,35 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
       cell: ({ row }) => {
         const order = row.original;
         return (
-          <div className="flex items-center  gap-2">
+          <div className="flex items-center  gap-2">            
+            {order.status === 'pending' && (
+              <Button
+                title="Ship Order"
+                variant="outline"
+                onClick={() => router.push(`/admin/orders/${order.id}`)}
+                className="flex items-center"
+              >
+                <PiShippingContainer className="h-4 w-4" />
+              </Button>
+            )}
+             {order.status === 'pending' && (
+              <Button
+                title="Out for Delivery"
+                variant="outline"
+                onClick={() => router.push(`/admin/orders/${order.id}`)}
+                className="flex items-center"
+              >
+                <TbTruckDelivery className="h-4 w-4" />
+              </Button>
+            )}
+            <Button
+              title="Order Details"
+              variant="outline"
+              onClick={() => router.push(`/admin/orders/${order.id}`)}
+              className="flex items-center"
+            >
+              <CheckCircle className="h-4 w-4" />              
+            </Button>
             <Button
               title="Order Details"
               variant="outline"
@@ -102,16 +133,6 @@ const OrdersColumns = (handleShipOrder: (orderId: string) => void, router: AppRo
             >
               <Eye className="h-4 w-4" />
             </Button>
-            {order.status === 'pending' && (
-              <Button
-                title="Ship Order"
-                variant="outline"
-                onClick={() => handleShipOrder(order.id)}
-                className="flex items-center"
-              >
-                <Truck className="h-4 w-4" />
-              </Button>
-            )}
           </div>
         );
       },

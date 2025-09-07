@@ -1,7 +1,6 @@
 'use client';
 import { Clock, CheckCircle, XCircle, Package } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -12,15 +11,13 @@ import {
   type ColumnFiltersState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import type { Order } from '@/types/order';
 import { MockOrders } from '@/docs/Orders';
 import OrderStatisticsCards from './OrderStatisticsCards';
 import OrdersColumns from './OrdersColumns';
 import DataTable from '@/components/DataTable';
 
 export default function OrdersPage() {
-  const router = useRouter();
-  const [orders, setOrders] = useState<Order[]>(MockOrders);
+  const orders = MockOrders;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -57,15 +54,7 @@ export default function OrdersPage() {
     },
   ];
 
-  const handleShipOrder = (orderId: string) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status: 'shipped' as const } : order,
-      ),
-    );
-  };
-
-  const columns = useMemo(() => OrdersColumns(handleShipOrder, router), [router]);
+  const columns = useMemo(() => OrdersColumns(), []);
 
   // const totalRevenue = orders.reduce((sum, order) => sum + order.amount, 0);
   // const avgOrderValue = totalRevenue / orders.length;
