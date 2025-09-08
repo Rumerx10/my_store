@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { PiShoppingCart } from 'react-icons/pi';
 import { LuUserRoundPlus } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
@@ -18,7 +18,7 @@ const DesktopNav = ({
 }) => {
   const [isLoggedIn, setIsloggedin] = useState(false);
   const router = useRouter();
-
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const handleSearch = () => {
     router.push(`/products?searchTerm=${searchTerm.trim()}`);
   };
@@ -33,6 +33,7 @@ const DesktopNav = ({
           <div className="relative w-full">
             <input
               value={searchTerm}
+              ref={searchInputRef}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search"
               className="h-12 text-gray-800 pr-4 w-full outline-none"
@@ -43,6 +44,7 @@ const DesktopNav = ({
                 onClick={() => {
                   setSearchTerm('');
                   router.push('/products');
+                  searchInputRef.current?.focus();
                 }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex shrink-0 rounded-full items-center justify-center border border-gray-300 hover:bg-gray-300 duration-300 cursor-pointer"
               >

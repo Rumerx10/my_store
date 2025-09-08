@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Truck, Shield, RotateCcw, Award } from 'lucide-react';
 import { PRODUCT } from '@/docs/products';
 import { ProductDetailsTab } from './ProductDetailsTab';
 import { RelatedProducts } from './RelatedProducts';
-import { ProductDetailsImageCarousel } from './ProductDetailsImageCarousel';
 import { BackButton } from '../../BackButton';
 import { ProductDetailsInfo } from './ProductDetailsInfo';
 import SellerInfo from './SellerInfo';
@@ -15,7 +13,6 @@ import BreadcrumbComponent from '@/components/BreadcrumbComponent';
 import ProductImgCarousel from '@/components/ProductImgCarousel';
 
 export default function ProductDetails() {
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState(PRODUCT.colors[0]);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -42,13 +39,7 @@ export default function ProductDetails() {
     }
   };
 
-  const nextImage = () => {
-    setSelectedImageIndex((prev) => (prev + 1) % PRODUCT.images.length);
-  };
 
-  const prevImage = () => {
-    setSelectedImageIndex((prev) => (prev - 1 + PRODUCT.images.length) % PRODUCT.images.length);
-  };
 
   return (
     <div className="min-h-screen flex flex-col my-8">
