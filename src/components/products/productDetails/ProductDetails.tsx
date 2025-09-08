@@ -11,6 +11,8 @@ import { BackButton } from '../../BackButton';
 import { ProductDetailsInfo } from './ProductDetailsInfo';
 import SellerInfo from './SellerInfo';
 import Image from 'next/image';
+import BreadcrumbComponent from '@/components/BreadcrumbComponent';
+import ProductImgCarousel from '@/components/ProductImgCarousel';
 
 export default function ProductDetails() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -50,44 +52,14 @@ export default function ProductDetails() {
 
   return (
     <div className="min-h-screen flex flex-col my-8">
-      {/* Breadcrumb */}
-      <div className="container bg-white border-b h-10 items-center">
-        <div className="overflow-hidden">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-blue-600 transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <Link href="/products" className="hover:text-blue-600 transition-colors">
-              Products
-            </Link>
-            <span>/</span>
-            <Link
-              href={`/category/${PRODUCT.category.toLowerCase()}`}
-              className="hover:text-blue-600 transition-colors"
-            >
-              {PRODUCT.category}
-            </Link>
-            <span>/</span>
-            <span className="text-gray-900 font-medium whitespace-nowrap">{PRODUCT.name}</span>
-          </div>
-        </div>
-      </div>
-
       <div className="container mx-auto px-4 py-8 flex flex-col bg-white">
+        <BreadcrumbComponent />
         {/* Back Button */}
         <BackButton name="Products" href="/products" />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mb-12">
           {/* Product Images */}
-          <ProductDetailsImageCarousel
-            selectedImageIndex={PRODUCT.images[selectedImageIndex]}
-            _selectedImageIndex={selectedImageIndex}
-            setSelectedImageIndex={setSelectedImageIndex}
-            discount={discount}
-            nextImage={nextImage}
-            prevImage={prevImage}
-          />
+          <ProductImgCarousel images={PRODUCT.images} />
 
           {/* Product Info */}
           <ProductDetailsInfo
@@ -142,25 +114,6 @@ export default function ProductDetails() {
             </div>
 
             <SellerInfo />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           </div>
         </div>
 

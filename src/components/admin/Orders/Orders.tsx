@@ -15,7 +15,7 @@ import { MockOrders } from '@/docs/Orders';
 import OrderStatisticsCards from './OrderStatisticsCards';
 import OrdersColumns from './OrdersColumns';
 import DataTable from '@/components/DataTable';
-
+                                            
 export default function OrdersPage() {
   const orders = MockOrders;
   const [sorting, setSorting] = useState<SortingState>([]);
