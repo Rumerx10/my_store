@@ -166,17 +166,17 @@ export default function AddProduct() {
     <div className="min-h-screen bg-gray-50">
       <div className="container flex flex-col py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link href="/admin/products">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Products
-            </Button>
-          </Link>
+        <div className="flex justify-between items-center gap-4 mb-8">          
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
             <p className="text-gray-600 mt-1">Create a new product for your store</p>
           </div>
+          <Link href="/admin/products">
+            <Button variant="outline" className="w-48">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Products
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
