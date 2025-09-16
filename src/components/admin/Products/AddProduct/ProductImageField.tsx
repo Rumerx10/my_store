@@ -6,7 +6,7 @@ import { Trash2, Upload } from 'lucide-react';
 import { useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const MAX_IMAGES = 4;
+const MAX_IMAGES = 8;
 
 const ProductImageField = () => {
   const { control, setValue, watch } = useFormContext();
@@ -49,7 +49,7 @@ const ProductImageField = () => {
                     <p className="text-gray-500">
                       or click to browse files (PNG, JPG, WEBP up to 5MB each)
                     </p>
-                    <div className="border border-borderGray px-5 py-4 rounded font-medium hover:bg-bgGray duration-150">
+                    <div className="border border-borderGray px-5 py-2 rounded font-medium hover:bg-bgGray duration-150">
                       Select Files
                     </div>
 
@@ -71,7 +71,7 @@ const ProductImageField = () => {
                       return (
                         <div
                           key={index}
-                          className="relative w-[220px] h-[184px] bg-textGray rounded-lg overflow-hidden p-2"
+                          className="relative w-full h-[130px] bg-textGray rounded-lg overflow-hidden p-2"
                         >
                           <Image
                             src={src}
@@ -82,7 +82,7 @@ const ProductImageField = () => {
                           <button
                             type="button"
                             onClick={() => handleRemove(index)}
-                            className="absolute top-1 right-1 text-red-500 hover:text-red-700"
+                            className="bg-white  rounded-full h-6 w-6 flex items-center justify-center absolute top-1 right-1 text-gray-500 hover:text-red-700"
                           >
                             <Trash2 className="w-5 h-5" />
                           </button>
@@ -92,7 +92,7 @@ const ProductImageField = () => {
 
                     {/* ADD MORE IMAGES */}
                     {images.length < MAX_IMAGES && (
-                      <label className="w-[220px] h-[184px] bg-bgGray border border-dashed border-borderGray rounded-md flex flex-col items-center justify-center text-xs text-textGray cursor-pointer relative">
+                      <label className="w-full h-[130px] border border-dashed border-gray-400 rounded-md flex flex-col items-center justify-center text-xs text-gray-500 cursor-pointer relative">
                         <Upload className="h-6 w-6 mb-1" />
                         Add Image
                         <input

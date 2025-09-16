@@ -56,7 +56,7 @@ const Inventory = () => {
               variant="outline"
               onClick={() => {
                 const newSku = generateSKU(watch('category'));
-                setValue('sky', newSku);
+                setValue('sku', newSku);
               }}
             >
               Generate
