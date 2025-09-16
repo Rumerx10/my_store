@@ -23,3 +23,11 @@ export interface FilterContentProps {
   handleBrandChange: (brand: string, checked: boolean) => void;
   clearAllFilters: () => void;
 }
+
+export interface InputProps {
+  label: string;
+  name: string;
+  placeholder?: string;
+  type?: 'text' | 'textarea';
+  className?: string;
+}
