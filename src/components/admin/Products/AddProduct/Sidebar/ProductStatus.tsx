@@ -1,20 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  ArrowLeft,
-  Upload,
-  X,
-  Plus,
-  Save,
-  Eye,
-  Package,
-  DollarSign,
-  Tag,
-  Truck,
-  BarChart3,
-} from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -25,7 +9,7 @@ import {
 import { Controller, useFormContext } from 'react-hook-form';
 
 const ProductStatus = () => {
-  const { watch, control } = useFormContext();
+  const { control } = useFormContext();
   return (
     <Card>
       <CardHeader>
