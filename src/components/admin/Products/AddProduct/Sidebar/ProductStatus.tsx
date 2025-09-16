@@ -22,27 +22,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import Image from 'next/image';
+import { Controller, useFormContext } from 'react-hook-form';
 
 const ProductStatus = () => {
+  const { watch, control } = useFormContext();
   return (
     <Card>
       <CardHeader>
         <CardTitle>Product Status</CardTitle>
       </CardHeader>
       <CardContent>
-        <Select
-          value={formData.status}
-          onValueChange={(value: ProductStatus) => handleInputChange('status', value)}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-          </SelectContent>
-        </Select>
+        <Controller
+          name="status"
+          defaultValue="active"
+          control={control}
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
       </CardContent>
     </Card>
   );

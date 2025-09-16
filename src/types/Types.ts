@@ -28,6 +28,6 @@ export interface InputProps {
   label: string;
   name: string;
   placeholder?: string;
-  type?: 'text' | 'textarea';
+  type?: 'text' | 'textarea' | 'number';
   className?: string;
 }

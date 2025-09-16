@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Image from 'next/image';
+import InputField from '@/components/InputField';
 
 const Pricing = () => {
   return (
@@ -34,45 +35,9 @@ const Pricing = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="price">Price *</Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              value={formData.price}
-              onChange={(e) => handleInputChange('price', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="comparePrice">Compare at Price</Label>
-            <Input
-              id="comparePrice"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              value={formData.comparePrice}
-              onChange={(e) => handleInputChange('comparePrice', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="cost">Cost per Item</Label>
-            <Input
-              id="cost"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              value={formData.cost}
-              onChange={(e) => handleInputChange('cost', e.target.value)}
-              className="mt-1"
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <InputField label="Price" name="price" placeholder="0.00" />
+          <InputField label="Cost per unit" name="costPerUnit" placeholder="0.00" />
         </div>
       </CardContent>
     </Card>

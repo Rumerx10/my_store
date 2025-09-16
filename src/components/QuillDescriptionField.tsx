@@ -43,7 +43,7 @@ const QuillDescriptionField = ({
             <div
               ref={quillRef}
               onBlur={() => field.onChange(quillRef.current.firstChild.innerHTML)}
-              className="border min-h-50"
+              className="border-2 min-h-50"
             />
           );
         }}

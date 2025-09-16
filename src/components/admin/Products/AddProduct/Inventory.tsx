@@ -25,8 +25,19 @@ import {
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import InputField from '@/components/InputField';
+import { useFormContext } from 'react-hook-form';
+
+const generateSKU = (value: string) => {
+  const prefix = value.substring(0, 2).toUpperCase() || 'PR';
+  const random = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, '0');
+  return `${prefix}-${random}`;
+};
 
 const Inventory = () => {
+  const { watch, setValue } = useFormContext();
   return (
     <Card>
       <CardHeader>
@@ -37,32 +48,21 @@ const Inventory = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="sku">SKU</Label>
-            <div className="flex gap-2 mt-1">
-              <Input
-                id="sku"
-                placeholder="Product SKU"
-                value={formData.sku}
-                onChange={(e) => handleInputChange('sku', e.target.value)}
-              />
-              <Button variant="outline" onClick={generateSKU}>
-                Generate
-              </Button>
-            </div>
+          <div className="flex gap-2 items-end">
+            <InputField label="SKU" name="sku" placeholder="Product SKU" />
+            <Button
+              className="w-24"
+              type="button"
+              variant="outline"
+              onClick={() => {
+                const newSku = generateSKU(watch('category'));
+                setValue('sky', newSku);
+              }}
+            >
+              Generate
+            </Button>
           </div>
-
-          <div>
-            <Label htmlFor="stock">Stock Quantity</Label>
-            <Input
-              id="stock"
-              type="number"
-              placeholder="0"
-              value={formData.stock}
-              onChange={(e) => handleInputChange('stock', e.target.value)}
-              className="mt-1"
-            />
-          </div>
+          <InputField label="Stock Quantity" name="qty" placeholder="0" />
         </div>
 
         <div className="flex items-center justify-between">
@@ -71,8 +71,8 @@ const Inventory = () => {
             <p className="text-sm text-gray-600">Track this product&apos;s inventory</p>
           </div>
           <Switch
-            checked={formData.trackQuantity}
-            onCheckedChange={(checked) => handleInputChange('trackQuantity', checked)}
+            checked={watch('trackQty')}
+            onCheckedChange={(checked) => setValue('trackQty', checked)}
           />
         </div>
 
@@ -84,10 +84,8 @@ const Inventory = () => {
             </p>
           </div>
           <Switch
-            checked={formData.continueSellingWhenOutOfStock}
-            onCheckedChange={(checked) =>
-              handleInputChange('continueSellingWhenOutOfStock', checked)
-            }
+            checked={watch('continueSellingWhenOutOfStock')}
+            onCheckedChange={(checked) => setValue('continueSellingWhenOutOfStock', checked)}
           />
         </div>
       </CardContent>

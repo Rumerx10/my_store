@@ -6,8 +6,8 @@
   --color-base: #f7f7f7;
   --color-textGray: #e6e6e6;
   --color-green: #02bf6c;
-  --color-hGreen: #029A58;
-  --color-red: #EE485C;
+  --color-hGreen: #029a58;
+  --color-red: #ee485c;
   --color-yellow: #ee485c;
   --color-black: #2b2b2b;
   --color-liteBlack: #363739;
@@ -16,7 +16,7 @@
   --color-card: #cdcdcd;
   --color-cardGray: #9b9b9c;
   --color-bgWhite: #fafafa;
-  --color-navWhite:#F3F5F6;
+  --color-navWhite: #f3f5f6;
   --font-family: 'Poppins', 'sans-serif';
 }
 
@@ -81,7 +81,7 @@ h6 {
   width: 100%;
 }
 
-button{
+button {
   cursor: pointer;
 }
 
