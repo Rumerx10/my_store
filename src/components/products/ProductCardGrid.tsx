@@ -39,18 +39,6 @@ const ProductCardGrid = ({
               </Badge>
             )}
           </div>
-          {/* Discount percentage */}
-          {/* {product.originalPrice !== undefined && product.originalPrice > product.price && (
-            <div className="absolute bottom-3 left-3">
-              <Badge variant="destructive" className="bg-red-500 text-white shadow-lg">
-                -
-                {Math.round(
-                  ((product.originalPrice - product.price) / product.originalPrice) * 100,
-                )}
-                %
-              </Badge>
-            </div>
-          )} */}
         </div>
 
         <div className={`relative pb-16 p-4 flex-grow`}>

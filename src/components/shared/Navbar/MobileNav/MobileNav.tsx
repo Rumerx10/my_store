@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Turn as Hamburger } from 'hamburger-react';
-import Sidebar from './Sidebar';
+import Sidebar from './CategorySidebar';
 import BottomNav from './BottomNav';
 import { PiShoppingCart } from 'react-icons/pi';
 import { HiUser } from 'react-icons/hi2';

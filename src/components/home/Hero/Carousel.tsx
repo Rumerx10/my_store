@@ -38,6 +38,7 @@ const Carousel = ({
       >
         {images.map((img, index) => (
           <SwiperSlide key={index}>
+            <h1 className='absolute'>{index}</h1>
             <Image
               height={400}
               width={1920}
