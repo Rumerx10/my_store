@@ -84,6 +84,12 @@ h6 {
 button {
   cursor: pointer;
 }
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  color: white;
+  font-size: 24px !important;
+}
+
 
 :root {
   --radius: 0.625rem;
