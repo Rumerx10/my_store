@@ -1,6 +1,5 @@
 import { FEATURED_PRODUCTS } from '@/docs/homeDocs';
-import React from 'react';
-import ProductCard from '../products/ProductCardGrid';
+import ProductCardGrid from '../products/ProductCardGrid';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,9 +19,9 @@ const PopulerProducts = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6 mb-12">
           {FEATURED_PRODUCTS.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCardGrid key={product.id} product={product} />
           ))}
         </div>
 

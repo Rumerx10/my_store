@@ -4,7 +4,7 @@ const Trusted = () => {
   return (
     <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
       <div className="container mx-auto px-4 flex flex-col">
-        <div className="rounded-3xl p-8 md:p-12 shadow-2xl">
+        <div className="border-2 rounded-3xl p-8 md:p-12 shadow-2xl">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Trusted by Thousands</h2>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">

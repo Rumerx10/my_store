@@ -1,6 +1,7 @@
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HOW_IT_WORKS } from '@/docs/homeDocs';
+import HowItWorksCarousel from '../HowItWorksCarousel';
+import HowItWorksCard from '../HowItWorksCard';
 
 const HowItWorks = () => {
   return (
@@ -10,35 +11,20 @@ const HowItWorks = () => {
           <Badge className="bg-gradient-to-r from-white/20 to-white/30 text-white border-0 mb-4 shadow-lg backdrop-blur-sm">
             How It Works
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Simple Steps to Shop
-          </h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Simple Steps to Shop</h2>
           <p className="text-xl text-white max-w-2xl mx-auto">
             Experience seamless shopping with our user-friendly process designed for your
             convenience
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {HOW_IT_WORKS.map((step, index) => (
-            <Card
-              key={index}
-              className="shadow-xl backdrop-blur-sm bg-white/40 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              <CardContent className="p-8 text-center">
-                <div
-                  className={`bg-gradient-to-r ${step.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg`}
-                >
-                  {step.icon}
-                </div>
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-sm shadow-lg">
-                  {step.step}
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-lg">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </CardContent>
-            </Card>
+            <HowItWorksCard key={index} {...step} />
           ))}
+        </div>
+        <div className="md:hidden">
+          <HowItWorksCarousel />
         </div>
       </div>
     </section>

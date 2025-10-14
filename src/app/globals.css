@@ -89,7 +89,9 @@ button {
   color: white;
   font-size: 24px !important;
 }
-
+.swiper-pagination-bullets {
+  bottom: 20px !important;
+}
 
 :root {
   --radius: 0.625rem;

@@ -17,7 +17,7 @@ const TrendingProducts = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6 mb-12">
           {NEW_PRODUCTS.map((product) => (
             <ProductCard key={product.id} product={product} isNew />
           ))}
