@@ -7,12 +7,14 @@ const HowItWorks = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-[#1c7293] via-[#1c7293]/80 to-[#1c7293]/60">
       <div className="container mx-auto px-4 flex flex-col">
-        <div className="text-center mb-16">
-          <Badge className="bg-gradient-to-r from-white/20 to-white/30 text-white border-0 mb-4 shadow-lg backdrop-blur-sm">
+        <div className="text-center mb-8 md:mb-12 lg:mb-16">
+          <Badge className="bg-gradient-to-r from-white/20 to-white/30 text-white border-0 mb-3 md:mb-4 shadow-lg backdrop-blur-sm text-sm md:text-base">
             How It Works
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Simple Steps to Shop</h2>
-          <p className="text-xl text-white max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight">
+            Simple Steps to Shop
+          </h2>
+          <p className="sm:text-lg md:text-xl text-white max-w-4xl mx-auto leading-relaxed">
             Experience seamless shopping with our user-friendly process designed for your
             convenience
           </p>

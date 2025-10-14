@@ -9,12 +9,14 @@ const LatestProducts = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-[#1c7293] via-[#1c7293]/80 to-[#1c7293]/60">
       <div className="container mx-auto px-4 flex flex-col">
-        <div className="text-center mb-16">
-          <Badge className="bg-gradient-to-r from-white/20 to-white/30 text-white border-0 mb-4 shadow-lg backdrop-blur-sm">
+        <div className="text-center mb-8 md:mb-12 lg:mb-16">
+          <Badge className="bg-gradient-to-r from-white/20 to-white/30 text-white border-0 mb-3 md:mb-4 shadow-lg backdrop-blur-sm text-sm md:text-base">
             New Arrivals
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Latest Products</h2>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight">
+            Latest Products
+          </h2>
+          <p className="sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
             Be the first to discover our newest additions and stay ahead of the trends
           </p>
         </div>
