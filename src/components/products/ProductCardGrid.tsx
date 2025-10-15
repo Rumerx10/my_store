@@ -41,26 +41,30 @@ const ProductCardGrid = ({
           </div>
         </div>
 
-        <div className={`relative pb-14 p-4 flex-grow`}>
-          <h3 className="text-sm lg:text-xl font-semibold text-black mb-2 line-clamp-2 transition-colors">
+        <div className={`relative p-4 flex-grow`}>
+          <h3 className="text-sm lg:text-xl !font-normal text-black line-clamp-2 transition-colors">
             {product.name}
           </h3>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center">
-              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-              <span className="text-black font-medium ml-1">{product.rating}</span>
-            </div>
-            <p className="flex w-full text-sm text-black whitespace-nowrap">({product.reviews})</p>
+          <div className="flex gap-2 items-center w-full text-xl lg:text-2xl font-bold text-black">
+            ${product.price}
+            {product.originalPrice && product.originalPrice > product.price && (
+              <div className="text-sm font-medium text-gray-500 line-through">
+                ${product.originalPrice}
+              </div>
+            )}
           </div>
-          <div className="absolute bottom-6 flex flex-col gap-2 w-full">
-            <div className="flex gap-2 items-center w-full text-xl lg:text-2xl font-bold text-black">
-              ${product.price}
-              {product.originalPrice && product.originalPrice > product.price && (
-                <div className="text-sm font-medium text-gray-500 line-through">
-                  ${product.originalPrice}
-                </div>
-              )}
+          <div className="flex flex-col md:flex-row gap-0 md:gap-2">
+            <div className="flex items-center">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-black ml-1">{product.rating}</span>
             </div>
+            <p className="flex items-center w-full text-sm text-black whitespace-nowrap">
+              <span className="hidden md:block mr-1">|</span> {product.reviews} sold
+            </p>
           </div>
         </div>
       </CardContent>

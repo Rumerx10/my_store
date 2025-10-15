@@ -9,6 +9,8 @@ import {
 import { FiSearch } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { RxCross2 } from 'react-icons/rx';
+import { AiOutlineProduct } from 'react-icons/ai';
+
 import Link from 'next/link';
 
 const navItems = [
@@ -21,9 +23,9 @@ const navItems = [
     badgePosition: '-right-1',
   },
   {
-    label: 'Hot Deals',
-    src: 'hot-deals',
-    icon: <MdOutlineLocalFireDepartment size={28} />,
+    label: 'Products',
+    src: '/products',
+    icon: <AiOutlineProduct size={28} />,
     badge: 3,
     badgePosition: 'right-2',
   },
@@ -36,7 +38,13 @@ const navItems = [
   },
 ];
 
-const BottomNav = ({searchTerm, setSearchTerm}:{searchTerm:string, setSearchTerm:(value:string)=>void}) => {
+const BottomNav = ({
+  searchTerm,
+  setSearchTerm,
+}: {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+}) => {
   const [isSearchBoxOpen, setIsSearchBoxOpen] = useState(false);
   const [selected, setSelected] = useState('home');
   const router = useRouter();
