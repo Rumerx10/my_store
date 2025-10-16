@@ -111,7 +111,7 @@ export default function Products() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-50">
+    <div className="relative min-h-screen">
       {isFilterOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
@@ -145,7 +145,7 @@ export default function Products() {
         </div>
       </div>
 
-      <div className="container min-h-screen mx-auto px-4 flex flex-col bg-white">
+      <div className="container min-h-screen mx-auto px-4 flex flex-col">
         <div className="flex flex-col lg:hidden gap-4 mt-6">
           <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div>
@@ -220,7 +220,7 @@ export default function Products() {
                 </Button>
               </div>
             ) : viewMode === 'grid' ? (
-              <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredAndSortedProducts.map((product) => (
                   <ProductCards key={product.id} product={product} />
                 ))}

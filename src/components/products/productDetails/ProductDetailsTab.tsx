@@ -94,7 +94,7 @@ export function ProductDetailsTab(props: ProductDetailsTabProps) {
 
         <TabsContent value="reviews" className="p-6 space-y-6">
           {/* Review Summary */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div id="reviews" className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Customer Reviews</h3>
               <div className="flex items-center gap-4 mb-6">
@@ -149,71 +149,73 @@ export function ProductDetailsTab(props: ProductDetailsTabProps) {
 
           {/* Reviews List */}
           <div className="space-y-6">
-            {REVIEWS.slice(0, props.showAllReviews ? REVIEWS.length : 3).map((review:ReviewType) => (
-              <div key={review.id} className="border border-gray-200 rounded-lg p-6">
-                <div className="flex items-start gap-4">
-                  <Image
-                  src={review.avatar || '/placeholder.svg'}
-                  alt={review.user as string}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-semibold text-gray-900">{review.user}</span>
-                      {review.verified && (
-                        <Badge className="bg-green-100 text-green-800 text-xs">
-                          <Check className="w-3 h-3 mr-1" />
-                          Verified Purchase
-                        </Badge>
+            {REVIEWS.slice(0, props.showAllReviews ? REVIEWS.length : 3).map(
+              (review: ReviewType) => (
+                <div key={review.id} className="border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start gap-4">
+                    <Image
+                      src={review.avatar || '/placeholder.svg'}
+                      alt={review.user as string}
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-semibold text-gray-900">{review.user}</span>
+                        {review.verified && (
+                          <Badge className="bg-green-100 text-green-800 text-xs">
+                            <Check className="w-3 h-3 mr-1" />
+                            Verified Purchase
+                          </Badge>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-600">{review.date}</span>
+                      </div>
+
+                      <h4 className="font-semibold text-gray-900 mb-2">{review.title}</h4>
+                      <p className="text-gray-700 mb-4">{review.content}</p>
+
+                      {review.images.length > 0 && (
+                        <div className="flex gap-2 mb-4">
+                          {review.images.map((image: string, index: number) => (
+                            <Image
+                              key={index}
+                              src={image || '/placeholder.svg'}
+                              alt={`Review image ${index + 1}`}
+                              width={80}
+                              height={80}
+                              className="rounded-lg object-cover"
+                            />
+                          ))}
+                        </div>
                       )}
-                    </div>
 
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                          />
-                        ))}
+                      <div className="flex items-center gap-4">
+                        <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+                          <ThumbsUp className="w-4 h-4" />
+                          <span className="text-sm">Helpful ({review.helpful})</span>
+                        </button>
+                        <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+                          <MessageCircle className="w-4 h-4" />
+                          <span className="text-sm">Reply</span>
+                        </button>
                       </div>
-                      <span className="text-sm text-gray-600">{review.date}</span>
-                    </div>
-
-                    <h4 className="font-semibold text-gray-900 mb-2">{review.title}</h4>
-                    <p className="text-gray-700 mb-4">{review.content}</p>
-
-                    {review.images.length > 0 && (
-                      <div className="flex gap-2 mb-4">
-                        {review.images.map((image: string, index: number) => (
-                          <Image
-                            key={index}
-                            src={image || '/placeholder.svg'}
-                            alt={`Review image ${index + 1}`}
-                            width={80}
-                            height={80}
-                            className="rounded-lg object-cover"
-                          />
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-4">
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-                        <ThumbsUp className="w-4 h-4" />
-                        <span className="text-sm">Helpful ({review.helpful})</span>
-                      </button>
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-                        <MessageCircle className="w-4 h-4" />
-                        <span className="text-sm">Reply</span>
-                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
 
           {REVIEWS.length > 3 && (

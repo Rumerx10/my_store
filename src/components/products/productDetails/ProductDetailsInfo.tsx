@@ -1,20 +1,9 @@
-
 import { Button } from '@/components/ui/button';
-import {
-  Star,
-  Heart,
-  Share2,
-  ShoppingCart,
-  Plus,
-  Minus,
-  Check,
-  X,
-
-} from 'lucide-react';
+import { Star, Heart, Share2, ShoppingCart, Plus, Minus, Check, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { PRODUCT } from '@/docs/products';
-
+import Link from 'next/link';
 
 interface ProductColor {
   name: string;
@@ -30,6 +19,7 @@ interface ProductDetailsInfoProps {
   discount: number;
   savings: number;
   updateQuantity: (newQuantity: number) => void;
+  setActiveTab: (value: string) => void;
 }
 
 export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
@@ -47,33 +37,26 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               </span>
             </Badge>
           )}
-          <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
-            {PRODUCT.brand}
-          </Badge>
-          <Badge variant="outline" className="text-gray-600">
-            SKU: {PRODUCT.sku}
+          <Badge className="text-white bg-red">
+            <div>{props.discount}% off</div>
           </Badge>
         </div>
+        <h1 className="text-2xl !font-medium text-gray-900 mb-4">{PRODUCT.name}</h1>
         {/* Price */}
         <div className="my-3 flex flex-col gap-1 items-start">
           <div className="flex items-center gap-4">
-            <div className="text-3xl font-bold text-gray-900">৳{PRODUCT.price}</div>
+            <div className="text-3xl font-semibold text-gray-900">৳{PRODUCT.price}</div>
             {PRODUCT.originalPrice > PRODUCT.price && (
               <div className="text-xl text-gray-500 line-through">৳{PRODUCT.originalPrice}</div>
             )}
           </div>
-          {props.savings > 0 && (
-            <div className="flex items-center gap-2">
-              <Badge className="bg-[#FD384F] text-white">Save ৳{props.savings.toFixed(2)}</Badge>
-              <div className="text-[#d3031c] font-medium">{props.discount}% off</div>
-            </div>
-          )}
         </div>
-
-        <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">{PRODUCT.name}</h1>
-
         {/* Rating */}
-        <div className="flex flex-col gap-4 mb-4">
+        <Link
+          href="#reviews"
+          onClick={() => props.setActiveTab('reviews')}
+          className="cursor-pointer flex flex-col gap-4 mb-4"
+        >
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
@@ -84,12 +67,11 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               ))}
               <span className="text-lg font-semibold text-gray-900 ml-2">{PRODUCT.rating}</span>
             </div>
-            <span className="text-gray-600">({PRODUCT.reviewCount.toLocaleString()} reviews)</span>
+            <span className="text-gray-600 hover:text-blue-700 ">
+              | {PRODUCT.reviewCount.toLocaleString()} reviews
+            </span>
           </div>
-          <button className="text-blue-600 text-start hover:text-blue-700 font-medium">
-            See all reviews
-          </button>
-        </div>
+        </Link>
       </div>
 
       {/* Color Selection */}
@@ -123,8 +105,9 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
       <div>
         <Label className="text-black font-semibold mb-3 block">Quantity</Label>
         <div className="flex items-center gap-4">
-          <div className="flex items-center border border-gray-300 rounded-lg">
+          <div className="flex items-center overflow-hidden border border-gray-300 rounded-lg">
             <button
+              type="button"
               onClick={() => props.updateQuantity(props.quantity - 1)}
               disabled={props.quantity <= 1}
               className="p-3 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -135,6 +118,7 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               {props.quantity}
             </span>
             <button
+              type="button"
               onClick={() => props.updateQuantity(props.quantity + 1)}
               disabled={props.quantity >= 10}
               className="p-3 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

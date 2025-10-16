@@ -10,7 +10,6 @@ import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
 import Image from 'next/image';
 
-
 const ProductImgCarousel = ({ images }: { images: string[] }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
@@ -51,12 +50,12 @@ const ProductImgCarousel = ({ images }: { images: string[] }) => {
       </Swiper>
       <Swiper
         onSwiper={setThumbsSwiper}
-        spaceBetween={10}
-        slidesPerView={4}
+        spaceBetween={4}
+        slidesPerView={5}
         freeMode={true}
         watchSlidesProgress={true}
         modules={[FreeMode, Navigation, Thumbs]}
-        className="mt-3"
+        className="mt-1"
       >
         {images.map((item, index) => (
           <SwiperSlide

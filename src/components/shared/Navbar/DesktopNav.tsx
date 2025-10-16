@@ -24,7 +24,7 @@ const DesktopNav = ({
   };
 
   return (
-    <div className="hidden fixed z-50 right-0 left-0 lg:flex bg-base text-white h-24  items-center justify-center">
+    <div className="hidden shadow fixed z-50 right-0 left-0 lg:flex bg-base text-white h-24  items-center justify-center">
       <div className="container px-4 w-full flex items-center justify-between gap-16">
         <Link href="/" className="w-96 flex items-center justify-center cursor-pointer">
           <Image className="h-12 w-full" src={'/logo.png'} alt="logo" height={120} width={160} />
