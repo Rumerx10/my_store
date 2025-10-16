@@ -41,6 +41,9 @@ const ProductCardGrid = ({
                 </Badge>
               )}
             </div>
+            <div className="absolute bottom-2 right-2">
+              <Heart className="fill-red text-red" />
+            </div>
           </div>
 
           <div className={`relative p-4 flex-grow`}>

@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { PRODUCT } from '@/docs/products';
 import Link from 'next/link';
+import { Card } from '@/components/ui/card';
 
 interface ProductColor {
   name: string;
@@ -127,6 +128,38 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
             </button>
           </div>
           <span className="text-gray-600">Max 10 per order</span>
+        </div>
+      </div>
+
+      <div className="border py-6 px-6 lg:px-6 w-full rounded-[4px]">
+        <h1 className="text-center font-semibold  underline mb-8">Pricing Details</h1>
+        <div>
+          <div className="flex items-center justify-center text-xs lg:text-sm text-black-dim">
+            <div className="basis-[40%]">
+              <p className="font-semibold">Product Quantity</p>
+            </div>
+            <div className="basis-[60%]">
+              <p>{props.quantity}</p>
+            </div>
+          </div>
+          <span className="w-full h-[1px] block bg-gray-200 mt-4 mb-4 "></span>
+          <div className="flex items-center justify-center text-xs lg:text-sm text-black-dim">
+            <div className="basis-[40%]">
+              <p className="font-semibold">Product Price</p>
+            </div>
+            <div className="basis-[60%]">
+              <p>৳{PRODUCT.price}</p>
+            </div>
+          </div>
+          <span className="w-full h-[1px] block bg-gray-200 mt-4 mb-4 "></span>
+          <div className="flex items-center justify-center text-xs lg:text-sm text-black-dim">
+            <div className="basis-[40%]">
+              <p className="font-semibold">Pay On Delivery</p>
+            </div>
+            <div className="basis-[60%]">
+              <p>৳ {(PRODUCT.price * props.quantity).toFixed(2)} + Shipping Charge</p>
+            </div>
+          </div>
         </div>
       </div>
 
