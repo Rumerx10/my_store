@@ -3,6 +3,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { CATEGORIES } from '@/docs/categories';
+import { CapFirstLetter } from '@/lib/utils';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -84,7 +85,7 @@ const CategorySidebar = ({
                     >
                       <div className="flex gap-2">
                         <category.icon size={24} />
-                        {capitalize(category.name)}
+                        {CapFirstLetter(category.name)}
                       </div>
                       {isCategoryOpen ? <IoIosArrowUp size={24} /> : <IoIosArrowDown size={24} />}
                     </div>
@@ -179,8 +180,4 @@ const CategorySidebar = ({
     </div>
   );
 };
-
-// Helper to capitalize the first letter
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
-
 export default CategorySidebar;

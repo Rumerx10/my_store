@@ -3,11 +3,11 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Turn as Hamburger } from 'hamburger-react';
-import Sidebar from './CategorySidebar';
 import BottomNav from './BottomNav';
 import { PiShoppingCart } from 'react-icons/pi';
 import { HiUser } from 'react-icons/hi2';
 import { NavLinks } from '@/docs/navLinks';
+import CategorySidebar from './CategorySidebar';
 
 const MobileNav = ({
   searchTerm,
@@ -57,7 +57,7 @@ const MobileNav = ({
         </div>
       </div>
       <BottomNav searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <Sidebar isOpen={isOpen} setOpen={setOpen} activeLabel={activeLabel} mobile={true} />
+      <CategorySidebar isOpen={isOpen} setOpen={setOpen} activeLabel={activeLabel} mobile={true} />
     </div>
   );
 };
