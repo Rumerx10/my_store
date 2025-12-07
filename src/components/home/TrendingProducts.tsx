@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { NEW_PRODUCTS } from '@/docs/homeDocs';
-import ProductCard from '../products/ProductCardGrid';
+import ProductCardGrid from '../products/ProductCardGrid';
 
 const TrendingProducts = () => {
   return (
@@ -23,7 +23,7 @@ const TrendingProducts = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6 mb-12">
           {NEW_PRODUCTS.map((product) => (
-            <ProductCard key={product.id} product={product} isNew />
+            <ProductCardGrid key={product.id} product={product} isNew />
           ))}
         </div>
 
