@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins, Inter } from 'next/font/google';
 import './globals.css';
 import 'quill/dist/quill.snow.css';
-
+import ReduxProvider from '@/redux/provider';
 import Navbar from '@/components/shared/Navbar/Navbar';
 import Footer from '@/components/shared/Footer/Footer';
 
@@ -30,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} ${inter.variable} antialiased`}>
-        <Navbar />
-        <div className="pt-20 lg:pt-24 bg-gray-50">{children}</div>
-        <Footer />
+        <ReduxProvider>
+          <Navbar />
+          <div className="pt-20 lg:pt-24 bg-gray-50">{children}</div>
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   );
