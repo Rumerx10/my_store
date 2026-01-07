@@ -103,11 +103,9 @@ export default function Products() {
       ((product.originalPrice - product.price) / product.originalPrice) * 100,
     );
     if (viewMode === 'list') {
-      return <ProductCardList discount={discount} product={product}></ProductCardList>;
+      return <ProductCardList discount={discount} product={product} />;
     }
-    return (
-      <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b"></ProductCardGrid>
-    );
+    return <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b" />;
   };
 
   return (
@@ -119,51 +117,7 @@ export default function Products() {
         />
       )}
 
-      <div
-        className={`lg:hidden fixed z-50 w-80 right-0 bottom-0 top-20 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
-          isFilterOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="p-6">
-          {' '}
-          <FilterContent
-            selectedBrands={selectedBrands}
-            selectedCategories={selectedCategories}
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            showInStockOnly={showInStockOnly}
-            setShowInStockOnly={setShowInStockOnly}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            setIsFilterOpen={setIsFilterOpen}
-            handleCategoryChange={handleCategoryChange}
-            handleBrandChange={handleBrandChange}
-            clearAllFilters={clearAllFilters}
-          />{' '}
-        </div>
-      </div>
-
       <div className="container min-h-screen mx-auto px-4 flex flex-col">
-        <div className="flex flex-col lg:hidden gap-4 mt-6">
-          <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div>
-              <h2 className="font-semibold text-gray-900">Filter Products</h2>
-              <p className="text-sm text-gray-500">
-                {filteredAndSortedProducts.length} products found
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => setIsFilterOpen(true)}
-              className="flex items-center gap-2 border-gray-200 hover:bg-gray-50"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-
         {/* Main Content */}
         <div className="flex gap-8 mb-10">
           <aside className="hidden lg:block w-72 flex-shrink-0 mt-6">
@@ -233,6 +187,52 @@ export default function Products() {
               </div>
             )}
           </main>
+        </div>
+      </div>
+
+      {/* mobile navigation */}
+      <div className="container min-h-screen mx-auto px-4 flex flex-col">
+        <div
+          className={`lg:hidden fixed z-50 w-[80%] right-0 bottom-0 top-20 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+            isFilterOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="p-6">
+            <FilterContent
+              selectedBrands={selectedBrands}
+              selectedCategories={selectedCategories}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              showInStockOnly={showInStockOnly}
+              setShowInStockOnly={setShowInStockOnly}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              setIsFilterOpen={setIsFilterOpen}
+              handleCategoryChange={handleCategoryChange}
+              handleBrandChange={handleBrandChange}
+              clearAllFilters={clearAllFilters}
+            />{' '}
+          </div>
+        </div>
+        {/* Mobile Filter  */}
+        <div className="flex flex-col lg:hidden gap-4 mt-6">
+          <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <div>
+              <h2 className="font-semibold text-gray-900">Filter Products</h2>
+              <p className="text-sm text-gray-500">
+                {filteredAndSortedProducts.length} products found
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setIsFilterOpen(true)}
+              className="flex items-center gap-2 border-gray-200 hover:bg-gray-50"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
