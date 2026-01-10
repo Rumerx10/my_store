@@ -10,7 +10,7 @@ import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
 import Image from 'next/image';
 
-const ProductImgCarousel = ({ images }: { images: string[] }) => {
+const ProductImgCarousel = ({ images }: { images?: string[] }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -22,9 +22,9 @@ const ProductImgCarousel = ({ images }: { images: string[] }) => {
         modules={[FreeMode, Navigation, Thumbs]}
         onSwiper={setMainSwiper}
         onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
-        className=""
+        className="border border-gray-100"
       >
-        {images.map((item, index) => (
+        {images?.map((item, index) => (
           <SwiperSlide key={index}>
             <Image
               height={385}
@@ -57,10 +57,10 @@ const ProductImgCarousel = ({ images }: { images: string[] }) => {
         modules={[FreeMode, Navigation, Thumbs]}
         className="mt-1"
       >
-        {images.map((item, index) => (
+        {images?.map((item, index) => (
           <SwiperSlide
             key={index}
-            className={`cursor-pointer ${activeIndex === index && 'border-2 border-green-600'}`}
+            className={`cursor-pointer ${activeIndex === index ? 'border-2 border-green-600' : 'border-2 border-gray-100'}`}
           >
             <Image
               height={50}

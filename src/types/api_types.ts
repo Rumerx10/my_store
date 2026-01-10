@@ -1,6 +1,4 @@
-import { PRODUCTS } from '@/docs/api_products';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+// Product Review Interface
 interface IProductReview {
   rating: number;
   comment: string;
@@ -9,20 +7,21 @@ interface IProductReview {
   reviewerEmail: string;
 }
 
+// Product Dimensions Interface
 interface IProductDimensions {
   width: number;
   height: number;
   depth: number;
 }
 
+// Product Meta Information Interface
 interface IProductMeta {
   createdAt: string;
   updatedAt: string;
   barcode: string;
   qrCode: string;
 }
-
-interface IProduct {
+export interface IProduct {
   id: number;
   popular: boolean;
   trending: boolean;
@@ -35,7 +34,7 @@ interface IProduct {
   rating: number;
   stock: number;
   tags: string[];
-  brand: string;
+  brand?: string;
   sku: string;
   weight: number;
   dimensions: IProductDimensions;
@@ -49,27 +48,3 @@ interface IProduct {
   images: string[];
   thumbnail: string;
 }
-
-const initialState = PRODUCTS;
-
-const productSlice = createSlice({
-  name: 'products',
-  initialState,
-  reducers: {
-    // setProducts(state, action: PayloadAction<Product[]>) {
-    //   state.products = action.payload;
-    // },
-    // setPopularProducts(state, action: PayloadAction<Product[]>) {
-    //   state.popular = action.payload;
-    // },
-    // setTrendingProducts(state, action: PayloadAction<Product[]>) {
-    //   state.trending = action.payload;
-    // },
-    // setLatestProducts(state, action: PayloadAction<Product[]>) {
-    //   state.latest = action.payload;
-    // },
-  },
-});
-
-export const {} = productSlice.actions;
-export default productSlice.reducer;

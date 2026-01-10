@@ -2,9 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Star, Heart, Share2, ShoppingCart, Plus, Minus, Check, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { PRODUCT } from '@/docs/products';
 import Link from 'next/link';
-import { Card } from '@/components/ui/card';
+import { IProduct } from '@/types/api_types';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { addToCart } from '@/redux/features/cart/cartSlice';
 
 interface ProductColor {
   name: string;
@@ -12,50 +14,79 @@ interface ProductColor {
   available: boolean;
 }
 interface ProductDetailsInfoProps {
-  selectedColor: ProductColor;
-  setSelectedColor: (color: ProductColor) => void;
+  product: IProduct;
+  // selectedColor: ProductColor;
+  // setSelectedColor: (color: ProductColor) => void;
   quantity: number;
   isWishlisted: boolean;
   setIsWishlisted: (wishlisted: boolean) => void;
-  discount: number;
-  savings: number;
+  // discount: number;
+  // savings: number;
   updateQuantity: (newQuantity: number) => void;
   setActiveTab: (value: string) => void;
 }
 
-export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
+export function ProductDetailsInfo({
+  product,
+  isWishlisted,
+  setIsWishlisted,
+  setActiveTab,
+}: ProductDetailsInfoProps) {
+  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+
+  const updateQuantity = (newQuantity: number) => {
+    if (newQuantity >= 1 && newQuantity <= 10) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  const handleAtToCart = () => {
+    const cartItem = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      quantity: quantity,
+      image: product.images[0] || 'placeholder.svg',
+      rating: product.rating,
+      sold: 21,
+    };
+    dispatch(addToCart(cartItem));
+    alert(`${product.title} is added to cart successfullay. Quantity: ${quantity}`);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-2">
           {/* Stock Info */}
-          {PRODUCT.inStock && (
+          {product.stock !== 0 && (
             <Badge variant="outline" className="flex items-center gap-2 bg-green">
               <Check className="w-5 h-5" />
               <span className="font-medium">
-                {PRODUCT.stockCount > 10 ? 'In Stock' : `Only ${PRODUCT.stockCount} left in stock`}
+                {product.stock > 10 ? 'In Stock' : `Only ${product.stock} left in stock`}
               </span>
             </Badge>
           )}
-          <Badge className="text-white bg-red">
+          {/* <Badge className="text-white bg-red">
             <div>{props.discount}% off</div>
-          </Badge>
+          </Badge> */}
         </div>
-        <h1 className="text-2xl !font-medium text-gray-900 mb-4">{PRODUCT.name}</h1>
+        <h1 className="text-2xl !font-medium text-gray-900 mb-4">{product.title}</h1>
         {/* Price */}
         <div className="my-3 flex flex-col gap-1 items-start">
           <div className="flex items-center gap-4">
-            <div className="text-3xl font-semibold text-gray-900">৳{PRODUCT.price}</div>
-            {PRODUCT.originalPrice > PRODUCT.price && (
-              <div className="text-xl text-gray-500 line-through">৳{PRODUCT.originalPrice}</div>
-            )}
+            <div className="text-3xl font-semibold text-gray-900">৳{product.price}</div>
+            {/* {PRODUCT.originalPrice > product.price && (
+              <div product="text-xl text-gray-500 line-through">৳{product.originalPrice}</div>
+            )} */}
           </div>
         </div>
         {/* Rating */}
         <Link
           href="#reviews"
-          onClick={() => props.setActiveTab('reviews')}
+          onClick={() => setActiveTab('reviews')}
           className="cursor-pointer flex flex-col gap-4 mb-4"
         >
           <div className="flex items-center gap-2">
@@ -63,20 +94,20 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-5 h-5 ${i < Math.floor(PRODUCT.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                  className={`w-5 h-5 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
                 />
               ))}
-              <span className="text-lg font-semibold text-gray-900 ml-2">{PRODUCT.rating}</span>
+              <span className="text-lg font-semibold text-gray-900 ml-2">{product.rating}</span>
             </div>
             <span className="text-gray-600 hover:text-blue-700 ">
-              | {PRODUCT.reviewCount.toLocaleString()} reviews
+              | {product.reviews.length.toLocaleString()} reviews
             </span>
           </div>
         </Link>
       </div>
 
       {/* Color Selection */}
-      <div>
+      {/* <div>
         <Label className="text-black font-semibold mb-3 block">
           Color: {props.selectedColor.name}
         </Label>
@@ -100,7 +131,7 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Quantity */}
       <div>
@@ -109,19 +140,17 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
           <div className="flex items-center overflow-hidden border border-gray-300 rounded-lg">
             <button
               type="button"
-              onClick={() => props.updateQuantity(props.quantity - 1)}
-              disabled={props.quantity <= 1}
+              onClick={() => updateQuantity(quantity - 1)}
+              disabled={quantity <= 1}
               className="p-3 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Minus className="w-4 h-4" />
             </button>
-            <span className="px-4 py-2 font-semibold min-w-[60px] text-center">
-              {props.quantity}
-            </span>
+            <span className="px-4 py-2 font-semibold min-w-[60px] text-center">{quantity}</span>
             <button
               type="button"
-              onClick={() => props.updateQuantity(props.quantity + 1)}
-              disabled={props.quantity >= 10}
+              onClick={() => updateQuantity(quantity + 1)}
+              disabled={quantity >= 10}
               className="p-3 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -139,7 +168,7 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               <p className="font-semibold">Product Quantity</p>
             </div>
             <div className="basis-[60%]">
-              <p>{props.quantity}</p>
+              <p>{quantity}</p>
             </div>
           </div>
           <span className="w-full h-[1px] block bg-gray-200 mt-4 mb-4 "></span>
@@ -148,7 +177,7 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               <p className="font-semibold">Product Price</p>
             </div>
             <div className="basis-[60%]">
-              <p>৳{PRODUCT.price}</p>
+              <p>৳{product.price}</p>
             </div>
           </div>
           <span className="w-full h-[1px] block bg-gray-200 mt-4 mb-4 "></span>
@@ -157,7 +186,7 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
               <p className="font-semibold">Pay On Delivery</p>
             </div>
             <div className="basis-[60%]">
-              <p>৳ {(PRODUCT.price * props.quantity).toFixed(2)} + Shipping Charge</p>
+              <p>৳ {(product.price * quantity).toFixed(2)} + Shipping Charge</p>
             </div>
           </div>
         </div>
@@ -169,7 +198,8 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
           <Button
             size="lg"
             className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 text-lg shadow-lg"
-            disabled={!PRODUCT.inStock}
+            disabled={product.stock === 0}
+            onClick={handleAtToCart}
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
             Add to Cart
@@ -177,10 +207,10 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
           <Button
             size="lg"
             variant="outline"
-            onClick={() => props.setIsWishlisted(!props.isWishlisted)}
-            className={`px-4 py-4 ${props.isWishlisted ? 'text-red-500 border-red-200 bg-red-50' : ''}`}
+            onClick={() => setIsWishlisted(!isWishlisted)}
+            className={`px-4 py-4 ${isWishlisted ? 'text-red-500 border-red-200 bg-red-50' : ''}`}
           >
-            <Heart className={`w-5 h-5 ${props.isWishlisted ? 'fill-red-500' : ''}`} />
+            <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500' : ''}`} />
           </Button>
           <Button size="lg" variant="outline" className="px-4 py-4 bg-transparent">
             <Share2 className="w-5 h-5" />
@@ -191,7 +221,7 @@ export function ProductDetailsInfo(props: ProductDetailsInfoProps) {
           size="lg"
           variant="outline"
           className="w-full py-4 text-lg font-semibold border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors bg-transparent"
-          disabled={!PRODUCT.inStock}
+          disabled={product.stock === 0}
         >
           Buy Now
         </Button>

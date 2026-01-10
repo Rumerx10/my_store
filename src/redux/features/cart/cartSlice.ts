@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ICartItem {
-  id: string;
+  id: string | number;
   title: string;
   price: number;
   quantity: number;
   image: string;
+  rating: number;
+  sold: number;
 }
 
 interface ICart {
@@ -13,7 +15,17 @@ interface ICart {
 }
 
 const initialState: ICart = {
-  items: [],
+  items: [
+    {
+      id: 5,
+      title: 'Red Nail Polish',
+      price: 8.99,
+      quantity: 1,
+      image: 'https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/1.webp',
+      rating: 4.32,
+      sold: 21,
+    },
+  ],
 };
 
 const cartSlice = createSlice({
@@ -28,12 +40,17 @@ const cartSlice = createSlice({
         state.items.push({ ...action.payload });
       }
     },
-    removeFromCart(state, action: PayloadAction<string>) {
+    removeFromCart(state, action: PayloadAction<string | number>) {
       const item = state.items.find((item) => item.id === action.payload);
       if (!item) return;
       state.items = state.items.filter((item) => item.id !== action.payload);
     },
-    reduceQuantityFromCart(state, action: PayloadAction<string>) {
+    increaseQuantityInCart(state, action: PayloadAction<string | number>) {
+      const item = state.items.find((item) => item.id === action.payload);
+      if (!item) return;
+      item.quantity += 1;
+    },
+    reduceQuantityFromCart(state, action: PayloadAction<string | number>) {
       const item = state.items.find((item) => item.id === action.payload);
       if (!item) return;
       item.quantity -= 1;
@@ -47,5 +64,11 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, reduceQuantityFromCart, clearCart } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  increaseQuantityInCart,
+  reduceQuantityFromCart,
+  clearCart,
+} = cartSlice.actions;
 export default cartSlice.reducer;

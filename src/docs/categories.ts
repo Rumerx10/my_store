@@ -1,30 +1,186 @@
-
-import { MdOutlinePhoneAndroid, MdOutlineSportsSoccer, MdOutlineDirectionsCar, MdOutlineHome, MdOutlineBook, MdOutlineFace } from 'react-icons/md';
+import {
+  MdOutlineLocalGroceryStore,
+  MdOutlineShoppingBag,
+  MdOutlineHome,
+  MdOutlineFace,
+} from 'react-icons/md';
 
 export const CATEGORIES = [
   {
-    name: 'electronics',
-    icon: MdOutlinePhoneAndroid,
+    name: 'beauty',
+    icon: MdOutlineFace,
     types: [
-      { 
-        type: 'Smartphones', 
-        brands: ['Samsung', 'Apple', 'Xiaomi', 'OnePlus', 'Google', 'Huawei', 'Oppo', 'Vivo'] 
+      {
+        type: 'Mascara & Eye Makeup',
+        brands: ['Essence', 'Glamour Beauty', 'Maybelline', "L'Oréal", 'MAC', 'Urban Decay'],
       },
-      { 
-        type: 'Laptops & Computers', 
-        brands: ['Apple', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'MSI', 'Microsoft'] 
+      {
+        type: 'Face Powder & Foundation',
+        brands: ['Velvet Touch', 'Maybelline', 'Revlon', 'Covergirl', 'Estée Lauder', 'NARS'],
       },
-      { 
-        type: 'Audio & Headphones', 
-        brands: ['Sony', 'Bose', 'Apple', 'Sennheiser', 'JBL', 'Beats', 'Audio-Technica', 'Skullcandy'] 
+      {
+        type: 'Lip Products',
+        brands: ['Chic Cosmetics', 'MAC', 'Maybelline', 'NYX', 'Fenty Beauty', 'Charlotte Tilbury'],
       },
-      { 
-        type: 'Cameras & Photography', 
-        brands: ['Canon', 'Nikon', 'Sony', 'Fujifilm', 'Panasonic', 'Olympus', 'GoPro', 'DJI'] 
+      {
+        type: 'Nail Care',
+        brands: ['Nail Couture', 'OPI', 'Sally Hansen', 'Essie', 'CND', 'Butter London'],
       },
-      { 
-        type: 'Smartwatches & Wearables', 
-        brands: ['Apple', 'Samsung', 'Fitbit', 'Garmin', 'Fossil', 'Amazfit', 'Polar', 'Suunto'] 
+      {
+        type: 'Skincare',
+        brands: ['Neutrogena', 'Cetaphil', 'CeraVe', 'The Ordinary', 'La Roche-Posay', "Kiehl's"],
+      },
+    ],
+  },
+  {
+    name: 'fragrances',
+    icon: MdOutlineShoppingBag,
+    types: [
+      {
+        type: 'Luxury Perfumes',
+        brands: ['Chanel', 'Dior', 'Gucci', 'Tom Ford', 'Yves Saint Laurent', 'Versace'],
+      },
+      {
+        type: 'Designer Colognes',
+        brands: ['Calvin Klein', 'Dolce & Gabbana', 'Armani', 'Hugo Boss', 'Prada', 'Burberry'],
+      },
+      {
+        type: 'Unisex Fragrances',
+        brands: ['Jo Malone', 'Le Labo', 'Byredo', 'Diptyque', 'Creed', 'Maison Margiela'],
+      },
+      {
+        type: 'Affordable Scents',
+        brands: ['Zara', 'Bath & Body Works', 'The Body Shop', "Victoria's Secret", 'H&M', 'Muji'],
+      },
+    ],
+  },
+  {
+    name: 'furniture',
+    icon: MdOutlineHome,
+    types: [
+      {
+        type: 'Beds & Bedroom',
+        brands: ['Annibale Colombo', 'IKEA', 'Ashley', 'Wayfair', 'West Elm', 'Pottery Barn'],
+      },
+      {
+        type: 'Sofas & Living Room',
+        brands: ['Annibale Colombo', 'IKEA', 'Ashley', 'La-Z-Boy', 'Ethan Allen', 'Rooms To Go'],
+      },
+      {
+        type: 'Bedside & Accent Tables',
+        brands: ['Furniture Co.', 'IKEA', 'Wayfair', 'Target', 'HomeGoods', 'CB2'],
+      },
+      {
+        type: 'Office Furniture',
+        brands: ['Knoll', 'Herman Miller', 'Steelcase', 'IKEA', 'Staples', 'Office Depot'],
+      },
+      {
+        type: 'Bathroom Furniture',
+        brands: ['Bath Trends', 'Kohler', 'American Standard', 'IKEA', 'Home Depot', 'Wayfair'],
+      },
+      {
+        type: 'Outdoor Furniture',
+        brands: ['Home Depot', "Lowe's", 'Wayfair', 'Patio Living', 'Trex', 'Polywood'],
+      },
+    ],
+  },
+  {
+    name: 'groceries',
+    icon: MdOutlineLocalGroceryStore,
+    types: [
+      {
+        type: 'Fresh Fruits',
+        brands: ['Dole', 'Del Monte', 'Chiquita', 'Sunkist', 'Wonderful', 'Fresh Express'],
+      },
+      {
+        type: 'Vegetables',
+        brands: [
+          'Fresh Express',
+          'Earthbound Farm',
+          "Mann's",
+          'Grimmway Farms',
+          'Birds Eye',
+          'Green Giant',
+        ],
+      },
+      {
+        type: 'Meat & Seafood',
+        brands: ['Tyson', 'Perdue', 'Butterball', 'Foster Farms', 'SeaPak', 'Bumble Bee'],
+      },
+      {
+        type: 'Pet Supplies',
+        brands: [
+          'Purina',
+          'Pedigree',
+          'Iams',
+          'Blue Buffalo',
+          "Hill's Science Diet",
+          'Royal Canin',
+        ],
+      },
+      {
+        type: 'Dairy & Eggs',
+        brands: [
+          'Horizon Organic',
+          'Organic Valley',
+          'Lactaid',
+          'Chobani',
+          'Dannon',
+          "Land O'Lakes",
+        ],
+      },
+      {
+        type: 'Cooking Essentials',
+        brands: ['Bertolli', 'Pompeian', 'Crisco', 'Wesson', 'Mazola', 'Great Value'],
+      },
+      {
+        type: 'Beverages',
+        brands: ['Coca-Cola', 'Pepsi', 'Nestlé', 'Tropicana', 'Minute Maid', 'Ocean Spray'],
+      },
+      {
+        type: 'Condiments & Spices',
+        brands: ['Heinz', "French's", 'McCormick', 'Tabasco', "Frank's RedHot", 'Kikkoman'],
+      },
+      {
+        type: 'Bakery & Snacks',
+        brands: ['Pepperidge Farm', "Entenmann's", 'Oreo', 'Nabisco', 'Keebler', 'Hostess'],
+      },
+      {
+        type: 'Frozen Foods',
+        brands: [
+          "Stouffer's",
+          'Lean Cuisine',
+          'Healthy Choice',
+          "Marie Callender's",
+          "Amy's",
+          'Evol',
+        ],
+      },
+    ],
+  },
+  {
+    name: 'electronics',
+    icon: MdOutlineShoppingBag,
+    types: [
+      {
+        type: 'Smartphones',
+        brands: ['Apple', 'Samsung', 'Google', 'OnePlus', 'Xiaomi', 'Motorola'],
+      },
+      {
+        type: 'Laptops & Computers',
+        brands: ['Apple', 'Dell', 'HP', 'Lenovo', 'Asus', 'Microsoft'],
+      },
+      {
+        type: 'Audio & Headphones',
+        brands: ['Sony', 'Bose', 'Apple', 'Sennheiser', 'JBL', 'Beats'],
+      },
+      {
+        type: 'TV & Home Theater',
+        brands: ['Samsung', 'LG', 'Sony', 'TCL', 'Vizio', 'Hisense'],
+      },
+      {
+        type: 'Smart Home',
+        brands: ['Amazon', 'Google', 'Apple', 'Ring', 'Nest', 'Philips Hue'],
       },
     ],
   },
@@ -32,21 +188,25 @@ export const CATEGORIES = [
     name: 'fashion',
     icon: MdOutlineFace,
     types: [
-      { 
-        type: "Men's Clothing", 
-        brands: ['Nike', 'Adidas', 'Zara', 'H&M', 'Uniqlo', 'Ralph Lauren', 'Tommy Hilfiger', 'Calvin Klein'] 
+      {
+        type: "Men's Clothing",
+        brands: ['Nike', 'Adidas', "Levi's", 'Tommy Hilfiger', 'Calvin Klein', 'Ralph Lauren'],
       },
-      { 
-        type: "Women's Clothing", 
-        brands: ['Zara', 'H&M', 'Forever 21', 'Mango', 'Uniqlo', "Victoria's Secret", 'Gap', "Levi's"] 
+      {
+        type: "Women's Clothing",
+        brands: ['Zara', 'H&M', 'Forever 21', 'Mango', 'Gap', 'Uniqlo'],
       },
-      { 
-        type: 'Shoes & Footwear', 
-        brands: ['Nike', 'Adidas', 'Puma', 'Converse', 'Vans', 'New Balance', 'Reebok', 'Under Armour'] 
+      {
+        type: 'Shoes & Footwear',
+        brands: ['Nike', 'Adidas', 'Puma', 'Converse', 'Vans', 'New Balance'],
       },
-      { 
-        type: 'Accessories', 
-        brands: ['Michael Kors', 'Coach', 'Kate Spade', 'Fossil', 'Ray-Ban', 'Oakley', 'Gucci', 'Prada'] 
+      {
+        type: 'Accessories',
+        brands: ['Michael Kors', 'Coach', 'Fossil', 'Ray-Ban', 'Casio', 'Swatch'],
+      },
+      {
+        type: 'Watches & Jewelry',
+        brands: ['Rolex', 'Tag Heuer', 'Fossil', 'Michael Kors', 'Pandora', 'Swarovski'],
       },
     ],
   },
@@ -54,116 +214,65 @@ export const CATEGORIES = [
     name: 'home',
     icon: MdOutlineHome,
     types: [
-      { 
-        type: 'Furniture', 
-        brands: ['IKEA', 'Ashley', 'Wayfair', 'West Elm', 'CB2', 'Pottery Barn', 'Crate & Barrel', 'Room & Board'] 
+      {
+        type: 'Kitchen & Dining',
+        brands: ['KitchenAid', 'Cuisinart', 'Ninja', 'Instant Pot', 'Breville', 'All-Clad'],
       },
-      { 
-        type: 'Lighting', 
-        brands: ['Philips', 'IKEA', 'West Elm', 'CB2', 'Artemide', 'Flos', 'Tom Dixon', 'Muuto'] 
+      {
+        type: 'Home Decor',
+        brands: ['West Elm', 'CB2', 'Pottery Barn', 'Anthropologie', 'Wayfair', 'Target'],
       },
-      { 
-        type: 'Kitchen & Dining', 
-        brands: ['KitchenAid', 'Cuisinart', 'Ninja', 'Instant Pot', 'Breville', 'All-Clad', 'Le Creuset', 'OXO'] 
+      {
+        type: 'Bedding & Bath',
+        brands: [
+          'Brooklinen',
+          'Parachute',
+          'Boll & Branch',
+          'Pottery Barn',
+          'Crate & Barrel',
+          'West Elm',
+        ],
       },
-      { 
-        type: 'Home Decor', 
-        brands: ['West Elm', 'CB2', 'Pottery Barn', 'Anthropologie', 'Urban Outfitters', 'Target', 'HomeGoods', 'Wayfair'] 
+      {
+        type: 'Lighting',
+        brands: ['IKEA', 'West Elm', 'CB2', 'Home Depot', "Lowe's", 'Wayfair'],
       },
-    ],
-  },
-  {
-    name: 'gaming',
-    icon: MdOutlineSportsSoccer,
-    types: [
-      { 
-        type: 'Gaming Consoles', 
-        brands: ['Sony', 'Microsoft', 'Nintendo', 'Steam', 'Valve', 'Atari', 'Sega', 'Retro-Bit'] 
-      },
-      { 
-        type: 'PC Gaming', 
-        brands: ['NVIDIA', 'AMD', 'Intel', 'Corsair', 'Razer', 'Logitech', 'SteelSeries', 'ASUS'] 
-      },
-      { 
-        type: 'Gaming Accessories', 
-        brands: ['Razer', 'Logitech', 'SteelSeries', 'Corsair', 'HyperX', 'Turtle Beach', 'Astro', 'Scuf'] 
-      },
-    ],
-  },
-  {
-    name: 'books',
-    icon: MdOutlineBook,
-    types: [
-      { 
-        type: 'Books', 
-        brands: ['Penguin', 'HarperCollins', 'Simon & Schuster', 'Macmillan', 'Hachette', 'Scholastic', 'Random House', 'Oxford'] 
-      },
-      { 
-        type: 'Educational', 
-        brands: ['Pearson', 'McGraw-Hill', 'Cengage', 'Wiley', 'Cambridge', 'Oxford', 'Elsevier', 'Springer'] 
-      },
-      { 
-        type: 'Music & Movies', 
-        brands: ['Sony', 'Universal', 'Warner', 'Disney', 'Paramount', 'Netflix', 'Amazon', 'Apple'] 
+      {
+        type: 'Storage & Organization',
+        brands: [
+          'The Container Store',
+          'IKEA',
+          'Rubbermaid',
+          'Sterilite',
+          'mDesign',
+          'SimpleHouseware',
+        ],
       },
     ],
   },
   {
-    name: 'sports',
-    icon: MdOutlineSportsSoccer,
-    types: [
-      { 
-        type: 'Fitness Equipment', 
-        brands: ['Peloton', 'NordicTrack', 'Bowflex', 'Schwinn', 'Life Fitness', 'Precor', 'Nautilus', 'ProForm'] 
-      },
-      { 
-        type: 'Sportswear', 
-        brands: ['Nike', 'Adidas', 'Under Armour', 'Puma', 'Reebok', 'New Balance', 'Lululemon', 'Athleta'] 
-      },
-      { 
-        type: 'Outdoor Sports', 
-        brands: ['Patagonia', 'The North Face', 'Columbia', 'REI', 'Salomon', 'Merrell', 'Garmin', 'GoPro'] 
-      },
-    ],
-  },
-  {
-    name: 'automotive',
-    icon: MdOutlineDirectionsCar,
-    types: [
-      { 
-        type: 'Auto Parts', 
-        brands: ['Bosch', 'Denso', 'ACDelco', 'Motorcraft', 'NGK', 'Champion', 'Fram', 'Mobil 1'] 
-      },
-      { 
-        type: 'Car Accessories', 
-        brands: ['Thule', 'Yakima', 'WeatherTech', 'Covercraft', 'Husky Liners', 'AVS', 'Bushwacker', 'Rough Country'] 
-      },
-      { 
-        type: 'Oils & Fluids', 
-        brands: ['Mobil 1', 'Castrol', 'Valvoline', 'Shell', 'Pennzoil', 'Royal Purple', 'Lucas Oil', 'Liqui Moly'] 
-      },
-    ],
-  },
-  {
-    name: 'beauty',
+    name: 'health',
     icon: MdOutlineFace,
     types: [
-      { 
-        type: 'Skincare', 
-        brands: ['Cetaphil', 'Neutrogena', 'Olay', "L'Oréal", 'Clinique', 'The Ordinary', 'CeraVe', 'Aveeno'] 
+      {
+        type: 'Vitamins & Supplements',
+        brands: ['Nature Made', 'Centrum', "Nature's Bounty", 'GNC', 'NOW Foods', 'Solgar'],
       },
-      { 
-        type: 'Makeup', 
-        brands: ['MAC', 'Sephora', 'Urban Decay', 'Too Faced', 'NARS', 'Charlotte Tilbury', 'Fenty Beauty', 'Rare Beauty'] 
+      {
+        type: 'Personal Care',
+        brands: ['Dove', 'Nivea', 'Neutrogena', 'Cetaphil', 'CeraVe', 'Aveeno'],
       },
-      { 
-        type: 'Personal Care', 
-        brands: ['Johnson & Johnson', 'P&G', 'Unilever', 'Colgate', 'Oral-B', 'Gillette', 'Dove', 'Nivea'] 
+      {
+        type: 'Fitness Equipment',
+        brands: ['Bowflex', 'NordicTrack', 'Peloton', 'ProForm', 'Sunny Health', 'Fitbit'],
+      },
+      {
+        type: 'Medical Supplies',
+        brands: ['CVS Health', 'Walgreens', 'Medline', 'McKesson', 'Cardinal Health', 'Baxter'],
       },
     ],
   },
 ];
-
 
 
 export const FILTER_CATEGORIES = [

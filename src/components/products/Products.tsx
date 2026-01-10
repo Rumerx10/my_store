@@ -3,13 +3,12 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { PRODUCTS } from '@/docs/products';
-import ProductCardList from './ProductCardList';
 import ProductCardGrid from './ProductCardGrid';
 import { useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { RxCross2 } from 'react-icons/rx';
 import FilterContent from '../FilterContent';
+import { PRODUCTS } from '@/docs/api_products';
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,37 +41,77 @@ export default function Products() {
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = PRODUCTS.filter((product) => {
+      const brandLower = product.brand?.toLowerCase() || '';
+
+      // 1. Search filter - checks title AND brand
       const matchesSearch =
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchQuery.toLowerCase());
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        brandLower.includes(searchQuery.toLowerCase());
+
+      // 2. Category filter
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(product.category);
-      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-      const matchesStock = !showInStockOnly || product.inStock;
 
+      // 3. Brand filter
+      const matchesBrand =
+        selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand));
+
+      // 4. Price filter
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+
+      // 5. Stock filter (using availabilityStatus OR stock > 0)
+      const matchesStock =
+        !showInStockOnly || product.availabilityStatus === 'In Stock' || product.stock > 0;
+
+      // 6. BONUS: Filter by rating if needed
+      // const matchesRating = minRating === 0 || product.rating >= minRating;
+
+      // All conditions must be true
       return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock;
+      // If using bonus filters:
+      // return matchesSearch && matchesCategory && matchesBrand &&
+      //        matchesPrice && matchesStock && matchesDiscount && matchesRating;
     });
 
+    // Sorting logic
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
-          return a.price - b.price;
+          return a.price - b.price; // Lowest price first
+
         case 'price-high':
-          return b.price - a.price;
+          return b.price - a.price; // Highest price first
+
         case 'rating':
-          return b.rating - a.rating;
+          return b.rating - a.rating; // Highest rating first
+
         case 'name':
-          return a.name.localeCompare(b.name);
+          return a.title.localeCompare(b.title); // Alphabetical by title
+
+        case 'discount':
+          return b.discountPercentage - a.discountPercentage; // Highest discount first
+
         case 'featured':
         default:
-          return b.featured ? 1 : -1;
+          if (b.popular !== a.popular) return b.popular ? 1 : -1;
+          if (b.trending !== a.trending) return b.trending ? 1 : -1;
+          return b.rating - a.rating;
       }
     });
 
     return filtered;
-  }, [searchQuery, selectedCategories, selectedBrands, priceRange, sortBy, showInStockOnly]);
-
+  }, [
+    PRODUCTS,
+    searchQuery,
+    selectedCategories,
+    selectedBrands,
+    priceRange,
+    sortBy,
+    showInStockOnly,
+    // Add if using bonus filters:
+    // minDiscount,
+    // minRating
+  ]);
   const handleCategoryChange = (category: string, checked: boolean) => {
     if (checked) {
       setSelectedCategories([...selectedCategories, category]);
@@ -96,16 +135,6 @@ export default function Products() {
     setPriceRange([0, 300]);
     setShowInStockOnly(false);
     setSortBy('featured');
-  };
-
-  const ProductCards = ({ product }: { product: (typeof PRODUCTS)[0] }) => {
-    const discount = Math.round(
-      ((product.originalPrice - product.price) / product.originalPrice) * 100,
-    );
-    if (viewMode === 'list') {
-      return <ProductCardList discount={discount} product={product} />;
-    }
-    return <ProductCardGrid discount={discount} product={product} textColor="#2b2b2b" />;
   };
 
   return (
@@ -173,16 +202,10 @@ export default function Products() {
                   Clear all filters
                 </Button>
               </div>
-            ) : viewMode === 'grid' ? (
+            ) : (
               <div className="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredAndSortedProducts.map((product) => (
-                  <ProductCards key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
-              <div className="mt-6 space-y-4">
-                {filteredAndSortedProducts.map((product) => (
-                  <ProductCards key={product.id} product={product} />
+                  <ProductCardGrid key={product.id} product={product} textColor="#2b2b2b" />
                 ))}
               </div>
             )}

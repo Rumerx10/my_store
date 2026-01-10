@@ -3,11 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, Search } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PiShoppingCart } from 'react-icons/pi';
 import { LuUserRoundPlus } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import { RxCross2 } from 'react-icons/rx';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const DesktopNav = ({
   searchTerm,
@@ -22,6 +24,16 @@ const DesktopNav = ({
   const handleSearch = () => {
     router.push(`/products?searchTerm=${searchTerm.trim()}`);
   };
+
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [wishlistItemCount, setWishlistItemCount] = useState(0);
+  const countCartItems = useSelector((state: RootState) => state.cart.items.length);
+  const countWishlistItems = useSelector((state: RootState) => state.wishlist.items.length);
+
+  useEffect(() => {
+    setCartItemCount(countCartItems);
+    setWishlistItemCount(countWishlistItems);
+  }, [countCartItems, countWishlistItems]);
 
   return (
     <div className="hidden shadow fixed z-50 right-0 left-0 lg:flex bg-base text-white h-24  items-center justify-center">
@@ -65,8 +77,8 @@ const DesktopNav = ({
         <div className="flex items-center gap-5 text-black">
           <Link href="/wish-list" className="cursor-pointer flex items-center gap-2">
             <div className="relative">
-              <div className="absolute text-white -right-1.5 -top-1 h-4 w-4 text-xs font-semibold flex justify-center items-center rounded-full bg-red-500">
-                3
+              <div className="absolute text-white -right-1.5 -top-1 h-4 px-0.5 min-w-4 w-auto text-xs font-semibold flex justify-center items-center rounded-full bg-red-500">
+                {wishlistItemCount}
               </div>
               <Heart size={28} />
             </div>
@@ -74,8 +86,8 @@ const DesktopNav = ({
           </Link>
           <Link href="/cart" className="cursor-pointer flex items-center gap-2">
             <div className="relative">
-              <div className="absolute text-white -right-1.5 top-.5 h-4 w-4 text-xs font-semibold flex justify-center items-center rounded-full bg-red-500">
-                3
+              <div className="absolute text-white -right-1.5 top-.5 h-4  px-0.5 min-w-4 w-auto  text-xs font-semibold flex justify-center items-center rounded-full bg-red-500">
+                {cartItemCount}
               </div>
               <PiShoppingCart size={30} />
             </div>

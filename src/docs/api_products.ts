@@ -1,7 +1,7 @@
 // root api :: https://dummyjson.com/docs/products
 // api :: https://dummyjson.com/products
 
-export const products = [
+export const PRODUCTS = [
   {
     id: 1,
     popular: false,

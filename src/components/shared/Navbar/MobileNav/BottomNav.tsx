@@ -136,7 +136,7 @@ const BottomNav = ({
           className="text-black cursor-pointer flex flex-col gap-1 items-center justify-between relative"
           onClick={() => {
             setIsSearchBoxOpen(!isSearchBoxOpen);
-            setSelected('search');
+            // setSelected('search');
             searchInputRef.current?.focus();
           }}
         >
