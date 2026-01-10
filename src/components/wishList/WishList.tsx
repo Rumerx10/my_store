@@ -79,11 +79,10 @@ export default function Wishlist() {
                           className="object-cover transition-transform group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="absolute bottom-2 right-2 border-2 p-2 cursor-pointer">
-                          <Heart className="fill-red text-red" />
-                        </div>
                       </div>
-                      <div className={`flex flex-col justify-between relative p-4 flex-grow`}>
+                      <div
+                        className={`border-t-2 flex flex-col justify-between relative p-4 flex-grow`}
+                      >
                         <h3 className="lg:text-xl !font-normal text-black line-clamp-2 transition-colors">
                           {item.title}
                         </h3>
@@ -115,14 +114,9 @@ export default function Wishlist() {
                               <ShoppingCart className="w-5 h-5 mr-2" />
                               Add to Cart
                             </Button>
-                            <Button
-                              size="lg"
-                              variant="secondary"
-                              className="w-10 bg-white/90 border-0 hover:bg-white shadow-lg"
-                              // onClick={() => handleRemoveItem(item.id)}
-                            >
-                              <Trash2 className="w-4 h-4 text-red-600" />
-                            </Button>
+                            <div className="border rounded-md p-2 cursor-pointer">
+                              <Heart className="fill-red text-red" />
+                            </div>
                           </div>
                         </div>
                       </div>
