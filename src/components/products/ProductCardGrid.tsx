@@ -10,12 +10,12 @@ import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
 
 const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string }) => {
   const dispatch = useDispatch();
-  const wishlistProducts = useSelector((state: RootState) => state.wishlist.items).map(
+  const wishlistItems = useSelector((state: RootState) => state.wishlist.items).map(
     (product) => product.id,
   );
-  console.log('Wishlist Products ::', wishlistProducts);
+  console.log('Wishlist Products ::', wishlistItems);
 
-  const handleAddToWishlist = (e: React.MouseEvent, product: IProduct) => {
+  const handleWishlist = (e: React.MouseEvent, product: IProduct) => {
     e.preventDefault();
     e.stopPropagation();
     const productToAdd = {
@@ -27,7 +27,6 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
       stock: product.stock,
       image: product.images[0],
     };
-    console.log('Product To Add :::', productToAdd);
     dispatch(addToWishlist(productToAdd));
   };
   return (
@@ -43,11 +42,11 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/0 group-hover:from-black/20 to-transparent duration-300">
               <div
-                onClick={(e) => handleAddToWishlist(e, product)}
+                onClick={(e) => handleWishlist(e, product)}
                 className="absolute bottom-2 right-2 p-1 hover:bg-gray-200 duration-300 rounded-full"
               >
                 <Heart
-                  className={`shrink-0 duration-300 cursor-pointer ${wishlistProducts.includes(product.id) ? 'fill-red text-red' : 'text-gray-200 group-hover:text-white'}`}
+                  className={`shrink-0 duration-300 cursor-pointer ${wishlistItems.includes(product.id) ? 'fill-red text-red' : 'text-gray-200 group-hover:text-white'}`}
                 />
               </div>
             </div>

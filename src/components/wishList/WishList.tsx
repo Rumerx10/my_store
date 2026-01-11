@@ -35,7 +35,7 @@ export default function Wishlist() {
     return filtered;
   }, [wishlistItems, searchQuery, showOutOfStock]);
 
-  const handleRemoveFromList = (e: React.MouseEvent, id: string | number) => {
+  const handleRemoveFromWishlist = (e: React.MouseEvent, id: string | number) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(removeFromWishlist(id));
@@ -169,7 +169,7 @@ export default function Wishlist() {
                               Add to Cart
                             </Button>
                             <div
-                              onClick={(e) => handleRemoveFromList(e, item.id)}
+                              onClick={(e) => handleRemoveFromWishlist(e, item.id)}
                               className="border rounded-md p-2 cursor-pointer"
                             >
                               <Heart className="fill-red text-red" />

@@ -1,6 +1,5 @@
 import { Truck, Shield, RotateCcw, Award } from 'lucide-react';
 import { PRODUCT } from '@/docs/products';
-import SellerInfo from './SellerInfo';
 import Image from 'next/image';
 
 const ProductDetailFeatures = () => {
@@ -45,7 +44,6 @@ const ProductDetailFeatures = () => {
           </div>
         </div>
       </div>
-      <SellerInfo />
     </div>
   );
 };

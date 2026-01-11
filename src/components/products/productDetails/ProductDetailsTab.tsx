@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { REVIEWS } from '@/docs/reviews';
 import { ReviewType } from '@/types/review';
+import ProductDetailFeatures from './ProductDetailFeatures';
 
 interface RatingDistribution {
   stars: number;
@@ -40,8 +41,15 @@ interface ProductDetailsTabProps {
   setReviewFilter: (value: string) => void;
   showAllReviews: boolean;
   setShowAllReviews: (value: boolean) => void;
-  ratingDistribution: RatingDistribution[];
 }
+
+const ratingDistribution = [
+    { stars: 5, count: 1847, percentage: 65 },
+    { stars: 4, count: 712, percentage: 25 },
+    { stars: 3, count: 199, percentage: 7 },
+    { stars: 2, count: 57, percentage: 2 },
+    { stars: 1, count: 32, percentage: 1 },
+  ];
 
 export function ProductDetailsTab(props: ProductDetailsTabProps) {
   return (
@@ -116,7 +124,7 @@ export function ProductDetailsTab(props: ProductDetailsTabProps) {
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Rating Distribution</h4>
               <div className="space-y-3">
-                {props.ratingDistribution.map((rating: RatingDistribution) => (
+                {ratingDistribution.map((rating: RatingDistribution) => (
                   <div key={rating.stars} className="flex items-center gap-3">
                     <span className="text-sm font-medium text-gray-700 w-8">{rating.stars}★</span>
                     <Progress value={rating.percentage} className="flex-1 h-2" />
@@ -290,6 +298,7 @@ export function ProductDetailsTab(props: ProductDetailsTabProps) {
                 </div>
               </div>
             </div>
+            <ProductDetailFeatures />
           </div>
         </TabsContent>
       </Tabs>

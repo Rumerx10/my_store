@@ -13,6 +13,7 @@ import {
   Truck,
   Shield,
   CreditCard,
+  Star,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -38,14 +39,13 @@ import {
 
 // Sample cart data
 
-
 const SHIPPING_OPTIONS = [
   { id: 'standard', name: 'Standard Shipping', price: 5.99, days: '5-7 business days' },
   { id: 'express', name: 'Express Shipping', price: 12.99, days: '2-3 business days' },
   { id: 'overnight', name: 'Overnight Shipping', price: 24.99, days: 'Next business day' },
 ];
 
-export default function Cart() {
+const Cart = () => {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(
     null,
@@ -164,122 +164,203 @@ export default function Cart() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="flex flex-col gap-5">
             {CART_ITEMS.map((item) => {
               // const discount = Math.round(
               //   ((item.originalPrice - item.price) / item.originalPrice) * 100,
               // );
 
               return (
-                <Card key={item.id}>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      {/* Product Image */}
-                      <div className="relative w-full sm:w-32 h-32 shrink-0">
-                        <Image
-                          src={item.image || '/placeholder.svg'}
-                          alt={item.title}
-                          fill
-                          className="object-cover rounded-md"
-                        />
-                        {/* {discount > 0 && (
+                <Link href={`/products/${item.id}`}>
+                  <Card key={item.id}>
+                    <CardContent className="p-6">
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        {/* Product Image */}
+                        <div className="relative w-full sm:w-32 h-32 shrink-0">
+                          <Image
+                            src={item.image || '/placeholder.svg'}
+                            alt={item.title}
+                            fill
+                            className="object-cover rounded-md"
+                          />
+                          {/* {discount > 0 && (
                           <Badge variant="destructive" className="absolute -top-2 -right-2">
                             -{discount}%
                           </Badge>
                         )} */}
-                      </div>
-
-                      {/* Product Details */}
-                      <div className="flex-1 space-y-2">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                          <div>
-                            <h3 className="font-semibold text-lg">{item.title}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {/* {item.brand} */}
-                              Brand Name
-                            </p>
-                            {/* <Badge variant="secondary" className="mt-1">
-                              {item.category}
-                            </Badge> */}
-                          </div>
-                          <div
-                            onClick={() => dispatch(removeFromCart(item.id))}
-                            className="text-destructive hover:text-destructive p-2 duration-300 cursor-pointer rounded-full bg-gray-100 hover:bg-gray-200"
-                          >
-                            <Trash2 className="w-5 h-5 shrink-0" />
-                          </div>
                         </div>
 
-                        {/* Price and Quantity */}
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold">${item.price}</span>
-                            {/* {item.originalPrice > item.price && (
+                        {/* Product Details */}
+                        <div className="flex-1 space-y-2">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                            <div>
+                              <h3 className="font-semibold text-lg">{item.title}</h3>
+                              <p className="text-sm text-muted-foreground">
+                                {/* {item.brand} */}
+                                Brand Name
+                              </p>
+                              {/* <Badge variant="secondary" className="mt-1">
+                              {item.category}
+                            </Badge> */}
+                            </div>
+                            <div
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                dispatch(removeFromCart(item.id));
+                              }}
+                              className="text-destructive hover:text-destructive p-2 duration-300 cursor-pointer rounded-full bg-gray-100 hover:bg-gray-200"
+                            >
+                              <Trash2 className="w-5 h-5 shrink-0" />
+                            </div>
+                          </div>
+
+                          {/* Price and Quantity */}
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg font-bold">${item.price}</span>
+                              {/* {item.originalPrice > item.price && (
                               <span className="text-sm text-muted-foreground line-through">
                                 ${item.originalPrice}
                               </span>
                             )} */}
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            <Label htmlFor={`quantity-${item.id}`} className="text-sm">
-                              Quantiy:
-                            </Label>
-                            <div className="flex items-center border rounded-md">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => dispatch(reduceQuantityFromCart(item.id))}
-                                disabled={item.quantity <= 1}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Minus className="w-3 h-3" />
-                              </Button>
-                              <Input
-                                id={`quantity-${item.id}`}
-                                type="number"
-                                value={item.quantity}
-                                // onChange={(e) =>
-                                //   updateQuantity(item.id, Number.parseInt(e.target.value) || 1)
-                                // }
-                                className="w-16 h-8 text-center border-0 focus-visible:ring-0"
-                                min="1"
-                                max="10"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => dispatch(increaseQuantityInCart(item.id))}
-                                disabled={item.quantity >= 10}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Plus className="w-3 h-3" />
-                              </Button>
                             </div>
-                            <div className="text-right min-w-[80px]">
-                              <p className="font-semibold">
-                                ${(item.price * item.quantity).toFixed(2)}
-                              </p>
-                              {/* {item.originalPrice > item.price && (
+
+                            <div className="flex items-center gap-3">
+                              <Label htmlFor={`quantity-${item.id}`} className="text-sm">
+                                Quantiy:
+                              </Label>
+                              <div className="flex items-center border rounded-md">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    dispatch(reduceQuantityFromCart(item.id));
+                                  }}
+                                  disabled={item.quantity <= 1}
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </Button>
+                                <Input
+                                  id={`quantity-${item.id}`}
+                                  type="number"
+                                  value={item.quantity}
+                                  // onChange={(e) =>
+                                  //   updateQuantity(item.id, Number.parseInt(e.target.value) || 1)
+                                  // }
+                                  className="w-16 h-8 text-center border-0 focus-visible:ring-0"
+                                  min="1"
+                                  max="10"
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    dispatch(increaseQuantityInCart(item.id));
+                                  }}
+                                  disabled={item.quantity >= 10}
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </Button>
+                              </div>
+                              <div className="text-right min-w-[80px]">
+                                <p className="font-semibold">
+                                  ${(item.price * item.quantity).toFixed(2)}
+                                </p>
+                                {/* {item.originalPrice > item.price && (
                                 <p className="text-xs text-muted-foreground line-through">
                                   ${(item.originalPrice * item.quantity).toFixed(2)}
                                 </p>
                               )} */}
+                              </div>
                             </div>
+                          </div>
+                          <div className="flex gap-1">
+                            <div className="flex items-center">
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              {item.rating}
+                            </div>
+                            <div>| {item.sold} sold </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </Link>
               );
             })}
           </div>
 
           {/* Order Summary */}
-          <div className="space-y-6">
+          <div className="flex flex-col gap-5">
+            {/* Order Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Subtotal ({calculations.itemCount} items)</span>
+                    <span>${calculations.subtotal.toFixed(2)}</span>
+                  </div>
+
+                  {/* {calculations.savings > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>You saved</span>
+                      <span>-${calculations.savings.toFixed(2)}</span>
+                    </div>
+                  )} */}
+
+                  {appliedCoupon && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon ({appliedCoupon.code})</span>
+                      <span>-${calculations.couponDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span>${calculations.shipping.toFixed(2)}</span>
+                  </div>
+
+                  {giftWrap && (
+                    <div className="flex justify-between">
+                      <span>Gift wrap</span>
+                      <span>${calculations.giftWrapFee.toFixed(2)}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>${calculations.tax.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total</span>
+                  <span>${calculations.total.toFixed(2)}</span>
+                </div>
+                <Button className="w-full" size="lg">
+                  Proceed to Checkout
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* Coupon Code */}
             <Card>
               <CardHeader>
@@ -373,68 +454,6 @@ export default function Cart() {
               </CardContent>
             </Card>
 
-            {/* Order Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal ({calculations.itemCount} items)</span>
-                    <span>${calculations.subtotal.toFixed(2)}</span>
-                  </div>
-
-                  {calculations.savings > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>You saved</span>
-                      <span>-${calculations.savings.toFixed(2)}</span>
-                    </div>
-                  )}
-
-                  {appliedCoupon && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Coupon ({appliedCoupon.code})</span>
-                      <span>-${calculations.couponDiscount.toFixed(2)}</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>${calculations.shipping.toFixed(2)}</span>
-                  </div>
-
-                  {giftWrap && (
-                    <div className="flex justify-between">
-                      <span>Gift wrap</span>
-                      <span>${calculations.giftWrapFee.toFixed(2)}</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between">
-                    <span>Tax</span>
-                    <span>${calculations.tax.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>${calculations.total.toFixed(2)}</span>
-                </div>
-
-                <Button className="w-full" size="lg">
-                  Proceed to Checkout
-                </Button>
-
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <Shield className="w-4 h-4" />
-                  <span>Secure checkout with SSL encryption</span>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Trust Badges */}
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="p-4 border rounded-lg">
@@ -453,4 +472,6 @@ export default function Cart() {
       </div>
     </div>
   );
-}
+};
+
+export default Cart;

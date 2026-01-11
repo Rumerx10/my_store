@@ -8,7 +8,8 @@ import { useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { RxCross2 } from 'react-icons/rx';
 import FilterContent from '../FilterContent';
-import { PRODUCTS } from '@/docs/api_products';
+import { Products as ProductsData } from '@/docs/api_products';
+import { IProduct } from '@/types/api_types';
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,15 +33,13 @@ export default function Products() {
     } else {
       document.body.style.overflow = 'unset';
     }
-
-    // Cleanup on unmount
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, [isFilterOpen]);
 
   const filteredAndSortedProducts = useMemo(() => {
-    const filtered = PRODUCTS.filter((product) => {
+    const filtered = ProductsData.filter((product) => {
       const brandLower = product.brand?.toLowerCase() || '';
 
       // 1. Search filter - checks title AND brand
@@ -74,7 +73,7 @@ export default function Products() {
     });
 
     // Sorting logic
-    filtered.sort((a, b) => {
+    filtered.sort((a:IProduct, b:IProduct) => {
       switch (sortBy) {
         case 'price-low':
           return a.price - b.price; // Lowest price first
@@ -101,7 +100,7 @@ export default function Products() {
 
     return filtered;
   }, [
-    PRODUCTS,
+    ProductsData,
     searchQuery,
     selectedCategories,
     selectedBrands,
@@ -204,7 +203,7 @@ export default function Products() {
               </div>
             ) : (
               <div className="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredAndSortedProducts.map((product) => (
+                {filteredAndSortedProducts.map((product:IProduct) => (
                   <ProductCardGrid key={product.id} product={product} textColor="#2b2b2b" />
                 ))}
               </div>

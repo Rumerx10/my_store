@@ -1,4 +1,4 @@
-import { PRODUCTS } from '@/docs/api_products';
+import { Products } from '@/docs/api_products';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface IProductReview {
@@ -50,7 +50,7 @@ interface IProduct {
   thumbnail: string;
 }
 
-const initialState = PRODUCTS;
+const initialState = Products;
 
 const productSlice = createSlice({
   name: 'products',
