@@ -24,17 +24,17 @@ const EmptyWhislist = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <div className="flex items-center justify-center gap-6 mt-12">
             <div className="text-center">
               <Heart className="w-8 h-8 mx-auto mb-2 text-blue-600" />
               <h3 className="font-semibold mb-1">Save Favorites</h3>
               <p className="text-sm text-gray-600">Keep track of items you love</p>
             </div>
-            <div className="text-center">
+            {/* <div className="text-center">
               <TrendingUp className="w-8 h-8 mx-auto mb-2 text-green-600" />
               <h3 className="font-semibold mb-1">Price Tracking</h3>
               <p className="text-sm text-gray-600">Get notified of price drops</p>
-            </div>
+            </div> */}
             <div className="text-center">
               <ShoppingCart className="w-8 h-8 mx-auto mb-2 text-purple-600" />
               <h3 className="font-semibold mb-1">Easy Shopping</h3>

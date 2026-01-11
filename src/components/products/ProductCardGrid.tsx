@@ -1,10 +1,35 @@
+'use client';
 import Image from 'next/image';
 import { Star, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { IProduct } from '@/types/api_types';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
 
 const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string }) => {
+  const dispatch = useDispatch();
+  const wishlistProducts = useSelector((state: RootState) => state.wishlist.items).map(
+    (product) => product.id,
+  );
+  console.log('Wishlist Products ::', wishlistProducts);
+
+  const handleAddToWishlist = (e: React.MouseEvent, product: IProduct) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const productToAdd = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      rating: product.rating,
+      sold: 23,
+      stock: product.stock,
+      image: product.images[0],
+    };
+    console.log('Product To Add :::', productToAdd);
+    dispatch(addToWishlist(productToAdd));
+  };
   return (
     <Link href={`/products/${product.id}`} className="flex w-full h-full">
       <Card className="w-full group overflow-hidden border bg-white/10 backdrop-blur-md hover:bg-white/20 hover:shadow-xl transition-all duration-300">
@@ -14,25 +39,17 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
               src={product.images?.[0] || '/placeholder.svg'}
               alt={product.title}
               fill
-              className="object-cover transition-transform group-hover:scale-110"
+              className="object-cover transition-transform group-hover:scale-110 duration-300"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-            {/* Badges */}
-            {/* <div className="absolute top-3 left-3">
-              {product.badge && (
-                <Badge className="bg-gradient-to-r from-rose-500 to-pink-500 text-white border-0 shadow-lg">
-                  {product.badge}
-                </Badge>
-              )}
-              {isNew && (
-                <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 ml-2 shadow-lg">
-                  New
-                </Badge>
-              )}
-            </div> */}
-            <div className="absolute bottom-2 right-2">
-              <Heart className="fill-red text-red" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/0 group-hover:from-black/20 to-transparent duration-300">
+              <div
+                onClick={(e) => handleAddToWishlist(e, product)}
+                className="absolute bottom-2 right-2 p-1 hover:bg-gray-200 duration-300 rounded-full"
+              >
+                <Heart
+                  className={`shrink-0 duration-300 cursor-pointer ${wishlistProducts.includes(product.id) ? 'fill-red text-red' : 'text-gray-200 group-hover:text-white'}`}
+                />
+              </div>
             </div>
           </div>
 

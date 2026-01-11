@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Trash2, Search, ArrowLeft, Star } from 'lucide-react';
+import { Heart, ShoppingCart, Search, ArrowLeft, Star } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +11,12 @@ import { Input } from '@/components/ui/input';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import EmptyWhislist from './EmptyWhislist';
+import {
+  clearWishlist,
+  IWishlistItem,
+  removeFromWishlist,
+} from '@/redux/features/wishlist/wishlistSlice';
+import { addToCart } from '@/redux/features/cart/cartSlice';
 
 export default function Wishlist() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,6 +34,43 @@ export default function Wishlist() {
     });
     return filtered;
   }, [wishlistItems, searchQuery, showOutOfStock]);
+
+  const handleRemoveFromList = (e: React.MouseEvent, id: string | number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(removeFromWishlist(id));
+  };
+  const handleAddToCart = (e: React.MouseEvent, item: IWishlistItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newItem = {
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      rating: item.rating,
+      sold: item.sold,
+      quantity: 1,
+      image: item.image,
+    };
+    dispatch(addToCart(newItem));
+    dispatch(removeFromWishlist(item.id));
+  };
+  const handleAddAllToCart = () => {
+    const cartItems = wishlistItems.map((item) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      rating: item.rating,
+      sold: item.sold,
+      quantity: 1,
+      image: item.image,
+    }));
+    cartItems.forEach((item) => {
+      dispatch(addToCart(item));
+    });
+    dispatch(clearWishlist());
+  };
+
   return wishlistItems.length === 0 ? (
     <EmptyWhislist />
   ) : (
@@ -51,14 +94,25 @@ export default function Wishlist() {
                 className="pl-10 h-10"
               />
             </div>
-            <Link href="/" className="">
+            <div className="">
+              <Button
+                variant="ghost"
+                size="lg"
+                className="bg-black/10 text-gray-600 hover:text-gray-900"
+                onClick={handleAddAllToCart}
+              >
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Add all to cart
+              </Button>
+            </div>
+            <Link href="/products" className="">
               <Button
                 variant="ghost"
                 size="lg"
                 className="bg-black/10 text-gray-600 hover:text-gray-900"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
+                Back to Products
               </Button>
             </Link>
           </div>
@@ -68,7 +122,7 @@ export default function Wishlist() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredAndSortedItems.map((item) => {
               return (
-                <Link href={`/products/${item.id}`} className="flex w-full h-full">
+                <Link key={item.id} href={`/products/${item.id}`} className="flex w-full h-full">
                   <Card className="w-full group overflow-hidden border bg-white/10 backdrop-blur-md hover:bg-white/20 hover:shadow-xl transition-all duration-300">
                     <CardContent className="flex flex-col justify-between p-0 h-full">
                       <div className="relative aspect-square overflow-hidden">
@@ -107,14 +161,17 @@ export default function Wishlist() {
                             <Button
                               size="lg"
                               variant="secondary"
-                              className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-lg shadow-lg"
+                              className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-lg"
                               disabled={item.stock === 0}
-                              // onClick={handleAtToCart}
+                              onClick={(e) => handleAddToCart(e, item)}
                             >
                               <ShoppingCart className="w-5 h-5 mr-2" />
                               Add to Cart
                             </Button>
-                            <div className="border rounded-md p-2 cursor-pointer">
+                            <div
+                              onClick={(e) => handleRemoveFromList(e, item.id)}
+                              className="border rounded-md p-2 cursor-pointer"
+                            >
                               <Heart className="fill-red text-red" />
                             </div>
                           </div>

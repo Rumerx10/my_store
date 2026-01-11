@@ -1,13 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface IWishlistItem {
+export interface IWishlistItem {
   id: string | number;
   title: string;
   price: number;
   rating: number;
   sold: number;
   stock: number;
-  quantity?: number;
   image: string;
 }
 
@@ -24,7 +23,6 @@ const initialState: IWishlist = {
       rating: 4.32,
       sold: 21,
       stock: 10,
-      quantity: 1,
       image: 'https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/1.webp',
     },
   ],

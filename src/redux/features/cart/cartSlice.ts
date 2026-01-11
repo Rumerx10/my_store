@@ -4,10 +4,10 @@ interface ICartItem {
   id: string | number;
   title: string;
   price: number;
-  quantity: number;
-  image: string;
   rating: number;
   sold: number;
+  quantity: number;
+  image: string;
 }
 
 interface ICart {
