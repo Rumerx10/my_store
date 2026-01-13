@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,26 +8,15 @@ import {
   Trash2,
   ShoppingBag,
   ArrowLeft,
-  Tag,
   Truck,
   Shield,
   CreditCard,
   Star,
 } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import {
@@ -36,20 +24,12 @@ import {
   reduceQuantityFromCart,
   removeFromCart,
 } from '@/redux/features/cart/cartSlice';
+import { SHIPPING_OPTIONS } from '@/docs/checkout';
+import PricingDetails from './PricingDetails';
 
 // Sample cart data
 
-const SHIPPING_OPTIONS = [
-  { id: 'standard', name: 'Standard Shipping', price: 5.99, days: '5-7 business days' },
-  { id: 'express', name: 'Express Shipping', price: 12.99, days: '2-3 business days' },
-  { id: 'overnight', name: 'Overnight Shipping', price: 24.99, days: 'Next business day' },
-];
-
 const Cart = () => {
-  const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(
-    null,
-  );
   const [selectedShipping, setSelectedShipping] = useState('standard');
   const [giftWrap, setGiftWrap] = useState(false);
 
@@ -57,34 +37,13 @@ const Cart = () => {
   const dispatch = useDispatch();
   console.log('Cart Items :::', CART_ITEMS);
 
-  const applyCoupon = () => {
-    // Simulate coupon validation
-    const validCoupons = {
-      SAVE10: 10,
-      WELCOME20: 20,
-      STUDENT15: 15,
-    };
-
-    if (validCoupons[couponCode as keyof typeof validCoupons]) {
-      setAppliedCoupon({
-        code: couponCode,
-        discount: validCoupons[couponCode as keyof typeof validCoupons],
-      });
-      setCouponCode('');
-    }
-  };
-
-  const removeCoupon = () => {
-    setAppliedCoupon(null);
-  };
-
   const calculations = useMemo(() => {
     const subtotal = CART_ITEMS.reduce((sum, item) => sum + item.price * item.quantity, 0);
     // const savings = CART_ITEMS.reduce(
     //   (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
     //   0,
     // );
-    const couponDiscount = appliedCoupon ? (subtotal * appliedCoupon.discount) / 100 : 0;
+    const couponDiscount = 0;
     const shipping = SHIPPING_OPTIONS.find((option) => option.id === selectedShipping)?.price || 0;
     const giftWrapFee = giftWrap ? 4.99 : 0;
     const tax = (subtotal - couponDiscount + shipping + giftWrapFee) * 0.08; // 8% tax
@@ -100,7 +59,7 @@ const Cart = () => {
       total,
       itemCount: CART_ITEMS.reduce((sum, item) => sum + item.quantity, 0),
     };
-  }, [CART_ITEMS, appliedCoupon, selectedShipping, giftWrap]);
+  }, [CART_ITEMS, selectedShipping, giftWrap]);
 
   if (CART_ITEMS.length === 0) {
     return (
@@ -232,7 +191,13 @@ const Cart = () => {
                               <Label htmlFor={`quantity-${item.id}`} className="text-sm">
                                 Quantiy:
                               </Label>
-                              <div className="flex items-center border rounded-md">
+                              <div
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
+                                className="flex items-center border rounded-md"
+                              >
                                 <Button
                                   variant="ghost"
                                   size="sm"
@@ -303,171 +268,7 @@ const Cart = () => {
             })}
           </div>
 
-          {/* Order Summary */}
-          <div className="flex flex-col gap-5">
-            {/* Order Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal ({calculations.itemCount} items)</span>
-                    <span>${calculations.subtotal.toFixed(2)}</span>
-                  </div>
-
-                  {/* {calculations.savings > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>You saved</span>
-                      <span>-${calculations.savings.toFixed(2)}</span>
-                    </div>
-                  )} */}
-
-                  {appliedCoupon && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Coupon ({appliedCoupon.code})</span>
-                      <span>-${calculations.couponDiscount.toFixed(2)}</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>${calculations.shipping.toFixed(2)}</span>
-                  </div>
-
-                  {giftWrap && (
-                    <div className="flex justify-between">
-                      <span>Gift wrap</span>
-                      <span>${calculations.giftWrapFee.toFixed(2)}</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between">
-                    <span>Tax</span>
-                    <span>${calculations.tax.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>${calculations.total.toFixed(2)}</span>
-                </div>
-                <Button className="w-full" size="lg">
-                  Proceed to Checkout
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Coupon Code */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Tag className="w-4 h-4" />
-                  Promo Code
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {appliedCoupon ? (
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-md border border-green-200">
-                    <div>
-                      <p className="font-medium text-green-800">{appliedCoupon.code}</p>
-                      <p className="text-sm text-green-600">
-                        {appliedCoupon.discount}% discount applied
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={removeCoupon}
-                      className="text-green-800"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter promo code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    />
-                    <Button onClick={applyCoupon} disabled={!couponCode}>
-                      Apply
-                    </Button>
-                  </div>
-                )}
-                <p className="text-xs text-muted-foreground">
-                  Try: SAVE10, WELCOME20, or STUDENT15
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Shipping Options */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Truck className="w-4 h-4" />
-                  Shipping Options
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Select value={selectedShipping} onValueChange={setSelectedShipping}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SHIPPING_OPTIONS.map((option) => (
-                      <SelectItem key={option.id} value={option.id}>
-                        <div className="flex justify-between items-center w-full">
-                          <div>
-                            <p className="font-medium">{option.name}</p>
-                            <p className="text-sm text-muted-foreground">{option.days}</p>
-                          </div>
-                          <span className="font-medium">${option.price}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-
-            {/* Gift Wrap */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="gift-wrap"
-                    checked={giftWrap}
-                    onCheckedChange={(checked) => setGiftWrap(checked as boolean)}
-                  />
-                  <Label htmlFor="gift-wrap" className="flex-1">
-                    <div className="flex justify-between">
-                      <span>Gift wrap</span>
-                      <span className="font-medium">$4.99</span>
-                    </div>
-                  </Label>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Trust Badges */}
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="p-4 border rounded-lg">
-                <Truck className="w-6 h-6 mx-auto mb-2 text-primary" />
-                <p className="text-sm font-medium">Free Shipping</p>
-                <p className="text-xs text-muted-foreground">On orders $50+</p>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <Shield className="w-6 h-6 mx-auto mb-2 text-primary" />
-                <p className="text-sm font-medium">30-Day Returns</p>
-                <p className="text-xs text-muted-foreground">Easy returns</p>
-              </div>
-            </div>
-          </div>
+          <PricingDetails />
         </div>
       </div>
     </div>

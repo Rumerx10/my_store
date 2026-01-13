@@ -36,7 +36,7 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
           <div className="relative aspect-square overflow-hidden">
             <Image
               src={product.images?.[0] || '/placeholder.svg'}
-              alt={product.title}
+              alt={product.title || "product image"}
               fill
               className="object-cover transition-transform group-hover:scale-110 duration-300"
             />
