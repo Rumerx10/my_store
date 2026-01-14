@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -30,38 +30,9 @@ import PricingDetails from './PricingDetails';
 // Sample cart data
 
 const Cart = () => {
-  const [selectedShipping, setSelectedShipping] = useState('standard');
-  const [giftWrap, setGiftWrap] = useState(false);
-
-  const CART_ITEMS = useSelector((state: RootState) => state.cart.items) || [];
+  const cartItems = useSelector((state: RootState) => state.cart.items) || [];
   const dispatch = useDispatch();
-  console.log('Cart Items :::', CART_ITEMS);
-
-  const calculations = useMemo(() => {
-    const subtotal = CART_ITEMS.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    // const savings = CART_ITEMS.reduce(
-    //   (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
-    //   0,
-    // );
-    const couponDiscount = 0;
-    const shipping = SHIPPING_OPTIONS.find((option) => option.id === selectedShipping)?.price || 0;
-    const giftWrapFee = giftWrap ? 4.99 : 0;
-    const tax = (subtotal - couponDiscount + shipping + giftWrapFee) * 0.08; // 8% tax
-    const total = subtotal - couponDiscount + shipping + giftWrapFee + tax;
-
-    return {
-      subtotal,
-      // savings,
-      couponDiscount,
-      shipping,
-      giftWrapFee,
-      tax,
-      total,
-      itemCount: CART_ITEMS.reduce((sum, item) => sum + item.quantity, 0),
-    };
-  }, [CART_ITEMS, selectedShipping, giftWrap]);
-
-  if (CART_ITEMS.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
@@ -111,8 +82,7 @@ const Cart = () => {
           <div>
             <h1 className="text-3xl font-bold">Shopping Cart</h1>
             <p className="text-muted-foreground">
-              {calculations.itemCount} {calculations.itemCount === 1 ? 'item' : 'items'} in your
-              cart
+              {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
             </p>
           </div>
           <Link href="/products" className="border rounded-lg">
@@ -126,11 +96,7 @@ const Cart = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
           {/* Cart Items */}
           <div className="flex flex-col gap-5">
-            {CART_ITEMS.map((item) => {
-              // const discount = Math.round(
-              //   ((item.originalPrice - item.price) / item.originalPrice) * 100,
-              // );
-
+            {cartItems.map((item) => {
               return (
                 <Link href={`/products/${item.id}`}>
                   <Card key={item.id}>
@@ -144,11 +110,6 @@ const Cart = () => {
                             fill
                             className="object-cover rounded-md"
                           />
-                          {/* {discount > 0 && (
-                          <Badge variant="destructive" className="absolute -top-2 -right-2">
-                            -{discount}%
-                          </Badge>
-                        )} */}
                         </div>
 
                         {/* Product Details */}
@@ -160,9 +121,6 @@ const Cart = () => {
                                 {/* {item.brand} */}
                                 Brand Name
                               </p>
-                              {/* <Badge variant="secondary" className="mt-1">
-                              {item.category}
-                            </Badge> */}
                             </div>
                             <div
                               onClick={(e) => {
@@ -250,11 +208,11 @@ const Cart = () => {
                           </div>
                           <div className="flex gap-1">
                             <div className="flex items-center">
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <FaStar className="w-5 h-5 text-yellow-400" />
+                              <FaStar className="w-5 h-5 text-yellow-400" />
+                              <FaStar className="w-5 h-5 text-yellow-400" />
+                              <FaStar className="w-5 h-5 text-yellow-400" />
+                              <FaStarHalfAlt className="w-5 h-5 text-yellow-400" />
                               {item.rating}
                             </div>
                             <div>| {item.sold} sold </div>
