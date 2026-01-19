@@ -1,10 +1,12 @@
-import { RELATED_PRODUCTS } from '@/docs/products';
 import ProductCardGrid from '../ProductCardGrid';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export function RelatedProducts() {
+  const products = useSelector((state: RootState) => state.products);
   return (
     <section>
       <div className="flex items-center justify-between mb-8">
@@ -21,7 +23,7 @@ export function RelatedProducts() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {RELATED_PRODUCTS.map((product) => (
+        {products.map((product) => (
           <ProductCardGrid key={product.id} product={product} />
         ))}
       </div>

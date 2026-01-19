@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Heart, ShoppingCart, TrendingUp, ShoppingBag } from 'lucide-react';
+import { Heart, ShoppingCart, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const EmptyWhislist = () => {

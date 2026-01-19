@@ -1,6 +1,6 @@
-import CategorySidebar from '@/components/shared/Navbar/MobileNav/CategorySidebar';
+
 import Carousel from './Carousel';
-import Sidebar from '@/components/shared/Navbar/MobileNav/CategorySidebar';
+
 
 const Hero = () => {
   const imagesMain = [

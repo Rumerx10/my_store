@@ -14,17 +14,18 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { SAMPLE_PRODUCTS } from '@/docs/products';
-import { Product } from '@/types/product';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { getProductStatus } from '@/lib/utils';
 import ProductColumns from './ProductColumns';
 import ProductStatisticsCards from './ProductStatisticsCards';
 import DataTable from '@/components/DataTable';
-
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { IProduct } from '@/types/api_types';
 
 const Products = () => {
-  const [products, setProducts] = useState<Product[]>(SAMPLE_PRODUCTS);
+  const api_products = useSelector((state: RootState) => state.products);
+  const [products, setProducts] = useState<IProduct[]>(api_products);
   const [globalFilter, setGlobalFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [stockStatusFilter, setStockStatusFilter] = useState('all');
@@ -35,7 +36,7 @@ const Products = () => {
     createdAt: false,
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<IProduct | null>(null);
 
   const ProductTabsData = [
     { value: 'all', label: 'All', count: products.length, icon: undefined },
@@ -59,10 +60,10 @@ const Products = () => {
     },
   ];
 
-  const handleDeleteClick = (product: Product) => {
-    setProductToDelete(product);
-    setDeleteDialogOpen(true);
-  };
+  // const handleDeleteClick = (product: IProduct) => {
+  //   setProductToDelete(product);
+  //   setDeleteDialogOpen(true);
+  // };
 
   const handleDeleteConfirm = () => {
     if (productToDelete) {
@@ -73,7 +74,7 @@ const Products = () => {
   };
 
   // Define columns
-  const columns = useMemo(() => ProductColumns(handleDeleteClick), []);
+  const columns = useMemo(() => ProductColumns(), []);
 
   // Filter data based on category and stock status
   const filteredData = useMemo(() => {
@@ -87,7 +88,7 @@ const Products = () => {
   }, [products, categoryFilter, stockStatusFilter]);
 
   // Create table instance
-  const table = useReactTable<Product>({
+  const table = useReactTable<IProduct>({
     data: filteredData,
     columns,
     state: {
@@ -106,7 +107,7 @@ const Products = () => {
     getSortedRowModel: getSortedRowModel(),
     globalFilterFn: (row, columnId, filterValue) => {
       const searchValue = filterValue.toLowerCase();
-      const name = row.original.name.toLowerCase();
+      const name = row.original.title.toLowerCase();
       const sku = row.original.sku.toLowerCase();
       return name.includes(searchValue) || sku.includes(searchValue);
     },

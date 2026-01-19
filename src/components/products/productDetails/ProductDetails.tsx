@@ -22,7 +22,6 @@ export default function ProductDetails() {
   const productId = Number(useParams().id);
   const product = Products.find((product) => product.id === productId);
 
-
   return (
     <div className="min-h-screen py-6">
       <Card className="container mx-auto px-4 py-8 flex flex-col bg-white">
@@ -32,12 +31,15 @@ export default function ProductDetails() {
           <div className="flex overflow-hidden ">
             <ProductImgCarousel images={product?.images} />
           </div>
-          <ProductDetailsInfo
-            product={product}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            setActiveTab={setActiveTab}
-          />
+
+          {product && (
+            <ProductDetailsInfo
+              product={product}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              setActiveTab={setActiveTab}
+            />
+          )}
           <div className="space-y-6">
             <PricingDetails price={product!.price} quantity={quantity} />
             <SellerInfo />

@@ -10,7 +10,7 @@ const MAX_IMAGES = 8;
 
 const ProductImageField = () => {
   const { control, setValue, watch } = useFormContext();
-  const images: File[] = watch('productImgs') || [];
+  const images: File[] = watch('images') || [];
 
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

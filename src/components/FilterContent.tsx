@@ -1,4 +1,4 @@
-import { Grid3X3, List } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -23,8 +23,6 @@ const FilterContent = ({
   setSortBy,
   showInStockOnly,
   setShowInStockOnly,
-  viewMode,
-  setViewMode,
   setIsFilterOpen,
   handleCategoryChange,
   handleBrandChange,
@@ -58,24 +56,11 @@ const FilterContent = ({
         </Select>
 
         <div className="flex items-center justify-center">
-          <Button
-            variant="outline"
-            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            className="px-3"
-          >
-            {viewMode === 'grid' ? <List className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
+          <Button variant="outline" onClick={clearAllFilters} className="px-3">
+            <RefreshCcw className="w-4 h-4" />
           </Button>
         </div>
       </div>
-
-      <Button
-        variant="outline"
-        onClick={clearAllFilters}
-        className="w-full bg-transparent hover:bg-gray-50 border-gray-200"
-      >
-        Clear All Filters
-      </Button>
-
       <div className="border-t pt-6">
         <h4 className="font-medium mb-4 text-gray-900">Categories</h4>
         <div className="space-y-3">

@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Product } from '@/types/product';
+import { IProduct } from '@/types/api_types';
 
 const DeleteConfirmationDialog = ({
   deleteDialogOpen,
@@ -19,7 +19,7 @@ const DeleteConfirmationDialog = ({
 }: {
   deleteDialogOpen: boolean;
   setDeleteDialogOpen: (value: boolean) => void;
-  productToDelete: Product | null;
+  productToDelete: IProduct | null;
   handleDeleteConfirm: () => void;
 }) => {
   return (
@@ -40,14 +40,14 @@ const DeleteConfirmationDialog = ({
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 relative rounded-lg overflow-hidden bg-gray-100">
                 <Image
-                  src={productToDelete.image || '/placeholder.svg'}
-                  alt={productToDelete.name}
+                  src={productToDelete.images[0] || '/placeholder.svg'}
+                  alt={productToDelete.title}
                   fill
                   className="object-cover"
                 />
               </div>
               <div>
-                <p className="font-semibold text-gray-900">{productToDelete.name}</p>
+                <p className="font-semibold text-gray-900">{productToDelete.title}</p>
                 <p className="text-sm text-gray-600">SKU: {productToDelete.sku}</p>
                 <p className="text-sm text-gray-600">${productToDelete.price.toFixed(2)}</p>
               </div>

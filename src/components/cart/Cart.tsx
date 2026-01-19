@@ -49,7 +49,7 @@ const Cart = () => {
           <div className="flex flex-col gap-5">
             {cartItems.map((item) => {
               return (
-                <Link href={`/products/${item.id}`}>
+                <Link key={item.id} href={`/products/${item.id}`}>
                   <Card key={item.id}>
                     <CardContent className="p-6">
                       <div className="flex flex-col sm:flex-row gap-4">

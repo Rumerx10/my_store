@@ -10,9 +10,6 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useDispatch } from 'react-redux';
-import { removeFromWishlist } from '@/redux/features/wishlist/wishlistSlice';
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

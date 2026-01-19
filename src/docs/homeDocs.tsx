@@ -112,48 +112,6 @@ export const FEATURED_PRODUCTS = [
   },
 ];
 
-export const NEW_PRODUCTS = [
-  {
-    id: 5,
-    name: 'Minimalist Desk Lamp',
-    price: 79.99,
-    originalPrice: 99.99,
-    rating: 4.5,
-    reviews: 234,
-    image: '/placeholder.svg?height=400&width=400',
-    category: 'Home & Living',
-  },
-  {
-    id: 6,
-    name: 'Wireless Charging Pad',
-    price: 49.99,
-    originalPrice: 69.99,
-    rating: 4.4,
-    reviews: 567,
-    image: '/placeholder.svg?height=400&width=400',
-    category: 'Electronics',
-  },
-  {
-    id: 7,
-    name: 'Ceramic Coffee Mug Set',
-    price: 34.99,
-    originalPrice: 44.99,
-    rating: 4.8,
-    reviews: 423,
-    image: '/placeholder.svg?height=400&width=400',
-    category: 'Home & Living',
-  },
-  {
-    id: 8,
-    name: 'Bluetooth Speaker',
-    price: 89.99,
-    originalPrice: 119.99,
-    rating: 4.6,
-    reviews: 789,
-    image: '/placeholder.svg?height=400&width=400',
-    category: 'Electronics',
-  },
-];
 
 export const STATS = [
   { number: '50K+', label: 'Happy Customers', icon: <Users className="w-6 h-6" /> },

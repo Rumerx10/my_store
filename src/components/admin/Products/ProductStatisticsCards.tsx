@@ -1,11 +1,13 @@
-import { SAMPLE_PRODUCTS } from '@/docs/products';
+'use client';
 import { getProductStatus } from '@/lib/utils';
 import { useMemo } from 'react';
 import { Package, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import DashboardCard from '@/components/DashboardCard';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const ProductStatisticsCards = () => {
-  const products = SAMPLE_PRODUCTS;
+  const products = useSelector((state: RootState) => state.products);
 
   const status = useMemo(() => {
     const total = products.length;

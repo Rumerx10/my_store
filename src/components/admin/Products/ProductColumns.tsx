@@ -5,18 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getProductStatus, getStatusBadge } from '@/lib/utils';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Product } from '@/types/product';
+import { IProduct } from '@/types/api_types';
 
-const ProductColumns = (handleDeleteClick: (product: Product) => void) => {
-  const columnHelper = createColumnHelper<Product>();
+const ProductColumns = () => {
+  const columnHelper = createColumnHelper<IProduct>();
   return [
-    columnHelper.accessor('image', {
+    columnHelper.accessor('images', {
       header: 'Image',
-      cell: ({ getValue, row }) => (
+      // cell: ({ getValue, row }) => (
+      cell: ({ row }) => (
         <div className="w-12 h-12 relative rounded-lg overflow-hidden bg-gray-100">
           <Image
-            src={getValue() || '/placeholder.svg'}
-            alt={row.original.name}
+          // src={getValue() || '/placeholder.svg'}
+            src={'/placeholder.svg'}
+            alt={row.original.title}
             fill
             className="object-cover"
           />
@@ -25,7 +27,7 @@ const ProductColumns = (handleDeleteClick: (product: Product) => void) => {
       enableSorting: false,
       size: 80,
     }),
-    columnHelper.accessor('name', {
+    columnHelper.accessor('title', {
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -155,8 +157,9 @@ const ProductColumns = (handleDeleteClick: (product: Product) => void) => {
           )}
         </Button>
       ),
-      cell: ({ getValue }) => (
-        <span className="text-sm text-gray-600">{new Date(getValue()).toLocaleDateString()}</span>
+      // cell: ({ getValue }) => (
+      cell: () => (
+        <span className="text-sm text-gray-600">{new Date().toLocaleDateString()}</span>
       ),
     }),
     columnHelper.display({
@@ -176,7 +179,7 @@ const ProductColumns = (handleDeleteClick: (product: Product) => void) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleDeleteClick(row.original)}
+            // onClick={() => handleDeleteClick(row.original)}
             className="text-red-600 hover:text-red-700 hover:bg-red-50"
           >
             <Trash2 className="w-4 h-4" />

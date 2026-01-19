@@ -4,14 +4,15 @@ import { useState, useMemo, useEffect } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProductCardGrid from './ProductCardGrid';
-import { useSearchParams } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { RxCross2 } from 'react-icons/rx';
 import FilterContent from '../FilterContent';
-import { Products as ProductsData } from '@/docs/api_products';
 import { IProduct } from '@/types/api_types';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
-export default function Products() {
+const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -21,11 +22,11 @@ export default function Products() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const searchParams = useSearchParams();
-  const searchTerm = searchParams.get('searchTerm') || '';
 
+  const productsData = useSelector((state: RootState) => state.products);
   useEffect(() => {
-    setSearchQuery(searchTerm);
-  }, [searchTerm]);
+    setSearchQuery(searchParams.get('searchTerm')?.toLowerCase() || '');
+  }, [searchParams]);
 
   useEffect(() => {
     if (isFilterOpen) {
@@ -39,7 +40,17 @@ export default function Products() {
   }, [isFilterOpen]);
 
   const filteredAndSortedProducts = useMemo(() => {
-    const filtered = ProductsData.filter((product) => {
+    const lowerSearchTerm = searchQuery;
+    // If searchTerm is 'latest', 'popular', or 'trending', apply the corresponding filter
+    if (lowerSearchTerm === 'latest') {
+      return productsData.filter((p) => p.latest);
+    } else if (lowerSearchTerm === 'popular') {
+      return productsData.filter((p) => p.popular);
+    } else if (lowerSearchTerm === 'trending') {
+      return productsData.filter((p) => p.trending);
+    }
+
+    const filtered = productsData.filter((product) => {
       const brandLower = product.brand?.toLowerCase() || '';
 
       // 1. Search filter - checks title AND brand
@@ -73,23 +84,18 @@ export default function Products() {
     });
 
     // Sorting logic
-    filtered.sort((a:IProduct, b:IProduct) => {
+    filtered.sort((a: IProduct, b: IProduct) => {
       switch (sortBy) {
         case 'price-low':
           return a.price - b.price; // Lowest price first
-
         case 'price-high':
           return b.price - a.price; // Highest price first
-
         case 'rating':
           return b.rating - a.rating; // Highest rating first
-
         case 'name':
           return a.title.localeCompare(b.title); // Alphabetical by title
-
         case 'discount':
           return b.discountPercentage - a.discountPercentage; // Highest discount first
-
         case 'featured':
         default:
           if (b.popular !== a.popular) return b.popular ? 1 : -1;
@@ -100,7 +106,7 @@ export default function Products() {
 
     return filtered;
   }, [
-    ProductsData,
+    productsData,
     searchQuery,
     selectedCategories,
     selectedBrands,
@@ -134,6 +140,7 @@ export default function Products() {
     setPriceRange([0, 300]);
     setShowInStockOnly(false);
     setSortBy('featured');
+    redirect('/products');
   };
 
   return (
@@ -179,7 +186,7 @@ export default function Products() {
                   variant="secondary"
                   className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-2"
                 >
-                  Search: &quot;{searchTerm}&quot;
+                  Search: &quot;{searchQuery}&quot;
                   <button
                     onClick={() => setSearchQuery('')}
                     className="flex items-center justify-center w-4 h-4 rounded-full bg-blue-200 hover:bg-blue-300 transition-colors"
@@ -203,7 +210,7 @@ export default function Products() {
               </div>
             ) : (
               <div className="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredAndSortedProducts.map((product:IProduct) => (
+                {filteredAndSortedProducts.map((product: IProduct) => (
                   <ProductCardGrid key={product.id} product={product} textColor="#2b2b2b" />
                 ))}
               </div>
@@ -259,4 +266,6 @@ export default function Products() {
       </div>
     </div>
   );
-}
+};
+
+export default Products;

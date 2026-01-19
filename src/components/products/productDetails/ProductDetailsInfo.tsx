@@ -7,7 +7,7 @@ import { IProduct } from '@/types/api_types';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/redux/features/cart/cartSlice';
 import { RootState } from '@/redux/store';
-import { addToWishlist, removeFromWishlist } from '@/redux/features/wishlist/wishlistSlice';
+import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
 
 interface ProductDetailsInfoProps {
   product: IProduct;
@@ -48,7 +48,7 @@ export function ProductDetailsInfo({
     e.preventDefault();
     e.stopPropagation();
     const productToAdd = {
-      id: product.id,
+      id: id,
       title: product.title,
       price: product.price,
       rating: product.rating,

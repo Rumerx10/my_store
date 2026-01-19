@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import {
-  MdOutlineLocalFireDepartment,
   MdOutlineCardGiftcard,
   MdOutlineHome,
   MdOutlineKeyboardDoubleArrowRight,

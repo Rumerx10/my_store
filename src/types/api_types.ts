@@ -47,4 +47,5 @@ export interface IProduct {
   meta: IProductMeta;
   images: string[];
   thumbnail: string;
+  createdAt?:string;
 }

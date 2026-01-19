@@ -27,7 +27,7 @@ const HowItWorksCarousel = () => {
         className="h-[370px]"
       >
         {HOW_IT_WORKS.map((step, index) => (
-          <SwiperSlide className="">
+          <SwiperSlide key={index}>
             <HowItWorksCard key={index} {...step} />
           </SwiperSlide>
         ))}
