@@ -49,3 +49,14 @@ export interface IProduct {
   thumbnail: string;
   createdAt?:string;
 }
+
+
+export interface ICartItem {
+  id: string | number;
+  title: string;
+  price: number;
+  rating: number;
+  sold: number;
+  quantity: number;
+  image: string;
+}

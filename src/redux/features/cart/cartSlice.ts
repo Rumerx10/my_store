@@ -1,14 +1,5 @@
+import { ICartItem } from '@/types/api_types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface ICartItem {
-  id: string | number;
-  title: string;
-  price: number;
-  rating: number;
-  sold: number;
-  quantity: number;
-  image: string;
-}
 
 interface ICart {
   items: ICartItem[];

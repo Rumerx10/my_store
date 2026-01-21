@@ -1,18 +1,20 @@
 'use client';
+import { RootState } from '@/redux/store';
+import { useMemo, useState } from 'react';
 import { Tag, Truck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Button } from '@/components/ui/button';
 import { SHIPPING_OPTIONS } from '@/docs/checkout';
-import { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
+import { useDispatch, useSelector } from 'react-redux';
+import OrderSummary from '../client/myOrders/OrderSummary';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import Link from 'next/link';
 
-const Coupon = [{ code: 'SAVE10', discount: 10 }]; // CHANGED: Made uppercase for consistency
+const Coupon = [{ code: 'SAVE10', discount: 10 }];
 
 const PricingDetails = () => {
   const tax = 5;
@@ -21,7 +23,6 @@ const PricingDetails = () => {
   const [giftWrap, setGiftWrap] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState('standard');
-
   const calculations = useMemo(() => {
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -131,16 +132,16 @@ const PricingDetails = () => {
               <span>${calculations.taxAmount.toFixed(2)}</span>{' '}
             </div>
           </div>
-
           <Separator />
-
           <div className="flex justify-between text-lg font-bold">
             <span>Total</span>
             <span>${calculations.total.toFixed(2)}</span>
           </div>
-          <Button className="w-full" size="lg">
-            Proceed to Checkout
-          </Button>
+          <Link href="/order-summary">
+            <Button className="w-full" size="lg">
+              Proceed to Checkout
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 

@@ -89,11 +89,6 @@ const Cart = () => {
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                             <div className="flex items-center gap-2">
                               <span className="text-lg font-bold">${item.price}</span>
-                              {/* {item.originalPrice > item.price && (
-                              <span className="text-sm text-muted-foreground line-through">
-                                ${item.originalPrice}
-                              </span>
-                            )} */}
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -124,9 +119,6 @@ const Cart = () => {
                                   id={`quantity-${item.id}`}
                                   type="number"
                                   value={item.quantity}
-                                  // onChange={(e) =>
-                                  //   updateQuantity(item.id, Number.parseInt(e.target.value) || 1)
-                                  // }
                                   className="w-16 h-8 text-center border-0 focus-visible:ring-0"
                                   min="1"
                                   max="10"
@@ -149,11 +141,6 @@ const Cart = () => {
                                 <p className="font-semibold">
                                   ${(item.price * item.quantity).toFixed(2)}
                                 </p>
-                                {/* {item.originalPrice > item.price && (
-                                <p className="text-xs text-muted-foreground line-through">
-                                  ${(item.originalPrice * item.quantity).toFixed(2)}
-                                </p>
-                              )} */}
                               </div>
                             </div>
                           </div>
