@@ -8,6 +8,19 @@ import CardPayment from './CardPayment';
 import MobilePayment from './MobilePayment';
 import { useRouter } from 'next/navigation';
 import PaymentOrOrderSuccess from './PaymentOrOrderSuccess';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { addOrder } from '@/redux/features/order/orderSlice';
+import { clearCart } from '@/redux/features/cart/cartSlice';
+
+// Define cart item interface to match your data structure
+interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 export default function PaymentGateway({
   payable,
@@ -26,6 +39,9 @@ export default function PaymentGateway({
   const [otpInput, setOtpInput] = useState('');
   const [selectedProvider, setSelectedProvider] = useState('');
 
+  // Cast cart items to proper type
+  const cartitems = (useSelector((state: RootState) => state.cart.items) as CartItem[]) || [];
+  const dispatch = useDispatch();
 
   const generateOTP = () => {
     const otp = Math.floor(10000 + Math.random() * 90000).toString();
@@ -38,15 +54,18 @@ export default function PaymentGateway({
   };
 
   const handlePhoneSubmit = () => {
-    if (phoneNumber.trim().length < 10) {
-      toast.error('Please enter a valid phone number');
+    // Validate phone number
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phoneNumber.replace(/\D/g, ''))) {
+      toast.error('Please enter a valid 10-digit phone number');
       return;
     }
+
     const otp = generateOTP();
     setGeneratedOTP(otp);
-    toast.success(`Your OTP is : ${otp}`);
+    toast.success(`OTP sent to ${phoneNumber}`);
 
-    // Open OTP modal
+    // Open OTP modal after short delay
     setTimeout(() => setShowOTPModal(true), 500);
   };
 
@@ -55,10 +74,42 @@ export default function PaymentGateway({
       setShowOTPModal(false);
       setShowSuccessModal(true);
 
-      // Redirect after 3 seconds
+      // Create order from cart items
+      const orderList = cartitems.map((item) => ({
+        productId: item.id,
+        title: item.title,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+
+      console.log('Order List:', orderList);
+
+      // Generate order ID
+      const orderid = String(Date.now()).substring(6);
+      const order = {
+        id: `ORD-${orderid}`,
+        items: orderList,
+        totalAmount: payable,
+        status: 'pending',
+      };
+
+      // Dispatch actions
+      dispatch(addOrder(order));
+      dispatch(clearCart());
+
+      // Clear OTP states
+      setOtpInput('');
+      setGeneratedOTP('');
+      setPhoneNumber('');
+
+      // Optional: Redirect after success
       setTimeout(() => {
-        router.push('/products');
+        router.push('/orders');
+        setPayNow(false);
       }, 3000);
+
+      toast.success('Payment successful! Order placed.');
     } else {
       toast.error('OTP is incorrect. Please try again.');
       setOtpInput('');
@@ -69,11 +120,12 @@ export default function PaymentGateway({
     <div className="flex bg-white items-center justify-center h-full p-4">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
         {/* Top Actions */}
-        <div
-          onClick={() => setPayNow(false)}
-          className="flex justify-end items-center p-4 bg-gray-50 border-b"
-        >
-          <button className="text-gray-800 hover:scale-125 duration-300 hover:text-gray-600 ml-2">
+        <div className="flex justify-end items-center p-4 bg-gray-50 border-b">
+          <button
+            onClick={() => setPayNow(false)}
+            className="text-gray-800 hover:scale-125 duration-300 hover:text-gray-600 ml-2"
+            aria-label="Close payment gateway"
+          >
             <X size={20} />
           </button>
         </div>
@@ -104,14 +156,14 @@ export default function PaymentGateway({
 
         {/* Content */}
         <div className="p-6">
-          {activeTab === 'cards' && (
-            <CardPayment payable={payable} />
-          )}
+          {activeTab === 'cards' && <CardPayment payable={payable} />}
           {activeTab === 'mobile' && (
             <MobilePayment handleMobileBankingClick={handleMobileBankingClick} />
           )}
         </div>
       </div>
+
+      {/* Phone Modal */}
       {showPhoneModal && (
         <PhoneModal
           setShowPhoneModal={setShowPhoneModal}

@@ -171,14 +171,16 @@ const OrderSummary = () => {
                   </Button>
                 </div>
 
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="flex-1 border-2 border-green-600 text-green-700 hover:bg-green-50 hover:text-green-800 hover:border-green-700 font-semibold py-6"
-                >
-                  <Truck className="mr-2 h-5 w-5" />
-                  Cash on Delivery
-                </Button>
+                <div>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="flex-1 border-2 border-green-600 text-green-700 hover:bg-green-50 hover:text-green-800 hover:border-green-700 font-semibold py-6"
+                  >
+                    <Truck className="mr-2 h-5 w-5" />
+                    Cash on Delivery
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>

@@ -13,7 +13,7 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items).map(
     (product) => product.id,
   );
-  console.log('Wishlist Products ::', wishlistItems);
+  // console.log('Wishlist Products ::', wishlistItems);
 
   const handleWishlist = (e: React.MouseEvent, product: IProduct) => {
     e.preventDefault();
