@@ -47,9 +47,8 @@ export interface IProduct {
   meta: IProductMeta;
   images: string[];
   thumbnail: string;
-  createdAt?:string;
+  createdAt?: string;
 }
-
 
 export interface ICartItem {
   id: string | number;
@@ -59,4 +58,12 @@ export interface ICartItem {
   sold: number;
   quantity: number;
   image: string;
+}
+
+export interface IOrderItem {
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+  img: string;
 }

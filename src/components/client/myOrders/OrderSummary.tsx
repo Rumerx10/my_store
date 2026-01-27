@@ -7,15 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import PaymentGateway from '@/components/PaymentGateway';
+import { useState } from 'react';
 
 const OrderSummary = () => {
+  const [payNow, setPayNow] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.items) || [];
 
   const calculation = () => {
     const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shipping = 5;
     const total = subTotal + shipping;
-
     return { subTotal, shipping, total };
   };
 
@@ -26,7 +28,7 @@ const OrderSummary = () => {
       <div className="w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5 p-5 h-full">
           {/* Left side - Cart Items */}
-          <Card className="bg-white p-5 overflow-y-auto">
+          <Card className="relative bg-white p-5 overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 text-gray-800">Order Summary</h2>
             <div className="flex flex-col gap-2">
               {cartItems.map((item) => (
@@ -79,6 +81,11 @@ const OrderSummary = () => {
                   </div>
                 </Link>
               ))}
+            </div>
+            <div
+              className={`backdrop-blur-sm duration-300 absolute inset-0 ${payNow ? 'block' : 'hidden'}`}
+            >
+              <PaymentGateway payable={calculation().total} setPayNow={setPayNow} />
             </div>
           </Card>
 
@@ -154,13 +161,15 @@ const OrderSummary = () => {
                 </div>
               </div>
               <div className="mt-10 flex flex-col sm:flex-row gap-3">
-                <Button
-                  size="lg"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-6"
-                >
-                  <CreditCard className="mr-2 h-5 w-5" />
-                  Pay Now
-                </Button>
+                <div className="w-full" onClick={() => setPayNow(true)}>
+                  <Button
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-6"
+                  >
+                    <CreditCard className="mr-2 h-5 w-5" />
+                    Pay Now
+                  </Button>
+                </div>
 
                 <Button
                   size="lg"
