@@ -2,7 +2,7 @@ import { Check } from 'lucide-react';
 
 const PaymentOrOrderSuccess = () => {
   return (
-    <div className="fixed inset-0 backdrop-blur-2xl bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="backdrop-blur-2xl bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full p-8 text-center">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center animate-bounce">

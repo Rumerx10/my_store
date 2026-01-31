@@ -6,7 +6,7 @@ const MobilePayment = ({
   handleMobileBankingClick: (provider: string) => void;
 }) => {
   return (
-    <div className="text-center text-gray-600">
+    <div className="w-full text-center text-gray-600">
       <div className="text-4xl mb-4">📱</div>
       <p className="font-semibold mb-2">Mobile Banking</p>
       <p className="text-sm">Select your mobile banking provider to continue</p>

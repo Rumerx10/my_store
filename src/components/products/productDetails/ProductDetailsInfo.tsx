@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/redux/features/cart/cartSlice';
 import { RootState } from '@/redux/store';
 import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
+import toast from 'react-hot-toast';
 
 interface ProductDetailsInfoProps {
   product: IProduct;
@@ -41,7 +42,7 @@ export function ProductDetailsInfo({
       sold: 21,
     };
     dispatch(addToCart(cartItem));
-    alert(`${product.title} is added to cart successfully. Quantity: ${quantity}`);
+    toast.success(`${product.title} is added to cart successfully. Quantity: ${quantity}`);
   };
 
   const handleWishlist = (e: React.MouseEvent, id: string | number) => {

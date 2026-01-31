@@ -24,9 +24,11 @@ interface CartItem {
 
 export default function PaymentGateway({
   payable,
+  payNow,
   setPayNow,
 }: {
   payable: number;
+  payNow: boolean;
   setPayNow: (value: boolean) => void;
 }) {
   const router = useRouter();
@@ -55,7 +57,7 @@ export default function PaymentGateway({
 
   const handlePhoneSubmit = () => {
     // Validate phone number
-    const phoneRegex = /^[0-9]{10}$/;
+    const phoneRegex = /^[0-9]{11}$/;
     if (!phoneRegex.test(phoneNumber.replace(/\D/g, ''))) {
       toast.error('Please enter a valid 10-digit phone number');
       return;
@@ -63,10 +65,11 @@ export default function PaymentGateway({
 
     const otp = generateOTP();
     setGeneratedOTP(otp);
-    toast.success(`OTP sent to ${phoneNumber}`);
-
+    toast.success(`OTP sent to ${phoneNumber}. OTP is ${otp}`);
+    setShowPhoneModal(false);
+    setShowOTPModal(true);
     // Open OTP modal after short delay
-    setTimeout(() => setShowOTPModal(true), 500);
+    // setTimeout(() => setShowOTPModal(true), 500);
   };
 
   const handleOTPSubmit = () => {
@@ -117,75 +120,77 @@ export default function PaymentGateway({
   };
 
   return (
-    <div className="flex bg-white items-center justify-center h-full p-4">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
-        {/* Top Actions */}
-        <div className="flex justify-end items-center p-4 bg-gray-50 border-b">
-          <button
-            onClick={() => setPayNow(false)}
-            className="text-gray-800 hover:scale-125 duration-300 hover:text-gray-600 ml-2"
-            aria-label="Close payment gateway"
-          >
-            <X size={20} />
-          </button>
-        </div>
+    <div className="flex items-center justify-center">
+      {payNow && (
+        <div className="bg-white rounded-lg shadow-2xl w-full">
+          {/* Always show close button if not in success modal */}
+          {!showSuccessModal && (
+            <div className="flex justify-end items-center p-4 bg-gray-50 border-b">
+              <button
+                onClick={() => setPayNow(false)}
+                className="text-gray-800 hover:scale-125 duration-300 hover:text-gray-600 ml-2"
+                aria-label="Close payment gateway"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          )}
 
-        {/* Tabs */}
-        <div className="flex border-b bg-gradient-to-r from-blue-600 to-blue-700">
-          <button
-            onClick={() => setActiveTab('cards')}
-            className={`flex-1 py-3 px-4 font-semibold text-sm transition ${
-              activeTab === 'cards'
-                ? 'bg-blue-600 text-white'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-            }`}
-          >
-            CARDS
-          </button>
-          <button
-            onClick={() => setActiveTab('mobile')}
-            className={`flex-1 py-3 px-4 font-semibold text-sm transition ${
-              activeTab === 'mobile'
-                ? 'bg-blue-600 text-white'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-            }`}
-          >
-            MOBILE BANKING
-          </button>
-        </div>
+          {/* Conditional content */}
+          {showSuccessModal ? (
+            <PaymentOrOrderSuccess />
+          ) : showOTPModal ? (
+            <OTPModal
+              setShowOTPModal={setShowOTPModal}
+              otpInput={otpInput}
+              setOtpInput={setOtpInput}
+              handleOTPSubmit={handleOTPSubmit}
+            />
+          ) : showPhoneModal ? (
+            <PhoneModal
+              setShowPhoneModal={setShowPhoneModal}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              selectedProvider={selectedProvider}
+              handlePhoneSubmit={handlePhoneSubmit}
+            />
+          ) : (
+            <>
+              {/* Tabs */}
+              <div className="flex border-b bg-gradient-to-r from-blue-600 to-blue-700">
+                <button
+                  onClick={() => setActiveTab('cards')}
+                  className={`flex-1 py-3 px-4 font-semibold text-sm transition ${
+                    activeTab === 'cards'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  }`}
+                >
+                  CARDS
+                </button>
+                <button
+                  onClick={() => setActiveTab('mobile')}
+                  className={`flex-1 py-3 px-4 font-semibold text-sm transition ${
+                    activeTab === 'mobile'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  }`}
+                >
+                  MOBILE BANKING
+                </button>
+              </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {activeTab === 'cards' && <CardPayment payable={payable} />}
-          {activeTab === 'mobile' && (
-            <MobilePayment handleMobileBankingClick={handleMobileBankingClick} />
+              {/* Content */}
+              <div className="p-6">
+                {activeTab === 'cards' && <CardPayment payable={payable} />}
+                {activeTab === 'mobile' && (
+                  <MobilePayment handleMobileBankingClick={handleMobileBankingClick} />
+                )}
+              </div>
+            </>
           )}
         </div>
-      </div>
-
-      {/* Phone Modal */}
-      {showPhoneModal && (
-        <PhoneModal
-          setShowPhoneModal={setShowPhoneModal}
-          phoneNumber={phoneNumber}
-          setPhoneNumber={setPhoneNumber}
-          selectedProvider={selectedProvider}
-          handlePhoneSubmit={handlePhoneSubmit}
-        />
       )}
-
-      {/* OTP Modal */}
-      {showOTPModal && (
-        <OTPModal
-          setShowOTPModal={setShowOTPModal}
-          otpInput={otpInput}
-          setOtpInput={setOtpInput}
-          handleOTPSubmit={handleOTPSubmit}
-        />
-      )}
-
-      {/* Success Modal */}
-      {showSuccessModal && <PaymentOrOrderSuccess />}
     </div>
   );
 }
