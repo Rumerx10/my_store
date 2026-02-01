@@ -12,8 +12,8 @@ const DesktopNav = ({
   searchTerm,
   setSearchTerm,
 }: {
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
+  searchTerm?: string;
+  setSearchTerm?: (value: string) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
@@ -42,16 +42,16 @@ const DesktopNav = ({
   }, []);
 
   const handleSearch = () => {
-    router.push(`/products?searchTerm=${searchTerm.trim()}`);
+    router.push(`/products?searchTerm=${searchTerm?.trim()}`);
   };
 
   const menuItems = [
-    { icon: User, label: 'Profile', href: '#' },
-    { icon: MapPin, label: 'Address Book', href: '#' },
-    { icon: Package, label: 'My Orders', href: '#' },
-    { icon: Star, label: 'My Reviews', href: '#' },
-    { icon: ClipboardList, label: 'To Review', href: '#' },
-    { icon: MessageSquare, label: 'Feedback', href: '#' },
+    { icon: User, label: 'Profile', href: '/profile' },
+    { icon: MapPin, label: 'Address Book', href: '/profile/address-book' },
+    { icon: Package, label: 'My Orders', href: '/profile/orders' },
+    { icon: Star, label: 'My Reviews', href: '/profile/reviews' },
+    { icon: ClipboardList, label: 'To Review', href: '/profile/to-review' },
+    { icon: MessageSquare, label: 'Feedback', href: '/profile/feedback' },
   ];
 
   return (
@@ -76,7 +76,7 @@ const DesktopNav = ({
               <input
                 ref={searchInputRef}
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm?.(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 placeholder="Search products..."
                 className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
@@ -84,7 +84,7 @@ const DesktopNav = ({
               {searchTerm && (
                 <button
                   onClick={() => {
-                    setSearchTerm('');
+                    setSearchTerm?.('');
                     searchInputRef.current?.focus();
                   }}
                   className="absolute right-12 p-1 text-gray-400 hover:text-gray-600 transition-colors"
@@ -110,10 +110,7 @@ const DesktopNav = ({
               href="/wish-list"
               className="relative flex items-center text-gray-600 hover:text-gray-900 transition-colors group"
             >
-              <Heart
-                size={24}
-                className="group-hover:scale-110 transition-transform"
-              />
+              <Heart size={24} className="group-hover:scale-110 transition-transform" />
               {wishlistItemCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
                   {wishlistItemCount}
@@ -126,10 +123,7 @@ const DesktopNav = ({
               href="/cart"
               className="relative flex items-center text-gray-600 hover:text-gray-900 transition-colors group"
             >
-              <ShoppingCart
-                size={24}
-                className="group-hover:scale-110 transition-transform"
-              />
+              <ShoppingCart size={24} className="group-hover:scale-110 transition-transform" />
               {cartItemCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
                   {cartItemCount}

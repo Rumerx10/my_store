@@ -27,9 +27,7 @@ const OrderSummary = () => {
     >
       <div className="w-full flex items-center justify-center min-h-screen">
         {payNow ? (
-          <div
-            className={`backdrop-blur-sm bg-transparent duration-300`}
-          >
+          <div className={`backdrop-blur-sm bg-transparent duration-300`}>
             <PaymentGateway payNow={payNow} payable={calculation().total} setPayNow={setPayNow} />
           </div>
         ) : (
