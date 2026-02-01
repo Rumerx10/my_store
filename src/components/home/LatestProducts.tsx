@@ -19,7 +19,7 @@ const LatestProducts = () => {
           desc="Be the first to discover our newest additions and stay ahead of the trends"
         />
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-5 mb-12">
           {products.map((product) => (
             <ProductCardGrid key={product.id} product={product} />
           ))}

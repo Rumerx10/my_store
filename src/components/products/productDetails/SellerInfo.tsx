@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { GrChatOption } from "react-icons/gr";
+import Link from 'next/link';
+import { GrChatOption } from 'react-icons/gr';
 
 const SellerInfo = () => {
   return (
@@ -8,8 +8,8 @@ const SellerInfo = () => {
         <div>
           <div className="text-gray-500 text-sm mb-1">Sold by</div>
           <div>
-            <Link 
-              href="/shop/magic-guru/?itemId=337213053&channelSource=pdp" 
+            <Link
+              href="/shop/magic-guru/?itemId=337213053&channelSource=pdp"
               className="text-black font-medium hover:underline"
             >
               Doob Cart
@@ -24,7 +24,10 @@ const SellerInfo = () => {
                 <use xlinkHref="#lazadaicon_im"></use>
               </svg>
             </span>
-            <div className="flex gap-2 items-center font-medium"> <GrChatOption /> Chat Now</div>
+            <Link href="/chat" className="flex gap-2 items-center font-medium">
+              {' '}
+              <GrChatOption /> Chat Now
+            </Link>
           </span>
         </div>
       </div>
@@ -45,10 +48,7 @@ const SellerInfo = () => {
       </div>
 
       <div className="p-4 flex items-center justify-center">
-        <Link 
-          href="#" 
-          className="text-blue-600 text-sm font-semibold"
-        >
+        <Link href="#" className="text-blue-600 text-sm font-semibold">
           GO TO STORE
         </Link>
       </div>

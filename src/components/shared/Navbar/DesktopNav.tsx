@@ -1,12 +1,12 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LogOut, Search, Heart, ShoppingCart, User, ChevronDown } from 'lucide-react';
+import { LogOut, Search, Heart, ShoppingCart, ChevronDown } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { MapPin, Package, Star, MessageSquare, ClipboardList } from 'lucide-react';
+import { menuItems } from '@/docs/navLinks';
 
 const DesktopNav = ({
   searchTerm,
@@ -45,14 +45,7 @@ const DesktopNav = ({
     router.push(`/products?searchTerm=${searchTerm?.trim()}`);
   };
 
-  const menuItems = [
-    { icon: User, label: 'Profile', href: '/profile' },
-    { icon: MapPin, label: 'Address Book', href: '/profile/address-book' },
-    { icon: Package, label: 'My Orders', href: '/profile/orders' },
-    { icon: Star, label: 'My Reviews', href: '/profile/reviews' },
-    { icon: ClipboardList, label: 'To Review', href: '/profile/to-review' },
-    { icon: MessageSquare, label: 'Feedback', href: '/profile/feedback' },
-  ];
+
 
   return (
     <nav className="hidden lg:block fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">

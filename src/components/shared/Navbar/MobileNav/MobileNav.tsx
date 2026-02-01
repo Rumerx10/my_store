@@ -8,9 +8,7 @@ import { PiShoppingCart } from 'react-icons/pi';
 // import { NavLinks } from '@/docs/navLinks';
 import { GrChatOption } from 'react-icons/gr';
 import Link from 'next/link';
-import { FaAddressBook, FaBoxOpen, FaStar, FaEdit, FaCommentDots } from 'react-icons/fa';
-import { LogOut } from 'lucide-react';
-import { FaUserGear } from 'react-icons/fa6';
+import { menuItems } from '@/docs/navLinks';
 
 const MobileNav = ({
   searchTerm,
@@ -27,7 +25,9 @@ const MobileNav = ({
           <div className="text-black">
             <Hamburger size={28} toggled={isOpen} toggle={setOpen} />
           </div>
-          <Image src={'/logo.png'} alt="logo" height={100} width={120} />
+          <Link href="/">
+            <Image src={'/logo.png'} alt="logo" height={100} width={120} />
+          </Link>
           <div className="flex gap-5 text-black">
             <Link
               href="/cart"
@@ -42,10 +42,13 @@ const MobileNav = ({
               <p className="whitespace-nowrap font-medium text-xs">Cart</p>
             </Link>
 
-            <div className="flex flex-col gap-1 relative items-center justify-center font-medium text-blue-600 cursor-pointer">
+            <Link
+              href="/chat"
+              className="flex flex-col gap-1 relative items-center justify-center font-medium text-gray-700 cursor-pointer"
+            >
               <GrChatOption size={28} />
               <p className="whitespace-nowrap font-medium text-xs">Chat</p>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -58,46 +61,19 @@ const MobileNav = ({
         <div
           className={`absolute duration-300 bg-white ${isOpen ? 'translate-x-0' : '-translate-x-full'} top-0 bottom-0 left-0 w-[60%] shadow-xl z-50`}
         >
-          {/* Profile */}
-          <div className="flex gap-2 items-center px-4 py-3 border-b hover:bg-gray-50 cursor-pointer">
-            <FaUserGear size={20} className="text-gray-600" />
-            <span className="font-medium">Profile</span>
-          </div>
-
-          {/* Address Book */}
-          <div className="flex gap-2 items-center px-4 py-3 border-b hover:bg-gray-50 cursor-pointer">
-            <FaAddressBook size={20} className="text-gray-600" />
-            <span className="font-medium">Address Book</span>
-          </div>
-
-          {/* My Orders */}
-          <div className="flex gap-2 items-center px-4 py-3 border-b hover:bg-gray-50 cursor-pointer">
-            <FaBoxOpen size={20} className="text-gray-600" />
-            <span className="font-medium">My Orders</span>
-          </div>
-
-          {/* My Reviews */}
-          <div className="flex gap-2 items-center px-4 py-3 border-b hover:bg-gray-50 cursor-pointer">
-            <FaStar size={20} className="text-gray-600" />
-            <span className="font-medium">My Reviews</span>
-          </div>
-
-          {/* To Review */}
-          <div className="flex gap-2 items-center px-4 py-3 border-b hover:bg-gray-50 cursor-pointer">
-            <FaEdit size={20} className="text-gray-600" />
-            <span className="font-medium">To Review</span>
-          </div>
-
-          {/* Feedback */}
-          <div className="flex gap-2 items-center px-4 py-3 border-b hover:bg-gray-50 cursor-pointer">
-            <FaCommentDots size={20} className="text-gray-600" />
-            <span className="font-medium">Feedback</span>
-          </div>
-
-          {/* Logout */}
-          <div className="flex text-red-500 gap-2 items-center justify-center px-4 py-2 border-b">
-            <LogOut size={20} /> Logout
-          </div>
+          {menuItems.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                <IconComponent size={18} className="text-gray-500 flex-shrink-0" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </aside>
     </div>

@@ -1,4 +1,5 @@
-import { Badge } from 'lucide-react';
+import { Badge } from "./ui/badge";
+
 
 const SectionHeader = ({
   badgeTxt,
@@ -10,7 +11,7 @@ const SectionHeader = ({
   desc: string;
 }) => {
   return (
-    <div className="text-center mb-8 md:mb-12 lg:mb-16">
+    <div className="flex flex-col items-center text-center mb-8 md:mb-12 lg:mb-16">
       <Badge className="bg-blue-700 border-0 mb-3 md:mb-4 shadow-lg backdrop-blur-sm text-sm md:text-base">
         {badgeTxt}
       </Badge>
