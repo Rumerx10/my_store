@@ -20,10 +20,10 @@ const MobileNav = ({
   const [isOpen, setOpen] = useState(false);
   return (
     <div>
-      <div className="lg:hidden bg-navWhite fixed z-50 right-0 left-0 backdrop-blur-2xl text-white h-20 flex items-center justify-center">
+      <div className="lg:hidden bg-navWhite fixed z-50 right-0 left-0 backdrop-blur-2xl text-white h-18 flex items-center justify-center">
         <div className="container px-4 w-full flex items-center justify-between">
           <div className="text-black">
-            <Hamburger size={28} toggled={isOpen} toggle={setOpen} />
+            <Hamburger size={24} toggled={isOpen} toggle={setOpen} />
           </div>
           <Link href="/">
             <Image src={'/logo.png'} alt="logo" height={100} width={120} />
@@ -34,10 +34,10 @@ const MobileNav = ({
               className="flex flex-col gap-1 items-center justify-between relative"
             >
               <div className="relative">
-                <div className="absolute z-40 -right-1.5 top-0 h-4 w-4 text-xs text-white font-semibold flex justify-center items-center rounded-full bg-red-500">
+                <div className="absolute z-40 -right-1 top-0 h-3.5 w-3.5 text-xs text-white font-semibold flex justify-center items-center rounded-full bg-red-500">
                   6
                 </div>
-                <PiShoppingCart size={28} className="active:scale-90 duration-200" />
+                <PiShoppingCart size={24} className="active:scale-90 duration-200" />
               </div>
               <p className="whitespace-nowrap font-medium text-xs">Cart</p>
             </Link>
@@ -46,7 +46,7 @@ const MobileNav = ({
               href="/chat"
               className="flex flex-col gap-1 relative items-center justify-center font-medium text-gray-700 cursor-pointer"
             >
-              <GrChatOption size={28} />
+              <GrChatOption size={24} />
               <p className="whitespace-nowrap font-medium text-xs">Chat</p>
             </Link>
           </div>

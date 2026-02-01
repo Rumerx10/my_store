@@ -13,25 +13,25 @@ import { AiOutlineProduct } from 'react-icons/ai';
 import Link from 'next/link';
 
 const navItems = [
-  { label: 'Home', src: '/', icon: <MdOutlineHome size={28} />, badge: null, badgePosition: '' },
+  { label: 'Home', src: '/', icon: <MdOutlineHome size={24} />, badge: null, badgePosition: '' },
   {
     label: 'Offers',
     src: '/offers',
-    icon: <MdOutlineCardGiftcard size={28} />,
+    icon: <MdOutlineCardGiftcard size={24} />,
     badge: 3,
     badgePosition: '-right-1',
   },
   {
     label: 'Products',
     src: '/products',
-    icon: <AiOutlineProduct size={28} />,
+    icon: <AiOutlineProduct size={24} />,
     badge: 3,
     badgePosition: 'right-2',
   },
   {
     label: 'Wish List',
     src: 'wish-list',
-    icon: <IoMdHeartEmpty size={28} />,
+    icon: <IoMdHeartEmpty size={24} />,
     badge: 5,
     badgePosition: 'right-1.5',
   },
@@ -97,7 +97,7 @@ const BottomNav = ({
       </div>
 
       {/* Bottom Navigation */}
-      <div className="lg:hidden z-40 fixed text-white bg-base bottom-0 w-full flex items-center justify-between px-8 py-4 gap-5">
+      <div className="lg:hidden z-40 fixed text-white bg-base bottom-0 w-full flex items-center justify-between px-8 py-2 gap-5">
         {navItems.map(({ label, src, icon, badge, badgePosition }) => (
           <Link
             key={label}
@@ -140,7 +140,7 @@ const BottomNav = ({
           }}
         >
           <div className={`relative ${isActive('search') ? 'text-green' : ''}`}>
-            <FiSearch size={28} />
+            <FiSearch size={24} />
           </div>
           <p
             className={`whitespace-nowrap font-medium text-xs ${

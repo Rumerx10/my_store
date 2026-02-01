@@ -32,11 +32,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${inter.variable} antialiased`}>
         <Toaster position="top-center" reverseOrder={false} />
-          <ReduxProvider>
-            <Navbar />
-            <div className="pt-20 lg:pt-24 bg-gray-50">{children}</div>
-            <Footer />
-          </ReduxProvider>        
+        <ReduxProvider>
+          <Navbar />
+          <div className="pt-18 lg:pt-24 bg-gray-50">{children}</div>
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   );
