@@ -36,10 +36,10 @@ const Cart = () => {
               {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
             </p>
           </div>
-          <Link href="/products" className="border rounded-lg">
+          <Link href="/products" className="hidden md:block border rounded-lg">
             <Button variant="ghost" size="sm" className="bg-gray-50">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              <span className="hidden md:block">Continue Shopping</span>
+              Continue Shopping
             </Button>
           </Link>
         </div>
@@ -51,10 +51,10 @@ const Cart = () => {
               return (
                 <Link key={item.id} href={`/products/${item.id}`}>
                   <Card key={item.id}>
-                    <CardContent className="p-6">
-                      <div className="flex flex-col sm:flex-row gap-4">
+                    <CardContent className="p-4 md:p-6">
+                      <div className="flex gap-2 md:gap-4">
                         {/* Product Image */}
-                        <div className="relative w-full sm:w-32 h-32 shrink-0">
+                        <div className="relative w-25 md:w-32 h-25 md:h-32 shrink-0">
                           <Image
                             src={item.image || '/placeholder.svg'}
                             alt={item.title}
@@ -65,7 +65,7 @@ const Cart = () => {
 
                         {/* Product Details */}
                         <div className="flex-1 space-y-2">
-                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                          <div className="flex justify-between items-start gap-2">
                             <div>
                               <h3 className="font-semibold text-lg">{item.title}</h3>
                               <p className="text-sm text-muted-foreground">
@@ -86,58 +86,63 @@ const Cart = () => {
                           </div>
 
                           {/* Price and Quantity */}
-                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
+                          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
                             <div className="flex items-center gap-2">
                               <span className="text-lg font-bold">${item.price}</span>
                             </div>
 
-                            <div className="flex items-center gap-3">
-                              <Label htmlFor={`quantity-${item.id}`} className="text-sm">
-                                Quantiy:
-                              </Label>
-                              <div
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                }}
-                                className="flex items-center border rounded-md"
-                              >
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
+                            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                              <div className="flex gap-2 items-center justify-between">
+                                <Label htmlFor={`quantity-${item.id}`} className="text-sm">
+                                  Quantiy:
+                                </Label>
+                                <div
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    dispatch(reduceQuantityFromCart(item.id));
                                   }}
-                                  disabled={item.quantity <= 1}
-                                  className="h-8 w-8 p-0"
+                                  className="flex items-center border rounded-md"
                                 >
-                                  <Minus className="w-3 h-3" />
-                                </Button>
-                                <Input
-                                  id={`quantity-${item.id}`}
-                                  type="number"
-                                  value={item.quantity}
-                                  className="w-16 h-8 text-center border-0 focus-visible:ring-0"
-                                  min="1"
-                                  max="10"
-                                />
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    dispatch(increaseQuantityInCart(item.id));
-                                  }}
-                                  disabled={item.quantity >= 10}
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <Plus className="w-3 h-3" />
-                                </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      dispatch(reduceQuantityFromCart(item.id));
+                                    }}
+                                    disabled={item.quantity <= 1}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Minus className="w-3 h-3" />
+                                  </Button>
+                                  <Input
+                                    id={`quantity-${item.id}`}
+                                    type="number"
+                                    value={item.quantity}
+                                    className="w-16 h-8 text-center border-0 focus-visible:ring-0"
+                                    min="1"
+                                    max="10"
+                                  />
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      dispatch(increaseQuantityInCart(item.id));
+                                    }}
+                                    disabled={item.quantity >= 10}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                  </Button>
+                                </div>
                               </div>
-                              <div className="text-right min-w-[80px]">
+                              <div className="flex items-center justify-between">
+                                <Label htmlFor="price" className="text-sm md:hidden">
+                                  Price:
+                                </Label>
                                 <p className="font-semibold">
                                   ${(item.price * item.quantity).toFixed(2)}
                                 </p>

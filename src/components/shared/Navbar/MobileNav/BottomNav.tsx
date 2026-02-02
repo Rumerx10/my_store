@@ -3,7 +3,6 @@ import { IoMdHeartEmpty } from 'react-icons/io';
 import {
   MdOutlineCardGiftcard,
   MdOutlineHome,
-  MdOutlineKeyboardDoubleArrowRight,
 } from 'react-icons/md';
 import { FiSearch } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
@@ -13,6 +12,7 @@ import { AiOutlineProduct } from 'react-icons/ai';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { Search } from 'lucide-react';
 
 const BottomNav = ({
   searchTerm,
@@ -59,10 +59,10 @@ const BottomNav = ({
     setIsSearchBoxOpen(false);
   };
   return (
-    <div>
+    <div className="lg:hidden">
       {/* Search Box */}
       <div
-        className={`fixed z-50 flex items-center duration-200 top-20 w-full border-2 border-card shadow-md bg-white ${
+        className={`fixed z-60 flex items-center duration-300 top-18 lg:top-20 w-full shadow-md bg-white ${
           isSearchBoxOpen ? 'scale-100 h-12' : 'scale-0 h-0 pointer-events-none'
         }`}
       >
@@ -82,21 +82,17 @@ const BottomNav = ({
                 router.push('/products');
                 searchInputRef.current?.focus();
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex shrink-0 rounded-full items-center justify-center border border-gray-300 hover:bg-gray-300 duration-300 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex shrink-0 rounded-sm items-center justify-center text-gray-400 hover:bg-gray-100 duration-300 cursor-pointer"
             >
               <RxCross2 size={22} />
             </div>
           )}
         </div>
         <button
-          className="group bg-green hover:bg-hGreen active:bg-hGreen duration-200 px-4 py-2"
+          className="group bg-green hover:bg-hGreen active:bg-hGreen duration-300 px-4 h-full"
           onClick={handleSearch}
         >
-          <MdOutlineKeyboardDoubleArrowRight
-            color="white"
-            size={28}
-            className="group-active:scale-90 duration-200"
-          />
+          <Search color="white" size={24} className="group-active:scale-90 duration-200" />
         </button>
       </div>
 
@@ -159,7 +155,7 @@ const BottomNav = ({
       {/* Overlay */}
       {isSearchBoxOpen && (
         <div
-          className="fixed z-50 inset-0 top-32 bottom-20 backdrop-blur-sm bg-black/10 duration-200"
+          className={`fixed z-50 inset-0 top-18 bottom-15 backdrop-blur-sm bg-black/10 duration-300 ${isSearchBoxOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
           onClick={() => setIsSearchBoxOpen(false)}
         />
       )}

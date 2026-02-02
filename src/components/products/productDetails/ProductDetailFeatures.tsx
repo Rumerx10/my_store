@@ -4,8 +4,8 @@ import Image from 'next/image';
 
 const ProductDetailFeatures = () => {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
+    <div className="lg:hidden flex flex-col gap-2">
+      <div className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-1 mb-4">
         <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-200">
           <Truck className="w-6 h-6 text-blue-600" />
           <div>

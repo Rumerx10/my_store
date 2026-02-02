@@ -40,8 +40,13 @@ export default function ProductDetails() {
               setActiveTab={setActiveTab}
             />
           )}
-          <div className="space-y-6">
-            <PricingDetails price={product!.price} quantity={quantity} />
+          <div className="lg:space-y-6">
+            <PricingDetails price={product?.price ? product.price : 0} quantity={quantity} />
+            <div className="md:hidden lg:block">
+              <SellerInfo />
+            </div>
+          </div>
+          <div className="lg:hidden">
             <SellerInfo />
           </div>
         </div>

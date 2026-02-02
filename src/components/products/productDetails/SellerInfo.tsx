@@ -3,7 +3,7 @@ import { GrChatOption } from 'react-icons/gr';
 
 const SellerInfo = () => {
   return (
-    <section className="border rounded-lg mb-4">
+    <section className="border rounded-lg lg:mb-4">
       <div className="flex justify-between items-center p-4">
         <div>
           <div className="text-gray-500 text-sm mb-1">Sold by</div>

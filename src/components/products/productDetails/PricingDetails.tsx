@@ -2,7 +2,7 @@ import React from 'react';
 
 const PricingDetails = ({ price, quantity }: { price: number; quantity: number }) => {
   return (
-    <div className="border py-6 px-6 lg:px-6 w-full rounded-lg">
+    <div className="md:h-full lg:h-auto border p-6 lg:px-6 w-full rounded-lg">
       <h1 className="text-center font-semibold  underline mb-8">Pricing Details</h1>
       <div className="flex flex-col">
         <div className="flex gap-5 items-center justify-between text-xs lg:text-sm text-black-dim">
