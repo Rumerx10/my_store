@@ -55,11 +55,12 @@ const MobileNav = ({
       <BottomNav searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       {/* <CategorySidebar isOpen={isOpen} setOpen={setOpen} activeLabel={activeLabel} mobile={true} /> */}
       <aside
-        className={`lg:hidden fixed z-50 top-20 inset-0 duration-300 ${isOpen ? 'backdrop-blur-md bg-black/30 opacity-100' : 'opacity-0 pointer-events-none'} `}
+        className={`lg:hidden fixed z-50 top-17.5 lg:top-20 inset-0 duration-300
+          ${isOpen ? 'backdrop-blur-sm bg-white/50 opacity-100' : 'opacity-0 pointer-events-none'} `}
         onClick={() => setOpen(false)}
       >
         <div
-          className={`absolute duration-300 bg-white ${isOpen ? 'translate-x-0' : '-translate-x-full'} top-0 bottom-0 left-0 w-[60%] shadow-xl z-50`}
+          className={`absolute duration-300 bg-white ${isOpen ? 'translate-x-0' : '-translate-x-full'} top-0 bottom-0 left-0 w-[80%] md:w-[45%] shadow-xl z-50`}
         >
           {menuItems.map((item) => {
             const IconComponent = item.icon;

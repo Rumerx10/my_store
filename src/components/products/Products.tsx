@@ -147,14 +147,15 @@ const Products = () => {
     <div className="relative min-h-screen">
       {isFilterOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          className={`lg:hidden fixed inset-0 bg-white/50 backdrop-blur-sm 
+            z-40 duration-300 ${isFilterOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setIsFilterOpen(false)}
         />
       )}
       {/* mobile navigation */}
       <div className="container mx-auto px-4 flex flex-col">
         <div
-          className={`lg:hidden fixed z-50 w-[80%] right-0 bottom-0 top-20 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+          className={`lg:hidden fixed z-50 w-[80%] md:w-[45%] right-0 bottom-0 top-18 lg:top-20 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
             isFilterOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >

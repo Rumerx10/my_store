@@ -17,6 +17,7 @@ import {
   removeFromWishlist,
 } from '@/redux/features/wishlist/wishlistSlice';
 import { addToCart } from '@/redux/features/cart/cartSlice';
+import ProductCardGrid from '../products/ProductCardGrid';
 
 export default function Wishlist() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,14 +78,14 @@ export default function Wishlist() {
     <div className="min-h-screen bg-gray-50">
       <div className="container  flex flex-col mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
             <p className="text-gray-600">
               Showing {filteredAndSortedItems.length} of {wishlistItems.length} items
             </p>
           </div>
-          <div className="flex gap-5 items-center">
+          <div className="flex gap-2 md:gap-5 items-center">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
@@ -105,7 +106,7 @@ export default function Wishlist() {
                 Add all to cart
               </Button>
             </div>
-            <Link href="/products" className="">
+            <Link href="/products" className="hidden md:block">
               <Button
                 variant="ghost"
                 size="lg"
@@ -119,7 +120,7 @@ export default function Wishlist() {
         </div>
         {/* Products Grid/List */}
         {filteredAndSortedItems.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredAndSortedItems.map((item) => {
               return (
                 <Link key={item.id} href={`/products/${item.id}`} className="flex w-full h-full">
@@ -133,6 +134,14 @@ export default function Wishlist() {
                           className="object-cover transition-transform group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/0 group-hover:from-black/20 to-transparent duration-300">
+                          <div
+                            onClick={(e) => handleRemoveFromWishlist(e, item.id)}
+                            className="absolute bottom-2 right-2 p-1 hover:bg-gray-200 duration-300 rounded-full"
+                          >
+                            <Heart className="fill-red text-red" />
+                          </div>
+                        </div>
                       </div>
                       <div
                         className={`border-t-2 flex flex-col justify-between relative p-4 flex-grow`}
@@ -168,12 +177,6 @@ export default function Wishlist() {
                               <ShoppingCart className="w-5 h-5 mr-2" />
                               Add to Cart
                             </Button>
-                            <div
-                              onClick={(e) => handleRemoveFromWishlist(e, item.id)}
-                              className="border rounded-md p-2 cursor-pointer"
-                            >
-                              <Heart className="fill-red text-red" />
-                            </div>
                           </div>
                         </div>
                       </div>

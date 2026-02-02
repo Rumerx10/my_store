@@ -29,7 +29,7 @@ const FilterContent = ({
   clearAllFilters,
 }: FilterContentProps) => {
   return (
-    <div className="space-y-6 mt-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-2xl w-full text-center font-semibold text-gray-900">Filters</h3>
         <Button
