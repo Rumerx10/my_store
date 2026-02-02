@@ -17,7 +17,6 @@ import {
   removeFromWishlist,
 } from '@/redux/features/wishlist/wishlistSlice';
 import { addToCart } from '@/redux/features/cart/cartSlice';
-import ProductCardGrid from '../products/ProductCardGrid';
 
 export default function Wishlist() {
   const [searchQuery, setSearchQuery] = useState('');
