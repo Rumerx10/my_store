@@ -9,6 +9,8 @@ import { PiShoppingCart } from 'react-icons/pi';
 import { GrChatOption } from 'react-icons/gr';
 import Link from 'next/link';
 import { menuItems } from '@/docs/navLinks';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const MobileNav = ({
   searchTerm,
@@ -18,6 +20,8 @@ const MobileNav = ({
   setSearchTerm: (value: string) => void;
 }) => {
   const [isOpen, setOpen] = useState(false);
+  const cartItems = useSelector((state: RootState) => state.cart.items).length;
+
   return (
     <div>
       <div className="lg:hidden bg-navWhite fixed z-50 right-0 left-0 backdrop-blur-2xl text-white h-18 flex items-center justify-center">
@@ -34,8 +38,8 @@ const MobileNav = ({
               className="flex flex-col gap-1 items-center justify-between relative"
             >
               <div className="relative">
-                <div className="absolute z-40 -right-1 top-0 h-3.5 w-3.5 text-xs text-white font-semibold flex justify-center items-center rounded-full bg-red-500">
-                  6
+                <div className="absolute z-40 -right-0.5 -top-0.5 h-3.5 w-3.5 text-xs text-white font-semibold flex justify-center items-center rounded-full bg-red-500">
+                  {cartItems}
                 </div>
                 <PiShoppingCart size={24} className="active:scale-90 duration-200" />
               </div>

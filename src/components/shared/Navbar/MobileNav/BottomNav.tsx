@@ -11,31 +11,8 @@ import { RxCross2 } from 'react-icons/rx';
 import { AiOutlineProduct } from 'react-icons/ai';
 
 import Link from 'next/link';
-
-const navItems = [
-  { label: 'Home', src: '/', icon: <MdOutlineHome size={24} />, badge: null, badgePosition: '' },
-  {
-    label: 'Offers',
-    src: '/offers',
-    icon: <MdOutlineCardGiftcard size={24} />,
-    badge: 3,
-    badgePosition: '-right-1',
-  },
-  {
-    label: 'Products',
-    src: '/products',
-    icon: <AiOutlineProduct size={24} />,
-    badge: 3,
-    badgePosition: 'right-2',
-  },
-  {
-    label: 'Wish List',
-    src: 'wish-list',
-    icon: <IoMdHeartEmpty size={24} />,
-    badge: 5,
-    badgePosition: 'right-1.5',
-  },
-];
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const BottomNav = ({
   searchTerm,
@@ -49,6 +26,33 @@ const BottomNav = ({
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isActive = (label: string) => selected === label.toLowerCase();
+
+  const wishlistItems = useSelector((state: RootState) => state.wishlist.items).length;
+
+  const navItems = [
+    { label: 'Home', src: '/', icon: <MdOutlineHome size={24} />, badge: null, badgePosition: '' },
+    {
+      label: 'Offers',
+      src: '/offers',
+      icon: <MdOutlineCardGiftcard size={24} />,
+      badge: 0,
+      badgePosition: '-right-1',
+    },
+    {
+      label: 'Products',
+      src: '/products',
+      icon: <AiOutlineProduct size={24} />,
+      badge: null,
+      badgePosition: 'right-2',
+    },
+    {
+      label: 'Wish List',
+      src: 'wish-list',
+      icon: <IoMdHeartEmpty size={24} />,
+      badge: wishlistItems,
+      badgePosition: 'right-1.5',
+    },
+  ];
 
   const handleSearch = () => {
     router.push(`/products?searchTerm=${searchTerm}`);
@@ -111,7 +115,7 @@ const BottomNav = ({
             }`}
           >
             <div className={isActive(label) ? 'text-green' : 'text-black'}>
-              {badge != null && (
+              {badge != null && badge !== 0 && (
                 <span
                   className={`absolute text-white top-0 h-4 w-4 text-xs font-semibold flex justify-center items-center rounded-full bg-red-500 ${badgePosition}`}
                 >

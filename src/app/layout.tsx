@@ -34,7 +34,7 @@ export default function RootLayout({
         <Toaster position="top-center" reverseOrder={false} />
         <ReduxProvider>
           <Navbar />
-          <div className="pt-18 lg:pt-24 bg-gray-50">{children}</div>
+          <div className="pt-18 lg:pt-20 bg-gray-50">{children}</div>
           <Footer />
         </ReduxProvider>
       </body>
