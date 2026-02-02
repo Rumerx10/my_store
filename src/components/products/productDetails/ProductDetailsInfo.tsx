@@ -153,15 +153,14 @@ export function ProductDetailsInfo({
             />
           </div>
         </div>
-
-        <Button
+        {/* <Button
           size="lg"
           variant="outline"
           className="w-full py-4 text-lg font-semibold border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors bg-transparent"
           disabled={product.stock === 0}
         >
           Buy Now
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

@@ -126,14 +126,20 @@ export const TABSTITLES = [
   { value: 'shipping', label: 'Shipping & Returns' },
 ];
 
-export const CATEGORIES = ['Electronics', 'Clothing', 'Accessories', 'Home & Kitchen'];
+export const CATEGORIES = ['beauty', 'fragrances', 'furniture', 'groceries'];
 export const BRANDS = [
-  'TechSound',
-  'EcoWear',
-  'FitTech',
-  'StyleCraft',
-  'HomeEssentials',
-  'SportMax',
-  'PowerUp',
-  'AromaBliss',
+  'Essence',
+  'Glamour Beauty',
+  'Velvet Touch',
+  'Chic Cosmetics',
+  'Nail Couture',
+  'Calvin Klein',
+  'Chanel',
+  'Dior',
+  'Dolce & Gabbana',
+  'Gucci',
+  'Annibale Colombo',
+  'Furniture Co.',
+  'Knoll',
+  'Bath Trends',
 ];

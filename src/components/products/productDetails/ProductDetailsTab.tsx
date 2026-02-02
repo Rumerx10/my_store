@@ -53,7 +53,7 @@ const ratingDistribution = [
 
 export function ProductDetailsTab(props: ProductDetailsTabProps) {
   return (
-    <div className="bg-white shadow-sm border border-gray-200 overflow-hidden mb-12">
+    <div className="rounded-lg bg-white shadow-sm border border-gray-200 overflow-hidden mb-12">
       <Tabs value={props.activeTab} onValueChange={props.setActiveTab} className="w-full">
         <TabsList className="w-full flex-col lg:flex-row px-3 py-2">
           {TABSTITLES.map(({ value, label }: { value: string; label: string }) => (
