@@ -123,14 +123,16 @@ const Orders = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="border-border bg-muted/50">
-            {statusTabs.map((status) => (
-              <TabsTrigger key={status} value={status} className="capitalize">
-                {status === 'all' ? 'All Orders' : status}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        <Tabs defaultValue="all" className="w-full overflow-hidden">
+          <div>
+            <TabsList className="border-border bg-muted/50 overflow-x-auto flex flex-nowrap scrollbar-modern">
+              {statusTabs.map((status) => (
+                <TabsTrigger key={status} value={status} className="capitalize">
+                  {status === 'all' ? 'All Orders' : status}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           {statusTabs.map((status) => (
             <TabsContent key={status} value={status} className="space-y-4">
@@ -270,7 +272,9 @@ const Orders = () => {
                 <Card className="border-border p-12 text-center">
                   <Package className="mx-auto h-12 w-12 text-muted-foreground" />
                   <p className="mt-4 text-lg font-medium text-foreground">No orders found</p>
-                  <p className="text-muted-foreground">You don&apos;t have any {status} orders yet</p>
+                  <p className="text-muted-foreground">
+                    You don&apos;t have any {status} orders yet
+                  </p>
                 </Card>
               )}
             </TabsContent>
