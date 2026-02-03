@@ -92,7 +92,7 @@ const Cart = () => {
                             </div>
 
                             <div className="flex flex-col md:flex-row md:items-center gap-3">
-                              <div className="flex gap-2 items-center justify-end md:justify-between">
+                              <div className="flex gap-2 items-center md:justify-between">
                                 <Label
                                   htmlFor={`quantity-${item.id}`}
                                   className="hidden md:block text-sm"
@@ -104,7 +104,7 @@ const Cart = () => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                   }}
-                                  className="flex items-center border rounded-md"
+                                  className="flex w-full items-center border rounded-md"
                                 >
                                   <Button
                                     variant="ghost"
@@ -152,16 +152,20 @@ const Cart = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="flex gap-1">
-                            <div className="flex items-center">
-                              <FaStar className="w-5 h-5 text-yellow-400" />
-                              <FaStar className="w-5 h-5 text-yellow-400" />
-                              <FaStar className="w-5 h-5 text-yellow-400" />
-                              <FaStar className="w-5 h-5 text-yellow-400" />
-                              <FaStarHalfAlt className="w-5 h-5 text-yellow-400" />
+                          <div className="flex flex-col md:flex-row gap-1">
+                            <div className="flex items-center gap-1">
+                              <div className="flex">
+                                <FaStar className="w-5 h-5 text-yellow-400" />
+                                <FaStar className="w-5 h-5 text-yellow-400" />
+                                <FaStar className="w-5 h-5 text-yellow-400" />
+                                <FaStar className="w-5 h-5 text-yellow-400" />
+                                <FaStarHalfAlt className="w-5 h-5 text-yellow-400" />
+                              </div>
                               {item.rating}
                             </div>
-                            <div>| {item.sold} sold </div>
+                            <div className="flex items-center gap-1">
+                              <span className="hidden md:block">|</span> {item.sold} sold{' '}
+                            </div>
                           </div>
                         </div>
                       </div>
