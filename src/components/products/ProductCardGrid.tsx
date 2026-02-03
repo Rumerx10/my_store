@@ -1,12 +1,14 @@
 'use client';
 import Image from 'next/image';
-import { Star, Heart } from 'lucide-react';
+import { Star, Heart, ShoppingCart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { IProduct } from '@/types/api_types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
+import { Button } from '../ui/button';
+import { addToCart } from '@/redux/features/cart/cartSlice';
 
 const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string }) => {
   const dispatch = useDispatch();
@@ -14,6 +16,21 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
     (product) => product.id,
   );
   // console.log('Wishlist Products ::', wishlistItems);
+
+  const handleAddToCart = (e: React.MouseEvent, item: IProduct) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newItem = {
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      rating: item.rating,
+      sold: 23,
+      quantity: 1,
+      image: item.images[0],
+    };
+    dispatch(addToCart(newItem));
+  };
 
   const handleWishlist = (e: React.MouseEvent, product: IProduct) => {
     e.preventDefault();
@@ -36,7 +53,7 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
           <div className="relative aspect-square overflow-hidden">
             <Image
               src={product.images?.[0] || '/placeholder.svg'}
-              alt={product.title || "product image"}
+              alt={product.title || 'product image'}
               fill
               className="object-cover transition-transform group-hover:scale-110 duration-300"
             />
@@ -77,6 +94,18 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
                 <p className="flex items-center w-full text-sm text-black whitespace-nowrap">
                   <span className="hidden md:block mr-1">|</span> {product.reviews.length} sold
                 </p>
+              </div>
+              <div className="flex mt-2 gap-2 items-center justify-between">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-thin lg:font-medium text-[12px] lg:text-sm shadow-lg"
+                  disabled={product.stock === 0}
+                  onClick={(e) => handleAddToCart(e, product)}
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Add to Cart
+                </Button>
               </div>
             </div>
           </div>

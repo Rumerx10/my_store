@@ -92,8 +92,11 @@ const Cart = () => {
                             </div>
 
                             <div className="flex flex-col md:flex-row md:items-center gap-3">
-                              <div className="flex gap-2 items-center justify-between">
-                                <Label htmlFor={`quantity-${item.id}`} className="text-sm">
+                              <div className="flex gap-2 items-center justify-end md:justify-between">
+                                <Label
+                                  htmlFor={`quantity-${item.id}`}
+                                  className="hidden md:block text-sm"
+                                >
                                   Quantiy:
                                 </Label>
                                 <div
@@ -120,7 +123,7 @@ const Cart = () => {
                                     id={`quantity-${item.id}`}
                                     type="number"
                                     value={item.quantity}
-                                    className="w-16 h-8 text-center border-0 focus-visible:ring-0"
+                                    className="w-full border-0 shadow-none h-8 text-center"
                                     min="1"
                                     max="10"
                                   />
@@ -140,10 +143,10 @@ const Cart = () => {
                                 </div>
                               </div>
                               <div className="flex items-center justify-between">
-                                <Label htmlFor="price" className="text-sm md:hidden">
+                                <Label htmlFor="price" className="text-md font-medium md:hidden">
                                   Price:
                                 </Label>
-                                <p className="font-semibold">
+                                <p className="font-medium">
                                   ${(item.price * item.quantity).toFixed(2)}
                                 </p>
                               </div>

@@ -42,7 +42,7 @@ export default function ProductDetails() {
           )}
           <div className="lg:space-y-6">
             <PricingDetails price={product?.price ? product.price : 0} quantity={quantity} />
-            <div className="md:hidden lg:block">
+            <div className="hidden lg:block">
               <SellerInfo />
             </div>
           </div>

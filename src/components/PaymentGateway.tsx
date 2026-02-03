@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 import PhoneModal from './PhoneModal';
 import CardPayment from './CardPayment';
 import MobilePayment from './MobilePayment';
-import { useRouter } from 'next/navigation';
 import PaymentOrOrderSuccess from './PaymentOrOrderSuccess';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -26,16 +25,18 @@ export default function PaymentGateway({
   payable,
   payNow,
   setPayNow,
+  showSuccessModal,
+  setShowSuccessModal,
 }: {
   payable: number;
   payNow: boolean;
   setPayNow: (value: boolean) => void;
+  showSuccessModal: boolean;
+  setShowSuccessModal: (value: boolean) => void;
 }) {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'cards' | 'mobile'>('cards');
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [showOTPModal, setShowOTPModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [generatedOTP, setGeneratedOTP] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpInput, setOtpInput] = useState('');
@@ -107,10 +108,10 @@ export default function PaymentGateway({
       setPhoneNumber('');
 
       // Optional: Redirect after success
-      setTimeout(() => {
-        router.push('/orders');
-        setPayNow(false);
-      }, 3000);
+      // setTimeout(() => {
+      //   router.push('/orders');
+      //   setPayNow(false);
+      // }, 3000);
 
       toast.success('Payment successful! Order placed.');
     } else {

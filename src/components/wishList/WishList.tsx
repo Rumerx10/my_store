@@ -118,7 +118,7 @@ export default function Wishlist() {
         </div>
         {/* Products Grid/List */}
         {filteredAndSortedItems.length > 0 ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-3">
             {filteredAndSortedItems.map((item) => {
               return (
                 <Link key={item.id} href={`/products/${item.id}`} className="flex w-full h-full">
@@ -142,7 +142,7 @@ export default function Wishlist() {
                         </div>
                       </div>
                       <div
-                        className={`border-t-2 flex flex-col justify-between relative p-4 flex-grow`}
+                        className={`border-t-2 flex flex-col justify-between relative px-2 py-2 lg:p-4 flex-grow`}
                       >
                         <h3 className="lg:text-xl !font-normal text-black line-clamp-2 transition-colors">
                           {item.title}
@@ -168,7 +168,7 @@ export default function Wishlist() {
                             <Button
                               size="lg"
                               variant="secondary"
-                              className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-lg"
+                              className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-thin lg:font-medium text-[12px] lg:text-sm shadow-lg"
                               disabled={item.stock === 0}
                               onClick={(e) => handleAddToCart(e, item)}
                             >

@@ -9,16 +9,27 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import PaymentGateway from '@/components/PaymentGateway';
 import { useState } from 'react';
+import PaymentOrOrderSuccess from '@/components/PaymentOrOrderSuccess';
+import { useRouter } from 'next/navigation';
 
 const OrderSummary = () => {
+  const router = useRouter();
   const [payNow, setPayNow] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.items) || [];
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const calculation = () => {
     const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shipping = 5;
     const total = subTotal + shipping;
     return { subTotal, shipping, total };
+  };
+  const handleCashOnDelivery = () => {
+    setShowSuccessModal(true);
+    setTimeout(() => {
+      router.push('/orders');
+      setShowSuccessModal(false);
+    }, 3000);
   };
 
   return (
@@ -28,8 +39,19 @@ const OrderSummary = () => {
       <div className="w-full flex items-center justify-center min-h-screen">
         {payNow ? (
           <div className={`backdrop-blur-sm bg-transparent duration-300`}>
-            <PaymentGateway payNow={payNow} payable={calculation().total} setPayNow={setPayNow} />
+            <PaymentGateway
+              showSuccessModal={showSuccessModal}
+              setShowSuccessModal={setShowSuccessModal}
+              payNow={payNow}
+              payable={calculation().total}
+              setPayNow={setPayNow}
+            />
           </div>
+        ) : showSuccessModal ? (
+          <PaymentOrOrderSuccess
+            title="Order Placed Successfullt!"
+            subTitle="You will be called for confirmation. Payment will be collected after delivery."
+          />
         ) : (
           <div className="py-5 w-full grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5 md:p-4 h-auto">
             {/* Left side - Cart Items */}
@@ -176,7 +198,7 @@ const OrderSummary = () => {
                     </Button>
                   </div>
 
-                  <div>
+                  <div onClick={handleCashOnDelivery}>
                     <Button
                       size="lg"
                       variant="outline"
