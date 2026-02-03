@@ -99,7 +99,8 @@ const ProductCardGrid = ({ product }: { product: IProduct; textColor?: string })
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-thin lg:font-medium text-[12px] lg:text-sm shadow-lg"
+                  className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 
+                  hover:from-blue-700 hover:to-indigo-700 text-white font-medium lg:font-medium text-xs lg:text-sm shadow-lg"
                   disabled={product.stock === 0}
                   onClick={(e) => handleAddToCart(e, product)}
                 >
