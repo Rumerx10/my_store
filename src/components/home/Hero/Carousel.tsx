@@ -39,16 +39,16 @@ const Carousel = ({
       <Swiper
         loop={true}
         // grabCursor={true}
-        effect={'creative'}
-        creativeEffect={{
-          prev: {
-            shadow: true,
-            translate: [0, 0, -400],
-          },
-          next: {
-            translate: ['100%', 0, 0],
-          },
-        }}
+        // effect={'creative'}
+        // creativeEffect={{
+        //   prev: {
+        //     shadow: true,
+        //     translate: [0, 0, -400],
+        //   },
+        //   next: {
+        //     translate: ['100%', 0, 0],
+        //   },
+        // }}
         autoplay={autoplayConfig}
         navigation={navigationConfig}
         modules={[EffectCreative, Autoplay, Navigation]}

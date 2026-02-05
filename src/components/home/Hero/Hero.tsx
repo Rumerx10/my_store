@@ -14,12 +14,15 @@ const Hero = () => {
   ];
 
   // const imagesSubLeft = ['/hero/hero2/1.png', '/hero/hero2/2.png'];
-
   // const imagesSubRight = ['/hero/hero3/1.png', '/hero/hero3/2.png', '/hero/hero3/3.png'];
 
   return (
     <section className="bg-white">
-      <Carousel height={'h-[350px] md:h-[400px] lg:h-[700px]'} delay={5000} images={imagesMain} />
+      <Carousel 
+        height={'h-[350px] md:h-[400px] lg:h-[calc(100vh-154px)]'} // Subtracting navbar height
+        delay={5000} 
+        images={imagesMain} 
+      />
     </section>
   );
 };

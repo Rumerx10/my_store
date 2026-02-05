@@ -3,7 +3,7 @@ import Marquee from 'react-fast-marquee';
 
 const Features = () => {
   return (
-    <section className="py-4">
+    <section className="py-2">
       <Marquee gradient={false} speed={100}>
         <div className="flex items-center space-x-6 sm:space-x-10 md:space-x-16 px-2">
           {FEATURES.map((feature, index) => (
