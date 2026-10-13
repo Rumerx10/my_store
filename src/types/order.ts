@@ -1,4 +1,3 @@
-export type OrderStatus = 'all' | 'pending' | 'shipped' | 'delivered' | 'cancelled';
 export interface Order {
   id: string;
   date: string;
@@ -35,14 +34,5 @@ export interface TimelineEvent {
   description: string;
   date: string;
   status: 'completed' | 'current' | 'pending';
-}
-
-export interface CancelOrderData {
-  reason: string;
-}
-
-export interface OrderFilters {
-  status: OrderStatus;
-  search: string;
 }
 

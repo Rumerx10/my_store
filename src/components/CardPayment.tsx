@@ -1,275 +1,211 @@
-import { Eye, EyeOff, HelpCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import toast from 'react-hot-toast';
 import { useState } from 'react';
-import PaymentOrOrderSuccess from './PaymentOrOrderSuccess';
+import { Eye, EyeOff, Lock } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useRouter } from 'next/navigation';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn, formatPrice } from '@/lib/utils';
 
-// Define validation schema
-const paymentSchema = z.object({
-  cardNumber: z
+const paymentSchema = yup.object({
+  cardNumber: yup
     .string()
-    .min(1, 'Card number is required')
-    .regex(/^\d{4} \d{4} \d{4} \d{4}$/, 'Invalid card number format (XXXX XXXX XXXX XXXX)'),
-  expiryDate: z
+    .required('Enter your card number')
+    .matches(/^\d{4} \d{4} \d{4} \d{4}$/, 'Card numbers have 16 digits'),
+  expiryDate: yup
     .string()
-    .min(1, 'Expiry date is required')
-    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Invalid expiry date format (MM/YY)'),
-  cvv: z
+    .required('Enter the expiry date')
+    .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Use the MM/YY format, for example 08/28'),
+  cvv: yup
     .string()
-    .min(3, 'CVV must be at least 3 digits')
-    .max(4, 'CVV can be maximum 4 digits')
-    .regex(/^\d+$/, 'CVV must contain only numbers'),
-  cardholderName: z
+    .required('Enter the security code')
+    .matches(/^\d{3,4}$/, 'The security code has 3 or 4 digits'),
+  cardholderName: yup
     .string()
-    .min(1, 'Cardholder name is required')
-    .min(2, 'Cardholder name must be at least 2 characters'),
-  saveCard: z.boolean(),
+    .trim()
+    .required('Enter the name on the card')
+    .min(2, 'Enter the full name on the card'),
+  saveCard: yup.boolean().required(),
 });
 
-type PaymentFormData = z.infer<typeof paymentSchema>;
+type PaymentFormData = yup.InferType<typeof paymentSchema>;
 
-const CardPayment = ({ payable }: { payable: number }) => {
-  const router = useRouter();
-  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+const formatCardNumber = (value: string) => {
+  const digits = value.replace(/\D/g, '').slice(0, 16);
+  return digits.match(/.{1,4}/g)?.join(' ') ?? '';
+};
+
+const formatExpiryDate = (value: string) => {
+  const digits = value.replace(/\D/g, '').slice(0, 4);
+  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+};
+
+const FieldError = ({ id, message }: { id: string; message?: string }) =>
+  message ? (
+    <p id={id} className="mt-1.5 text-xs text-red">
+      {message}
+    </p>
+  ) : null;
+
+const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void }) => {
   const [showCVV, setShowCVV] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    trigger,
   } = useForm<PaymentFormData>({
-    resolver: zodResolver(paymentSchema),
-    defaultValues: {
-      cardNumber: '',
-      expiryDate: '',
-      cvv: '',
-      cardholderName: '',
-      saveCard: false,
-    },
+    resolver: yupResolver(paymentSchema),
+    mode: 'onTouched',
+    defaultValues: { cardNumber: '', expiryDate: '', cvv: '', cardholderName: '', saveCard: false },
   });
 
-  const formatCardNumber = (value: string) => {
-    const digits = value.replace(/\D/g, '');
-    const groups = digits.match(/.{1,4}/g);
-    return groups ? groups.join(' ').slice(0, 19) : '';
+  const onSubmit = async () => {
+    // Simulated payment request; no card data leaves the browser in this demo.
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    toast.success('Payment received');
+    onPaid();
   };
 
-  const formatExpiryDate = (value: string) => {
-    const digits = value.replace(/\D/g, '');
-    if (digits.length >= 2) {
-      return `${digits.slice(0, 2)}/${digits.slice(2, 4)}`;
-    }
-    return digits;
-  };
+  const inputClass = (hasError: boolean) =>
+    cn('h-11', hasError && 'border-red focus-visible:ring-red/20');
 
-  const onSubmit = async (data: PaymentFormData) => {
-    try {
-      // Simulate API call
-      console.log('Payment submitted:', data);
-      // Show loading toast
-      const toastId = toast.loading('Processing payment...');
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success('Payment Successful!', { id: toastId });
-      setShowPaymentSuccess(true);
-      setTimeout(() => {
-        setShowPaymentSuccess(false);
-        router.push('/products');
-      }, 3000);
-    } catch (error) {
-      console.log(error);
-      toast.error('Payment failed. Please try again.');
-    }
-  };
-
-  const handleCardNumberChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: string) => void,
-  ) => {
-    const formatted = formatCardNumber(e.target.value);
-    onChange(formatted);
-    // Trigger validation after formatting
-    setTimeout(() => trigger('cardNumber'), 0);
-  };
-
-  const handleExpiryDateChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: string) => void,
-  ) => {
-    const formatted = formatExpiryDate(e.target.value);
-    onChange(formatted);
-    setTimeout(() => trigger('expiryDate'), 0);
-  };
-
-  const handleCVVChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: string) => void,
-  ) => {
-    const digits = e.target.value.replace(/\D/g, '').slice(0, 4);
-    onChange(digits);
-    setTimeout(() => trigger('cvv'), 0);
-  };
-
-  return showPaymentSuccess ? (
-    <PaymentOrOrderSuccess />
-  ) : (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Card Logos */}
-      <div className="flex gap-2 mb-6 pb-4 border-b">
-        <div className="w-10 h-6 bg-blue-700 rounded flex items-center justify-center text-white text-xs font-bold">
-          VISA
-        </div>
-        <div className="w-10 h-6 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">
-          MC
-        </div>
-        <div className="w-10 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">
-          AMEX
-        </div>
-        <div className="w-10 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded flex items-center justify-center text-white text-xs font-bold">
-          DC
-        </div>
-        <div className="text-sm text-gray-600 ml-auto flex items-center">Other Cards</div>
-      </div>
-
-      {/* Card Number */}
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       <div>
+        <Label htmlFor="cardNumber" className="text-sm font-medium text-gray-900">
+          Card number
+        </Label>
         <Controller
           name="cardNumber"
           control={control}
           render={({ field }) => (
-            <div>
-              <Input
-                {...field}
-                type="text"
-                placeholder="Enter Card Number"
-                onChange={(e) => handleCardNumberChange(e, field.onChange)}
-                className={`w-full px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.cardNumber ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.cardNumber && (
-                <p className="text-red-500 text-sm mt-1">{errors.cardNumber.message}</p>
-              )}
-            </div>
+            <Input
+              {...field}
+              id="cardNumber"
+              inputMode="numeric"
+              autoComplete="cc-number"
+              placeholder="1234 5678 9012 3456"
+              onChange={(e) => field.onChange(formatCardNumber(e.target.value))}
+              aria-invalid={Boolean(errors.cardNumber)}
+              aria-describedby={errors.cardNumber ? 'cardNumber-error' : undefined}
+              className={cn('mt-1.5 tabular-nums', inputClass(Boolean(errors.cardNumber)))}
+            />
           )}
         />
+        <FieldError id="cardNumber-error" message={errors.cardNumber?.message} />
       </div>
 
-      {/* Expiry and CVV */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Expiry Date */}
         <div>
+          <Label htmlFor="expiryDate" className="text-sm font-medium text-gray-900">
+            Expiry date
+          </Label>
           <Controller
             name="expiryDate"
             control={control}
             render={({ field }) => (
-              <div>
-                <Input
-                  {...field}
-                  type="text"
-                  placeholder="MM/YY"
-                  onChange={(e) => handleExpiryDateChange(e, field.onChange)}
-                  maxLength={5}
-                  className={`px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.expiryDate ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {errors.expiryDate && (
-                  <p className="text-red-500 text-sm mt-1">{errors.expiryDate.message}</p>
-                )}
-              </div>
+              <Input
+                {...field}
+                id="expiryDate"
+                inputMode="numeric"
+                autoComplete="cc-exp"
+                placeholder="MM/YY"
+                onChange={(e) => field.onChange(formatExpiryDate(e.target.value))}
+                aria-invalid={Boolean(errors.expiryDate)}
+                aria-describedby={errors.expiryDate ? 'expiryDate-error' : undefined}
+                className={cn('mt-1.5 tabular-nums', inputClass(Boolean(errors.expiryDate)))}
+              />
             )}
           />
+          <FieldError id="expiryDate-error" message={errors.expiryDate?.message} />
         </div>
 
-        {/* CVV */}
         <div>
-          <Controller
-            name="cvv"
-            control={control}
-            render={({ field }) => (
-              <div className="relative">
+          <Label htmlFor="cvv" className="text-sm font-medium text-gray-900">
+            Security code
+          </Label>
+          <div className="relative mt-1.5">
+            <Controller
+              name="cvv"
+              control={control}
+              render={({ field }) => (
                 <Input
                   {...field}
+                  id="cvv"
                   type={showCVV ? 'text' : 'password'}
-                  placeholder="CVC/CVV"
-                  onChange={(e) => handleCVVChange(e, field.onChange)}
-                  maxLength={4}
-                  className={`w-full px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.cvv ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  inputMode="numeric"
+                  autoComplete="cc-csc"
+                  placeholder="CVV"
+                  onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                  aria-invalid={Boolean(errors.cvv)}
+                  aria-describedby={errors.cvv ? 'cvv-error' : undefined}
+                  className={cn('pr-11 tabular-nums', inputClass(Boolean(errors.cvv)))}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowCVV(!showCVV)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800 hover:text-gray-600"
-                >
-                  {showCVV ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-                {errors.cvv && <p className="text-red-500 text-sm mt-1">{errors.cvv.message}</p>}
-              </div>
-            )}
-          />
+              )}
+            />
+            <button
+              type="button"
+              onClick={() => setShowCVV(!showCVV)}
+              aria-label={showCVV ? 'Hide security code' : 'Show security code'}
+              className="absolute right-1 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 hover:text-gray-900"
+            >
+              {showCVV ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
+          <FieldError id="cvv-error" message={errors.cvv?.message} />
         </div>
       </div>
 
-      {/* Cardholder Name */}
       <div>
+        <Label htmlFor="cardholderName" className="text-sm font-medium text-gray-900">
+          Name on card
+        </Label>
         <Controller
           name="cardholderName"
           control={control}
           render={({ field }) => (
-            <div>
-              <Input
-                {...field}
-                type="text"
-                placeholder="Card Holder Name"
-                className={`w-full px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.cardholderName ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.cardholderName && (
-                <p className="text-red-500 text-sm mt-1">{errors.cardholderName.message}</p>
-              )}
-            </div>
+            <Input
+              {...field}
+              id="cardholderName"
+              autoComplete="cc-name"
+              placeholder="As printed on the card"
+              aria-invalid={Boolean(errors.cardholderName)}
+              aria-describedby={errors.cardholderName ? 'cardholderName-error' : undefined}
+              className={cn('mt-1.5', inputClass(Boolean(errors.cardholderName)))}
+            />
           )}
         />
+        <FieldError id="cardholderName-error" message={errors.cardholderName?.message} />
       </div>
 
-      {/* Save Card Checkbox */}
-      <div className="flex items-center gap-3 pt-2">
+      <div className="flex items-center gap-3">
         <Controller
           name="saveCard"
           control={control}
           render={({ field }) => (
             <Checkbox
+              id="saveCard"
               checked={field.value}
-              onCheckedChange={field.onChange}
-              className="w-4 h-4 rounded border-gray-300"
+              onCheckedChange={(checked) => field.onChange(checked === true)}
+              className="data-[state=checked]:border-brand data-[state=checked]:bg-brand"
             />
           )}
         />
-        <label className="text-sm text-gray-600 cursor-pointer flex-1">
-          Save card & remember me
-        </label>
-        <HelpCircle size={16} className="text-orange-500 cursor-help" />
+        <Label htmlFor="saveCard" className="cursor-pointer text-sm font-normal text-gray-700">
+          Save this card for next time
+        </Label>
       </div>
 
-      {/* Pay Button */}
-      <Button
+      <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded mt-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-brand font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98] disabled:cursor-wait disabled:opacity-70"
       >
-        {/* {isSubmitting ? 'Processing...' : '👆 PAY 500.00 BDT'} */}
-        {isSubmitting ? 'Processing...' : `👆 PAY ${payable.toFixed(2)} BDT`}
-      </Button>
+        <Lock className="size-4" aria-hidden="true" />
+        {isSubmitting ? 'Processing payment…' : `Pay ${formatPrice(payable)}`}
+      </button>
     </form>
   );
 };

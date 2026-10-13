@@ -29,7 +29,7 @@ const initialState: IWishlist = {
 };
 
 const wishlistSlice = createSlice({
-  name: 'cart',
+  name: 'wishlist',
   initialState,
   reducers: {
     addToWishlist(state, action: PayloadAction<IWishlistItem>) {

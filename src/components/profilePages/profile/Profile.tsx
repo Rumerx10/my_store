@@ -1,40 +1,63 @@
 'use client';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { Camera, Pencil } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Edit2, Save, X, Camera } from 'lucide-react';
+import { RootState } from '@/redux/store';
+import PageHeading from '../PageHeading';
 
-interface ProfileFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  image: string;
-}
+const profileSchema = yup.object({
+  firstName: yup.string().trim().required('Enter your first name'),
+  lastName: yup.string().trim().required('Enter your last name'),
+  email: yup.string().trim().required('Enter your email').email('Enter a valid email address'),
+  phone: yup
+    .string()
+    .trim()
+    .required('Enter your mobile number')
+    .matches(/^(\+?880[\s-]?)?0?1[3-9][\d\s-]{8,10}$/, 'Enter a Bangladeshi mobile number'),
+});
+
+type ProfileFormData = yup.InferType<typeof profileSchema>;
+
+const FIELDS: { name: keyof ProfileFormData; label: string; type?: string; autoComplete: string }[] = [
+  { name: 'firstName', label: 'First name', autoComplete: 'given-name' },
+  { name: 'lastName', label: 'Last name', autoComplete: 'family-name' },
+  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email' },
+  { name: 'phone', label: 'Mobile number', type: 'tel', autoComplete: 'tel' },
+];
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [image, setImage] = useState('/user.webp');
   const [profileData, setProfileData] = useState<ProfileFormData>({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
+    firstName: 'Tanvir',
+    lastName: 'Hasan',
+    email: 'tanvir.hasan@example.com',
+    phone: '+880 1712-345678',
   });
+  const orderCount = useSelector((state: RootState) => state.orderlist.orders.length);
+  const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
 
-  const { register, handleSubmit, reset } = useForm<ProfileFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProfileFormData>({
+    resolver: yupResolver(profileSchema),
     defaultValues: profileData,
   });
-
-  // const imageUrl = watch('image');
 
   const onSubmit = (data: ProfileFormData) => {
     setProfileData(data);
     setIsEditing(false);
+    toast.success('Profile saved');
   };
 
   const handleCancel = () => {
@@ -44,190 +67,121 @@ const Profile = () => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const imageData = event.target?.result as string;
-        setProfileData((prev) => ({
-          ...prev,
-          image: imageData,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => setImage(event.target?.result as string);
+    reader.readAsDataURL(file);
   };
 
+  const stats = [
+    { label: 'Member since', value: '2023' },
+    { label: 'Orders placed', value: orderCount },
+    { label: 'Saved items', value: wishlistCount },
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 flex flex-col py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
-          <p className="mt-2 text-muted-foreground">Manage your personal information</p>
-        </div>
-        <Card className="overflow-hidden">
-          {/* Header Section with Avatar */}
-          <div className="border-b border-border bg-gradient-to-r from-primary/5 to-accent/5 px-6 py-8">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-              <div className="relative">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage
-                    src={profileData.image || '/placeholder.svg'}
-                    alt={`${profileData.firstName} ${profileData.lastName}`}
-                  />
-                  <AvatarFallback>
-                    {profileData.firstName.charAt(0)}
-                    {profileData.lastName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                {isEditing && (
-                  <label className="absolute bottom-0 right-0 flex cursor-pointer items-center justify-center rounded-full bg-primary p-2 text-primary-foreground hover:bg-primary/90">
-                    <Camera size={16} />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </label>
-                )}
-              </div>
+    <div>
+      <PageHeading title="Profile" desc="Your personal details and how we contact you." />
 
-              <div className="flex-1 text-center sm:text-left">
-                <h2 className="text-2xl font-bold text-foreground">
-                  {profileData.firstName} {profileData.lastName}
-                </h2>
-                <p className="mt-1 text-muted-foreground">{profileData.email}</p>
-                <p className="text-sm text-muted-foreground">{profileData.phone}</p>
-              </div>
-
-              <div>
-                {!isEditing ? (
-                  <Button onClick={() => setIsEditing(true)} variant="outline" className="gap-2">
-                    <Edit2 size={18} />
-                    Edit Profile
-                  </Button>
-                ) : null}
-              </div>
-            </div>
+      <section className="rounded-xl glass">
+        <div className="flex flex-col items-center gap-5 border-b border-gray-100 p-5 sm:flex-row md:p-6">
+          <div className="relative">
+            <Avatar className="size-20">
+              <AvatarImage src={image} alt="" className="object-cover" />
+              <AvatarFallback>
+                {profileData.firstName.charAt(0)}
+                {profileData.lastName.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <label className="absolute -bottom-1 -right-1 flex size-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-brand text-white transition-colors hover:bg-brand-hover focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
+              <Camera className="size-4" aria-hidden="true" />
+              <span className="sr-only">Change profile photo</span>
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="sr-only" />
+            </label>
           </div>
-
-          {/* Form Section */}
-          <div className="p-6">
-            {isEditing ? (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-foreground">
-                      First Name
-                    </Label>
-                    <Input
-                      id="firstName"
-                      placeholder="First name"
-                      {...register('firstName', { required: true })}
-                      className="border-border bg-background text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-foreground">
-                      Last Name
-                    </Label>
-                    <Input
-                      id="lastName"
-                      placeholder="Last name"
-                      {...register('lastName', { required: true })}
-                      className="border-border bg-background text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-foreground">
-                      Email
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      {...register('email', { required: true })}
-                      className="border-border bg-background text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-foreground">
-                      Phone Number
-                    </Label>
-                    <Input
-                      id="phone"
-                      placeholder="+1 (555) 000-0000"
-                      {...register('phone', { required: true })}
-                      className="border-border bg-background text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button type="submit" className="gap-2">
-                    <Save size={18} />
-                    Save Changes
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleCancel}
-                    className="gap-2 bg-transparent"
-                  >
-                    <X size={18} />
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">First Name</p>
-                    <p className="mt-2 text-lg text-foreground">{profileData.firstName}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Last Name</p>
-                    <p className="mt-2 text-lg text-foreground">{profileData.lastName}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Email Address</p>
-                    <p className="mt-2 text-lg text-foreground">{profileData.email}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Phone Number</p>
-                    <p className="mt-2 text-lg text-foreground">{profileData.phone}</p>
-                  </div>
-                </div>
-              </div>
-            )}
+          <div className="flex-1 text-center sm:text-left">
+            <h2 className="text-xl text-gray-900">
+              {profileData.firstName} {profileData.lastName}
+            </h2>
+            <p className="text-sm text-gray-600">{profileData.email}</p>
           </div>
-        </Card>
-
-        {/* Info Cards */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <Card className="p-6">
-            <div className="text-sm font-medium text-muted-foreground">Member Since</div>
-            <p className="mt-2 text-xl font-semibold text-foreground">2023</p>
-          </Card>
-
-          <Card className="p-6">
-            <div className="text-sm font-medium text-muted-foreground">Orders Placed</div>
-            <p className="mt-2 text-xl font-semibold text-foreground">24</p>
-          </Card>
-
-          <Card className="p-6">
-            <div className="text-sm font-medium text-muted-foreground">Wishlist Items</div>
-            <p className="mt-2 text-xl font-semibold text-foreground">8</p>
-          </Card>
+          {!isEditing && (
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+            >
+              <Pencil className="size-4" aria-hidden="true" />
+              Edit details
+            </button>
+          )}
         </div>
-      </main>
+
+        <div className="p-5 md:p-6">
+          {isEditing ? (
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
+              <div className="grid gap-5 sm:grid-cols-2">
+                {FIELDS.map((field) => (
+                  <div key={field.name}>
+                    <Label htmlFor={field.name} className="text-sm font-medium text-gray-900">
+                      {field.label}
+                    </Label>
+                    <Input
+                      id={field.name}
+                      type={field.type ?? 'text'}
+                      autoComplete={field.autoComplete}
+                      aria-invalid={Boolean(errors[field.name])}
+                      aria-describedby={errors[field.name] ? `${field.name}-error` : undefined}
+                      {...register(field.name)}
+                      className="mt-1.5 h-11"
+                    />
+                    {errors[field.name] && (
+                      <p id={`${field.name}-error`} className="mt-1.5 text-xs text-red">
+                        {errors[field.name]?.message}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  className="h-11 rounded-lg bg-brand px-5 font-medium text-white transition-colors hover:bg-brand-hover"
+                >
+                  Save changes
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="h-11 rounded-lg border border-gray-300 px-5 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <dl className="grid gap-5 sm:grid-cols-2">
+              {FIELDS.map((field) => (
+                <div key={field.name}>
+                  <dt className="text-sm text-gray-500">{field.label}</dt>
+                  <dd className="mt-1 font-medium text-gray-900">{profileData[field.name]}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      </section>
+
+      <dl className="mt-6 grid grid-cols-3 gap-3 md:gap-4">
+        {stats.map((stat) => (
+          <div key={stat.label} className="rounded-xl glass p-4 md:p-5">
+            <dt className="text-xs text-gray-500 md:text-sm">{stat.label}</dt>
+            <dd className="mt-1 text-xl font-semibold tabular-nums text-gray-900 md:text-2xl">
+              {stat.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -23,61 +22,41 @@ interface CancelOrderModalProps {
 
 const CancelOrderModal = ({ open, onOpenChange, onConfirm, orderId }: CancelOrderModalProps) => {
   const [reason, setReason] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleConfirm = async () => {
-    if (!reason.trim()) return;
-
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-      onConfirm(reason);
-      setReason('');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setReason('');
+    onOpenChange(next);
   };
 
-  const handleCancel = () => {
+  const handleConfirm = () => {
+    onConfirm(reason.trim());
     setReason('');
-    onOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            Cancel Order
-          </DialogTitle>
+          <DialogTitle>Cancel order {orderId}?</DialogTitle>
           <DialogDescription>
-            Are you sure you want to cancel order #{orderId}? This action cannot be undone.
+            The buyer will be told the order was cancelled. You can&apos;t undo this.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="reason">Cancellation Reason *</Label>
-            <Textarea
-              id="reason"
-              placeholder="Please provide a reason for cancelling this order..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="min-h-[100px]"
-            />
-          </div>
+        <div className="grid gap-2 py-2">
+          <Label htmlFor="cancel-reason">Reason for cancelling</Label>
+          <Textarea
+            id="cancel-reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className="min-h-24"
+          />
         </div>
-        <DialogFooter>
-          <Button className="w-1/2" variant="outline" onClick={handleCancel} disabled={isLoading}>
-            Keep Order
+        <DialogFooter className="gap-2">
+          <Button variant="outline" className="shadow-none" onClick={() => handleOpenChange(false)}>
+            Keep order
           </Button>
-          <Button
-            className="w-1/2"
-            variant="destructive"
-            onClick={handleConfirm}
-            disabled={!reason.trim() || isLoading}
-          >
-            {isLoading ? 'Cancelling...' : 'Cancel Order'}
+          <Button variant="destructive" onClick={handleConfirm} disabled={!reason.trim()}>
+            Cancel order
           </Button>
         </DialogFooter>
       </DialogContent>

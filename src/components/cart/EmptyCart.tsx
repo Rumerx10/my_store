@@ -1,44 +1,30 @@
-import { ArrowLeft, CreditCard, Shield, ShoppingBag, Truck } from 'lucide-react';
-import React from 'react';
-import { Button } from '../ui/button';
 import Link from 'next/link';
+import { ShoppingBag } from 'lucide-react';
 
 const EmptyCart = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="mb-8">
-            <ShoppingBag className="w-24 h-24 mx-auto text-muted-foreground mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Your cart is empty</h1>
-            <p className="text-muted-foreground mb-6">
-              Looks like you haven&apos;t added any items to your cart yet.
-            </p>
-            <Link href="/products">
-              <Button size="lg">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Continue Shopping
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <div className="text-center">
-              <Truck className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Free Shipping</h3>
-              <p className="text-sm text-muted-foreground">On orders over $50</p>
-            </div>
-            <div className="text-center">
-              <Shield className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Secure Payment</h3>
-              <p className="text-sm text-muted-foreground">100% secure checkout</p>
-            </div>
-            <div className="text-center">
-              <CreditCard className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Easy Returns</h3>
-              <p className="text-sm text-muted-foreground">30-day return policy</p>
-            </div>
-          </div>
+    <div className="container py-12 md:py-20">
+      <div className="mx-auto flex max-w-md flex-col items-center text-center">
+        <span className="flex size-16 items-center justify-center rounded-2xl bg-brand-soft text-brand">
+          <ShoppingBag className="size-7" aria-hidden="true" />
+        </span>
+        <h1 className="mt-6 text-2xl text-gray-900 md:text-3xl">Your cart is empty</h1>
+        <p className="mt-2 text-gray-600">
+          Add products to your cart and they&apos;ll show up here, ready for checkout.
+        </p>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/products"
+            className="inline-flex h-12 items-center justify-center rounded-lg bg-brand px-6 font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98]"
+          >
+            Browse products
+          </Link>
+          <Link
+            href="/wish-list"
+            className="inline-flex h-12 items-center justify-center rounded-lg border border-gray-300 bg-white px-6 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+          >
+            View wishlist
+          </Link>
         </div>
       </div>
     </div>

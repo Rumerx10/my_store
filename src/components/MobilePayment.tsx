@@ -1,41 +1,39 @@
 import Image from 'next/image';
 
+export const MOBILE_PROVIDERS = [
+  { id: 'bkash', name: 'bKash', logo: '/bkash.png' },
+  { id: 'nagad', name: 'Nagad', logo: '/nagad.png' },
+  { id: 'rocket', name: 'Rocket', logo: '/rocket.png' },
+] as const;
+
+export type MobileProviderId = (typeof MOBILE_PROVIDERS)[number]['id'];
+
 const MobilePayment = ({
   handleMobileBankingClick,
 }: {
-  handleMobileBankingClick: (provider: string) => void;
+  handleMobileBankingClick: (provider: MobileProviderId) => void;
 }) => {
   return (
-    <div className="w-full text-center text-gray-600">
-      <div className="text-4xl mb-4">📱</div>
-      <p className="font-semibold mb-2">Mobile Banking</p>
-      <p className="text-sm">Select your mobile banking provider to continue</p>
-      <div className="flex gap-4 mt-6">
-        <div
-          onClick={() => handleMobileBankingClick('Nagad')}
-          className="w-full flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
-        >
-          <div className="text-2xl mb-2">
-            <Image src="/nagad.png" alt="Nagad" width={80} height={80} />
-          </div>
-        </div>
-        <div
-          onClick={() => handleMobileBankingClick('Bkash')}
-          className="w-full flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
-        >
-          <div className="text-2xl mb-2">
-            <Image src="/bkash.png" alt="Nagad" width={80} height={80} />
-          </div>
-        </div>
-        <div
-          onClick={() => handleMobileBankingClick('Rocket')}
-          className="w-full flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
-        >
-          <div className="text-2xl mb-2">
-            {' '}
-            <Image src="/rocket.png" alt="Nagad" width={80} height={80} />
-          </div>
-        </div>
+    <div>
+      <p className="text-sm text-gray-600">Choose your mobile banking provider.</p>
+      <div className="mt-4 grid grid-cols-3 gap-3">
+        {MOBILE_PROVIDERS.map((provider) => (
+          <button
+            key={provider.id}
+            type="button"
+            onClick={() => handleMobileBankingClick(provider.id)}
+            className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 p-4 transition-colors hover:border-brand hover:bg-brand-soft/60"
+          >
+            <Image
+              src={provider.logo}
+              alt=""
+              width={72}
+              height={48}
+              className="h-10 w-auto object-contain"
+            />
+            <span className="text-sm font-medium text-gray-900">{provider.name}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -1,97 +1,98 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import Logo from '../Logo';
+import { FOOTER_LINKS, SITE } from '@/docs/site';
+
+const PAYMENT_LOGOS = [
+  { src: '/bkash.png', alt: 'bKash' },
+  { src: '/nagad.png', alt: 'Nagad' },
+  { src: '/rocket.png', alt: 'Rocket' },
+  { src: '/cashondelivery.png', alt: 'Cash on delivery' },
+];
 
 const Footer = () => {
   return (
-    <footer className="py-16 bg-gray-900 text-white">
-        <div className="container mx-auto px-4 flex flex-col">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4">ShopHub</h3>
-              <p className="text-gray-400 mb-4">
-                Your premier destination for quality products and exceptional shopping experience.
-              </p>
-            </div>
+    <footer className="mt-16 border-t border-white/70 bg-white/60 backdrop-blur-xl">
+      <div className="container grid gap-10 py-12 md:grid-cols-[1.4fr_repeat(3,1fr)] md:gap-8 lg:py-16">
+        <div className="max-w-sm">
+          <Logo />
+          <p className="mt-4 text-sm leading-relaxed text-gray-600">{SITE.description}</p>
+          <ul className="mt-6 space-y-2.5 text-sm text-gray-600">
+            <li className="flex items-start gap-2.5">
+              <MapPin className="mt-0.5 size-4 shrink-0 text-gray-400" aria-hidden="true" />
+              {SITE.address}
+            </li>
+            <li>
+              <a
+                href={`tel:${SITE.phoneHref}`}
+                className="flex items-center gap-2.5 rounded transition-colors hover:text-gray-900"
+              >
+                <Phone className="size-4 shrink-0 text-gray-400" aria-hidden="true" />
+                {SITE.phone}
+              </a>
+            </li>
+            <li>
+              <a
+                href={`mailto:${SITE.email}`}
+                className="flex items-center gap-2.5 rounded transition-colors hover:text-gray-900"
+              >
+                <Mail className="size-4 shrink-0 text-gray-400" aria-hidden="true" />
+                {SITE.email}
+              </a>
+            </li>
+          </ul>
+        </div>
 
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/products" className="hover:text-white transition-colors">
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/categories" className="hover:text-white transition-colors">
-                    Categories
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/deals" className="hover:text-white transition-colors">
-                    Deals
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-white transition-colors">
-                    About Us
-                  </Link>
-                </li>
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-3">
+          {FOOTER_LINKS.map((group) => (
+            <nav key={group.title} aria-label={group.title}>
+              <h2 className="text-sm font-semibold text-gray-900">{group.title}</h2>
+              <ul className="mt-4 space-y-2.5 text-sm">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="rounded text-gray-600 transition-colors hover:text-gray-900"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
-            </div>
+            </nav>
+          ))}
+        </div>
+      </div>
 
-            <div>
-              <h4 className="font-semibold mb-4">Customer Service</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/contact" className="hover:text-white transition-colors">
-                    Contact Us
-                  </Link>
+      <div className="border-t border-white/70">
+        <div className="container flex flex-col gap-4 py-6 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
+          </p>
+          <div className="flex items-center gap-3">
+            <span className="text-xs">We accept</span>
+            <ul className="flex items-center gap-2">
+              {PAYMENT_LOGOS.map((logo) => (
+                <li
+                  key={logo.alt}
+                  className="flex h-8 w-12 items-center justify-center rounded-md border border-gray-200 bg-white p-1"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={40}
+                    height={24}
+                    className="h-5 w-auto object-contain"
+                  />
                 </li>
-                <li>
-                  <Link href="/shipping" className="hover:text-white transition-colors">
-                    Shipping Info
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/returns" className="hover:text-white transition-colors">
-                    Returns
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faq" className="hover:text-white transition-colors">
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/privacy" className="hover:text-white transition-colors">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white transition-colors">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/cookies" className="hover:text-white transition-colors">
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 ShopHub. All rights reserved.</p>
+              ))}
+            </ul>
           </div>
         </div>
-      </footer>
-  )
-}
+      </div>
+    </footer>
+  );
+};
 
-export default Footer
+export default Footer;

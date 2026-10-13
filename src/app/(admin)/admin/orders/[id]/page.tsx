@@ -1,10 +1,10 @@
-import OrderDetailsPage from '@/components/orderDetails/OrderDetails'
-import React from 'react'
+import type { Metadata } from 'next';
+import OrderDetails from '@/components/admin/Orders/OrderDetails';
+
+export const metadata: Metadata = { title: 'Order details' };
 
 const page = () => {
-  return (
-    <OrderDetailsPage />
-  )
-}
+  return <OrderDetails />;
+};
 
-export default page
+export default page;

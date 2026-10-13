@@ -1,110 +1,59 @@
 'use client';
 
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 import ChatSidebar from './ChatSidebar';
-import MobileChatView from './MobileChatView';
 import ChatWindow from './ChatWindow';
-
-// interface ChatContact {
-//   id: number;
-//   name: string;
-//   avatar: string;
-//   lastMessage: string;
-//   timestamp: string;
-//   isOnline: boolean;
-//   unreadCount: number;
-// }
+import { CHATS, INITIAL_MESSAGES, Message } from './chatData';
 
 const ChatLayout = () => {
-  const [selectedChatId, setSelectedChatId] = useState<number | null>(1);
-  // const [chats, setChats] = useState<ChatContact[]>([
-  const chats = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      avatar: '/user.webp',
-      lastMessage: 'Thanks for your help!',
-      timestamp: '2:30 PM',
-      isOnline: true,
-      unreadCount: 0,
-    },
-    {
-      id: 2,
-      name: 'Alex Chen',
-      avatar: '/user.webp',
-      lastMessage: 'See you tomorrow',
-      timestamp: '1:15 PM',
-      isOnline: true,
-      unreadCount: 2,
-    },
-    {
-      id: 3,
-      name: 'Emma Davis',
-      avatar: '/user.webp',
-      lastMessage: 'Sounds great!',
-      timestamp: '11:45 AM',
-      isOnline: false,
-      unreadCount: 0,
-    },
-    {
-      id: 4,
-      name: 'Michael Brown',
-      avatar: '/user.webp',
-      lastMessage: 'Let me check that',
-      timestamp: 'Yesterday',
-      isOnline: false,
-      unreadCount: 1,
-    },
-    {
-      id: 5,
-      name: 'Jessica Wilson',
-      avatar: '/user.webp',
-      lastMessage: 'Perfect timing!',
-      timestamp: 'Yesterday',
-      isOnline: true,
-      unreadCount: 0,
-    },
-  ];
+  const [chats, setChats] = useState(CHATS);
+  const [selectedChatId, setSelectedChatId] = useState(CHATS[0].id);
+  // On small screens the list and the conversation take turns filling the screen.
+  const [showConversationOnMobile, setShowConversationOnMobile] = useState(false);
+  const [messages, setMessages] = useState<Record<number, Message[]>>(INITIAL_MESSAGES);
 
-  const selectedChat = chats.find((chat) => chat.id === selectedChatId);
+  const selectedChat = chats.find((chat) => chat.id === selectedChatId) ?? chats[0];
+
+  const selectChat = (id: number) => {
+    setSelectedChatId(id);
+    setShowConversationOnMobile(true);
+    setChats((prev) => prev.map((chat) => (chat.id === id ? { ...chat, unreadCount: 0 } : chat)));
+  };
+
+  const sendMessage = (text: string) => {
+    const timestamp = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    setMessages((prev) => {
+      const thread = prev[selectedChatId] ?? [];
+      return {
+        ...prev,
+        [selectedChatId]: [...thread, { id: thread.length + 1, sender: 'user', text, timestamp }],
+      };
+    });
+    setChats((prev) =>
+      prev.map((chat) =>
+        chat.id === selectedChatId ? { ...chat, lastMessage: text, timestamp } : chat,
+      ),
+    );
+  };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] lg:h-[calc(100vh-96px)] bg-gray-50">
-      {/* Mobile: Show either sidebar or chat */}
-      <div className="w-full lg:hidden flex">
-        {selectedChatId === null ? (
-          <ChatSidebar
-            chats={chats}
-            selectedChatId={selectedChatId}
-            onSelectChat={setSelectedChatId}
-          />
-        ) : (
-          selectedChat && (
-            <MobileChatView chat={selectedChat} onBack={() => setSelectedChatId(null)} />
-          )
-        )}
-      </div>
-
-      {/* Desktop: Show both sidebar and chat */}
-      <div className="hidden lg:flex flex-1 w-full">
+    <div className="md:container md:py-6">
+      <div className="flex h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h))] overflow-hidden bg-white md:h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h)-3rem)] md:rounded-xl md:border md:border-gray-200/80">
         <ChatSidebar
           chats={chats}
           selectedChatId={selectedChatId}
-          onSelectChat={setSelectedChatId}
+          onSelectChat={selectChat}
+          className={cn(showConversationOnMobile && 'hidden md:flex')}
         />
-        {selectedChat ? (
-          <ChatWindow chat={selectedChat} />
-        ) : (
-          <div className="flex-1 flex items-center justify-center bg-white">
-            <div className="text-center">
-              <div className="text-6xl mb-4">💬</div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                Select a chat to start messaging
-              </h2>
-              <p className="text-gray-500">Choose a contact from the list to begin</p>
-            </div>
-          </div>
-        )}
+        <div className={cn('min-w-0 flex-1', showConversationOnMobile ? 'flex' : 'hidden md:flex')}>
+          <ChatWindow
+            chat={selectedChat}
+            messages={messages[selectedChat.id] ?? []}
+            onSend={sendMessage}
+            onBack={() => setShowConversationOnMobile(false)}
+          />
+        </div>
       </div>
     </div>
   );

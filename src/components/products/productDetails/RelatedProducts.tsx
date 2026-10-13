@@ -1,30 +1,32 @@
-import ProductCardGrid from '../ProductCardGrid';
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { IProduct } from '@/types/api_types';
+import { categoryLabel } from '@/docs/navLinks';
+import ProductCardGrid from '../ProductCardGrid';
+import SectionHeader from '@/components/SectionHeader';
 
-export function RelatedProducts() {
+// Other products from the same category, topped up with the best-rated items if it's small.
+export function RelatedProducts({ product }: { product: IProduct }) {
   const products = useSelector((state: RootState) => state.products);
-  return (
-    <section>
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-gray-900">Related Products</h2>
-        <Link href="/products">
-          <Button
-            variant="outline"
-            className="w-44 text-blue-600 border-blue-200 hover:bg-blue-50 bg-transparent"
-          >
-            View All Products
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
-        </Link>
-      </div>
+  const sameCategory = products.filter(
+    (p) => p.category === product.category && p.id !== product.id,
+  );
+  const others = products
+    .filter((p) => p.category !== product.category)
+    .sort((a, b) => b.rating - a.rating);
+  const related = [...sameCategory, ...others].slice(0, 4);
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-5">
-        {products.map((product) => (
-          <ProductCardGrid key={product.id} product={product} />
+  return (
+    <section aria-labelledby="related-products">
+      <SectionHeader
+        id="related-products"
+        title="You may also like"
+        href={`/products?category=${product.category}`}
+        linkLabel={`More in ${categoryLabel(product.category)}`}
+      />
+      <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4 lg:gap-5">
+        {related.map((item) => (
+          <ProductCardGrid key={item.id} product={item} />
         ))}
       </div>
     </section>

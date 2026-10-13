@@ -1,197 +1,138 @@
 'use client';
 import { useState } from 'react';
-import { X } from 'lucide-react';
-import OTPModal from './OTPModal';
+import { ArrowLeft, CreditCard, Smartphone } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PaymentMethodId } from '@/redux/features/order/orderSlice';
+import { formatPrice } from '@/lib/utils';
+import OTPModal from './OTPModal';
 import PhoneModal from './PhoneModal';
 import CardPayment from './CardPayment';
-import MobilePayment from './MobilePayment';
-import PaymentOrOrderSuccess from './PaymentOrOrderSuccess';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { addOrder } from '@/redux/features/order/orderSlice';
-import { clearCart } from '@/redux/features/cart/cartSlice';
+import MobilePayment, { MOBILE_PROVIDERS, MobileProviderId } from './MobilePayment';
 
-// Define cart item interface to match your data structure
-interface CartItem {
-  id: string;
-  title: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+type MobileStep = 'provider' | 'phone' | 'otp';
+
+const BD_MOBILE = /^01[3-9]\d{8}$/;
 
 export default function PaymentGateway({
   payable,
-  payNow,
-  setPayNow,
-  showSuccessModal,
-  setShowSuccessModal,
+  onPaid,
+  onBack,
 }: {
   payable: number;
-  payNow: boolean;
-  setPayNow: (value: boolean) => void;
-  showSuccessModal: boolean;
-  setShowSuccessModal: (value: boolean) => void;
+  onPaid: (method: PaymentMethodId) => void;
+  onBack: () => void;
 }) {
-  const [activeTab, setActiveTab] = useState<'cards' | 'mobile'>('cards');
-  const [showPhoneModal, setShowPhoneModal] = useState(false);
-  const [showOTPModal, setShowOTPModal] = useState(false);
-  const [generatedOTP, setGeneratedOTP] = useState('');
+  const [mobileStep, setMobileStep] = useState<MobileStep>('provider');
+  const [provider, setProvider] = useState<MobileProviderId>('bkash');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [generatedOTP, setGeneratedOTP] = useState('');
   const [otpInput, setOtpInput] = useState('');
-  const [selectedProvider, setSelectedProvider] = useState('');
+  const [otpError, setOtpError] = useState('');
 
-  // Cast cart items to proper type
-  const cartitems = (useSelector((state: RootState) => state.cart.items) as CartItem[]) || [];
-  const dispatch = useDispatch();
-
-  const generateOTP = () => {
-    const otp = Math.floor(10000 + Math.random() * 90000).toString();
-    return otp;
-  };
-
-  const handleMobileBankingClick = (provider: string) => {
-    setSelectedProvider(provider);
-    setShowPhoneModal(true);
-  };
+  const providerName = MOBILE_PROVIDERS.find((p) => p.id === provider)?.name ?? '';
 
   const handlePhoneSubmit = () => {
-    // Validate phone number
-    const phoneRegex = /^[0-9]{11}$/;
-    if (!phoneRegex.test(phoneNumber.replace(/\D/g, ''))) {
-      toast.error('Please enter a valid 10-digit phone number');
+    if (!BD_MOBILE.test(phoneNumber)) {
+      setPhoneError('Enter an 11-digit mobile number that starts with 01, like 01712345678.');
       return;
     }
-
-    const otp = generateOTP();
+    // Demo only: the code is shown on screen instead of being sent by SMS.
+    const otp = Math.floor(10000 + Math.random() * 90000).toString();
     setGeneratedOTP(otp);
-    toast.success(`OTP sent to ${phoneNumber}. OTP is ${otp}`);
-    setShowPhoneModal(false);
-    setShowOTPModal(true);
-    // Open OTP modal after short delay
-    // setTimeout(() => setShowOTPModal(true), 500);
+    setPhoneError('');
+    toast(`Demo verification code: ${otp}`, { duration: 8000 });
+    setMobileStep('otp');
   };
 
   const handleOTPSubmit = () => {
-    if (otpInput === generatedOTP) {
-      setShowOTPModal(false);
-      setShowSuccessModal(true);
-
-      // Create order from cart items
-      const orderList = cartitems.map((item) => ({
-        productId: item.id,
-        title: item.title,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image,
-      }));
-
-      console.log('Order List:', orderList);
-
-      // Generate order ID
-      const orderid = String(Date.now()).substring(6);
-      const order = {
-        id: `ORD-${orderid}`,
-        items: orderList,
-        totalAmount: payable,
-        status: 'pending',
-      };
-
-      // Dispatch actions
-      dispatch(addOrder(order));
-      dispatch(clearCart());
-
-      // Clear OTP states
+    if (otpInput !== generatedOTP) {
+      setOtpError("That code doesn't match. Check the code and try again.");
       setOtpInput('');
-      setGeneratedOTP('');
-      setPhoneNumber('');
-
-      // Optional: Redirect after success
-      // setTimeout(() => {
-      //   router.push('/orders');
-      //   setPayNow(false);
-      // }, 3000);
-
-      toast.success('Payment successful! Order placed.');
-    } else {
-      toast.error('OTP is incorrect. Please try again.');
-      setOtpInput('');
+      return;
     }
+    toast.success(`Paid with ${providerName}`);
+    onPaid(provider);
   };
 
   return (
-    <div className="flex items-center justify-center">
-      {payNow && (
-        <div className="bg-white rounded-lg shadow-2xl w-full">
-          {/* Always show close button if not in success modal */}
-          {!showSuccessModal && (
-            <div className="flex justify-end items-center p-4 bg-gray-50 border-b">
-              <button
-                onClick={() => setPayNow(false)}
-                className="text-gray-800 hover:scale-125 duration-300 hover:text-gray-600 ml-2"
-                aria-label="Close payment gateway"
-              >
-                <X size={20} />
-              </button>
-            </div>
-          )}
+    <div className="rounded-xl glass">
+      <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-5 py-4 md:px-6">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Back to order
+        </button>
+        <p className="text-sm text-gray-600">
+          Amount due{' '}
+          <span className="font-semibold tabular-nums text-gray-900">{formatPrice(payable)}</span>
+        </p>
+      </div>
 
-          {/* Conditional content */}
-          {showSuccessModal ? (
-            <PaymentOrOrderSuccess />
-          ) : showOTPModal ? (
-            <OTPModal
-              setShowOTPModal={setShowOTPModal}
-              otpInput={otpInput}
-              setOtpInput={setOtpInput}
-              handleOTPSubmit={handleOTPSubmit}
-            />
-          ) : showPhoneModal ? (
-            <PhoneModal
-              setShowPhoneModal={setShowPhoneModal}
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-              selectedProvider={selectedProvider}
-              handlePhoneSubmit={handlePhoneSubmit}
-            />
-          ) : (
-            <>
-              {/* Tabs */}
-              <div className="flex border-b bg-gradient-to-r from-blue-600 to-blue-700">
-                <button
-                  onClick={() => setActiveTab('cards')}
-                  className={`flex-1 py-3 px-4 font-semibold text-sm transition ${
-                    activeTab === 'cards'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-blue-500 text-white hover:bg-blue-600'
-                  }`}
-                >
-                  CARDS
-                </button>
-                <button
-                  onClick={() => setActiveTab('mobile')}
-                  className={`flex-1 py-3 px-4 font-semibold text-sm transition ${
-                    activeTab === 'mobile'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-blue-500 text-white hover:bg-blue-600'
-                  }`}
-                >
-                  MOBILE BANKING
-                </button>
-              </div>
+      <div className="p-5 md:p-6">
+        <h2 className="text-lg text-gray-900">Pay now</h2>
+        <Tabs defaultValue="card" className="mt-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="card">
+              <CreditCard className="size-4" aria-hidden="true" />
+              Card
+            </TabsTrigger>
+            <TabsTrigger value="mobile">
+              <Smartphone className="size-4" aria-hidden="true" />
+              Mobile banking
+            </TabsTrigger>
+          </TabsList>
 
-              {/* Content */}
-              <div className="p-6">
-                {activeTab === 'cards' && <CardPayment payable={payable} />}
-                {activeTab === 'mobile' && (
-                  <MobilePayment handleMobileBankingClick={handleMobileBankingClick} />
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      )}
+          <TabsContent value="card" className="mt-6">
+            <CardPayment payable={payable} onPaid={() => onPaid('card')} />
+          </TabsContent>
+
+          <TabsContent value="mobile" className="mt-6">
+            {mobileStep === 'provider' && (
+              <MobilePayment
+                handleMobileBankingClick={(id) => {
+                  setProvider(id);
+                  setMobileStep('phone');
+                }}
+              />
+            )}
+            {mobileStep === 'phone' && (
+              <PhoneModal
+                selectedProvider={providerName}
+                phoneNumber={phoneNumber}
+                setPhoneNumber={(value) => {
+                  setPhoneNumber(value);
+                  setPhoneError('');
+                }}
+                handlePhoneSubmit={handlePhoneSubmit}
+                onCancel={() => setMobileStep('provider')}
+                error={phoneError}
+              />
+            )}
+            {mobileStep === 'otp' && (
+              <OTPModal
+                phoneNumber={phoneNumber}
+                otpInput={otpInput}
+                setOtpInput={(value) => {
+                  setOtpInput(value);
+                  setOtpError('');
+                }}
+                handleOTPSubmit={handleOTPSubmit}
+                onCancel={() => {
+                  setOtpInput('');
+                  setOtpError('');
+                  setMobileStep('phone');
+                }}
+                error={otpError}
+              />
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

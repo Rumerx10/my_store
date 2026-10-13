@@ -1,166 +1,150 @@
-import { Button } from '@/components/ui/button';
-import { Star, Heart, ShoppingCart, Plus, Minus, Check } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import Link from 'next/link';
-import { IProduct } from '@/types/api_types';
+import { Heart, ShoppingCart, Plus, Minus } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '@/redux/features/cart/cartSlice';
+import { IProduct } from '@/types/api_types';
+import { addToCart, MAX_QUANTITY_PER_ITEM } from '@/redux/features/cart/cartSlice';
 import { RootState } from '@/redux/store';
 import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
-import toast from 'react-hot-toast';
+import { cn, formatPrice } from '@/lib/utils';
+import { hasNotableDiscount, originalPrice, toCartItem, toWishlistItem } from '@/lib/products';
+import Rating from '@/components/shared/Rating';
 
 interface ProductDetailsInfoProps {
   product: IProduct;
   quantity: number;
   setQuantity: (value: number) => void;
-  setActiveTab: (value: string) => void;
+  onShowReviews: () => void;
 }
 
 export function ProductDetailsInfo({
   product,
-  setActiveTab,
   quantity,
   setQuantity,
+  onShowReviews,
 }: ProductDetailsInfoProps) {
   const dispatch = useDispatch();
-
-  const wishlistItems = useSelector((state: RootState) => state.wishlist.items).map(
-    (item) => item.id,
+  const isWishlisted = useSelector((state: RootState) =>
+    state.wishlist.items.some((item) => item.id === product.id),
   );
 
-  const handleAddToCart = (e: React.MouseEvent, product: IProduct) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const cartItem = {
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: quantity,
-      image: product.images[0] || 'placeholder.svg',
-      rating: product.rating,
-      sold: 21,
-    };
-    dispatch(addToCart(cartItem));
-    toast.success(`${product.title} is added to cart successfully. Quantity: ${quantity}`);
-  };
+  const outOfStock = product.stock === 0;
+  const maxQuantity = Math.min(MAX_QUANTITY_PER_ITEM, product.stock);
+  const showDiscount = hasNotableDiscount(product);
 
-  const handleWishlist = (e: React.MouseEvent, id: string | number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const productToAdd = {
-      id: id,
-      title: product.title,
-      price: product.price,
-      rating: product.rating,
-      sold: 23,
-      stock: product.stock,
-      image: product.images[0],
-    };
-    dispatch(addToWishlist(productToAdd));
+  const handleAddToCart = () => {
+    dispatch(addToCart(toCartItem(product, quantity)));
+    toast.success(`Added ${quantity} × ${product.title} to your cart`);
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="flex flex-col gap-6">
       <div>
-        <div className="flex items-center gap-2 mb-2">
-          {/* Stock Info */}
-          {product.stock !== 0 && (
-            <Badge variant="outline" className="flex items-center gap-2 bg-green">
-              <Check className="w-5 h-5" />
-              <span className="font-medium">
-                {product.stock > 10 ? 'In Stock' : `Only ${product.stock} left in stock`}
-              </span>
-            </Badge>
-          )}
-        </div>
-        <h1 className="text-2xl !font-medium text-gray-900 mb-4">{product.title}</h1>
-        {/* Price */}
-        <div className="my-3 flex flex-col gap-1 items-start">
-          <div className="flex items-center gap-4">
-            <div className="text-3xl font-semibold text-gray-900">৳{product.price}</div>
-          </div>
-        </div>
-        {/* Rating */}
-        <Link
-          href="#reviews"
-          onClick={() => setActiveTab('reviews')}
-          className="cursor-pointer flex flex-col gap-4 mb-4"
+        {product.brand && <p className="text-sm font-medium text-brand">{product.brand}</p>}
+        <h1 className="mt-1 text-2xl leading-tight text-gray-900 md:text-3xl">{product.title}</h1>
+        <button
+          type="button"
+          onClick={onShowReviews}
+          className="mt-3 rounded transition-opacity hover:opacity-80"
         >
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-5 h-5 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                />
-              ))}
-              <span className="text-lg font-semibold text-gray-900 ml-2">{product.rating}</span>
-            </div>
-            <span className="text-gray-600 hover:text-blue-700 ">
-              | {product.reviews.length.toLocaleString()} reviews
-            </span>
-          </div>
-        </Link>
+          <Rating value={product.rating} count={product.reviews.length} size="md" />
+        </button>
       </div>
 
-      {/* Quantity */}
       <div>
-        <Label className="text-black font-semibold mb-3 block">Quantity</Label>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center overflow-hidden border border-gray-300 rounded-lg">
-            <button
-              type="button"
-              onClick={() => setQuantity(quantity - 1)}
-              disabled={quantity <= 1}
-              className="p-3 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="px-4 py-2 font-semibold min-w-[60px] text-center">{quantity}</span>
-            <button
-              type="button"
-              onClick={() => setQuantity(quantity + 1)}
-              disabled={quantity >= 10}
-              className="p-3 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-          <span className="text-gray-600">Max 10 per order</span>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span className="text-3xl font-semibold tabular-nums text-gray-900">
+            {formatPrice(product.price)}
+          </span>
+          {showDiscount && (
+            <>
+              <span className="text-base tabular-nums text-gray-400 line-through">
+                {formatPrice(originalPrice(product))}
+              </span>
+              <span className="rounded-md bg-red/10 px-2 py-0.5 text-sm font-semibold text-red">
+                Save {Math.round(product.discountPercentage)}%
+              </span>
+            </>
+          )}
         </div>
-      </div>
-      {/* Action Buttons */}
-      <div className="space-y-4">
-        <div className="flex mt-2 gap-2 items-center justify-between">
-          <Button
-            size="lg"
-            variant="secondary"
-            className="w-full flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-lg"
-            disabled={product.stock === 0}
-            onClick={(e) => handleAddToCart(e, product)}
-          >
-            <ShoppingCart className="w-5 h-5 mr-2" />
-            Add to Cart
-          </Button>
-          <div
-            onClick={(e) => handleWishlist(e, product.id)}
-            className="border rounded-md p-2 cursor-pointer"
-          >
-            <Heart
-              className={`shrink-0 duration-300 cursor-pointer ${wishlistItems.includes(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
-            />
-          </div>
-        </div>
-        {/* <Button
-          size="lg"
-          variant="outline"
-          className="w-full py-4 text-lg font-semibold border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors bg-transparent"
-          disabled={product.stock === 0}
+        <p
+          className={cn(
+            'mt-2 text-sm font-medium',
+            outOfStock ? 'text-red' : product.stock <= 10 ? 'text-amber-700' : 'text-green',
+          )}
         >
-          Buy Now
-        </Button> */}
+          {outOfStock
+            ? 'Out of stock'
+            : product.stock <= 10
+              ? `Only ${product.stock} left in stock`
+              : 'In stock'}
+        </p>
+      </div>
+
+      <p className="text-[15px] leading-relaxed text-gray-700">{product.description}</p>
+
+      {!outOfStock && (
+        <div>
+          <p id="quantity-label" className="mb-2 text-sm font-semibold text-gray-900">
+            Quantity
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <div
+              role="group"
+              aria-labelledby="quantity-label"
+              className="flex h-11 items-center rounded-lg border border-gray-300 bg-white"
+            >
+              <button
+                type="button"
+                onClick={() => setQuantity(quantity - 1)}
+                disabled={quantity <= 1}
+                aria-label="Decrease quantity"
+                className="flex size-11 items-center justify-center rounded-l-lg text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <Minus className="size-4" />
+              </button>
+              <output aria-live="polite" className="min-w-10 text-center font-semibold tabular-nums">
+                {quantity}
+              </output>
+              <button
+                type="button"
+                onClick={() => setQuantity(quantity + 1)}
+                disabled={quantity >= maxQuantity}
+                aria-label="Increase quantity"
+                className="flex size-11 items-center justify-center rounded-r-lg text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <Plus className="size-4" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-600">
+              Subtotal{' '}
+              <span className="font-semibold tabular-nums text-gray-900">
+                {formatPrice(product.price * quantity)}
+              </span>
+              <span className="block text-xs text-gray-500">Max {maxQuantity} per order</span>
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={outOfStock}
+          className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-[15px] font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+        >
+          <ShoppingCart className="size-5" aria-hidden="true" />
+          {outOfStock ? 'Out of stock' : 'Add to cart'}
+        </button>
+        <button
+          type="button"
+          onClick={() => dispatch(addToWishlist(toWishlistItem(product)))}
+          aria-pressed={isWishlisted}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+          className="flex size-12 shrink-0 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 transition-colors hover:border-red/40 hover:text-red active:scale-95"
+        >
+          <Heart className={cn('size-5', isWishlisted && 'fill-red text-red')} />
+        </button>
       </div>
     </div>
   );

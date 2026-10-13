@@ -1,12 +1,10 @@
-import ClientDashboardPage from '@/components/client/ClientDashboardPage/ClientDashboard'
-// import ClientDashboardPage2 from '@/components/client/ClientDashboardPage/ClientDashboardPage'
-import React from 'react'
+import type { Metadata } from 'next';
+import ClientDashboard from '@/components/client/ClientDashboard';
+
+export const metadata: Metadata = { title: 'My dashboard' };
 
 const page = () => {
-  return (
-    <ClientDashboardPage />
-    // <ClientDashboardPage2 />
-  )
-}
+  return <ClientDashboard />;
+};
 
-export default page
+export default page;

@@ -1,15 +1,10 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
-import { Search, Eye, MoreHorizontal, Plus, Package } from 'lucide-react';
+import { Search, SlidersHorizontal } from 'lucide-react';
+import { flexRender, type Table as TanstackTable } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { Card, CardDescription, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { Tabs } from '@/components/ui/tabs';
-import { Table as TanstackTable } from '@tanstack/react-table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { FILTER_CATEGORIES } from '@/docs/categories';
-import TabList from './TabList';
-import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -18,8 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { flexRender } from '@tanstack/react-table';
-import Pagination from './Pagination';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,12 +26,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { FILTER_CATEGORIES } from '@/docs/categories';
 import { TabsDataType } from '@/types/Types';
+import Pagination from './Pagination';
 
+// Filterable table used by the admin lists. `noun` is the plural item name, e.g. "orders".
 const DataTable = <T,>({
   table,
-  title,
-  desc,
+  noun,
   statusTabsData,
   activeStatus,
   setActiveStatus,
@@ -47,10 +42,10 @@ const DataTable = <T,>({
   setGlobalFilter,
   categoryFilter,
   setCategoryFilter,
+  emptyAction,
 }: {
   table: TanstackTable<T>;
-  title: string;
-  desc: string;
+  noun: string;
   statusTabsData: TabsDataType[];
   activeStatus: string;
   setActiveStatus: (value: string) => void;
@@ -59,153 +54,134 @@ const DataTable = <T,>({
   setGlobalFilter: (value: string) => void;
   categoryFilter?: string;
   setCategoryFilter?: (value: string) => void;
+  emptyAction?: React.ReactNode;
 }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex gap-16 items-center justify-between">
-          <div className="shrink-0">
-            <CardTitle>{title}</CardTitle>
-            <CardDescription className="mt-2">{desc}</CardDescription>
-          </div>
-        </div>
-        <div className="flex gap-5 w-full mt-10">
-          <div className="w-1/2">
-            <Label className="text-sm font-medium mb-2 block">Search</Label>
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search orders..."
-                value={globalFilter ?? ''}
-                onChange={(event) => setGlobalFilter(String(event.target.value))}
-                className="pl-8 w-full h-10"
-              />
-            </div>
-          </div>
-          <div className="w-1/2 flex gap-5">
-            <div className="w-full">
-              <Label className="text-sm font-medium mb-2 block">Show Columns</Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-10 px-3 w-full justify-between bg-transparent"
-                  >
-                    <span className="flex items-center">
-                      <Eye className="w-4 h-4 mr-2" />
-                      Columns
-                    </span>
-                    <MoreHorizontal className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  {table
-                    .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
-                      return (
-                        <DropdownMenuCheckboxItem
-                          key={column.id}
-                          className="capitalize"
-                          checked={column.getIsVisible()}
-                          onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                        >
-                          {column.id}
-                        </DropdownMenuCheckboxItem>
-                      );
-                    })}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            {categoryFilter !== undefined && setCategoryFilter && (
-              <div className="w-full">
-                <Label className="text-sm font-medium mb-2 block">Category</Label>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {FILTER_CATEGORIES.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-        </div>
+  const filtered =
+    Boolean(globalFilter) ||
+    activeStatus !== 'all' ||
+    (categoryFilter !== undefined && categoryFilter !== FILTER_CATEGORIES[0]);
 
-        <div className="mt-5">
-          <Label className="text-sm font-medium mb-2 block">Status</Label>
-          <Tabs value={activeStatus} onValueChange={(value) => setActiveStatus(value)}>
-            <TabList tabsData={statusTabsData} />
-          </Tabs>
-        </div>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="bg-gray-50">
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className="h-16 bg-gray-200 pl-0 font-semibold shrink-0 text-gray-900"
+  return (
+    <div className="rounded-xl glass">
+      <div className="flex flex-col gap-3 p-4 md:p-5">
+        <Tabs value={activeStatus} onValueChange={setActiveStatus}>
+          <TabsList className="w-full justify-start sm:w-auto">
+            {statusTabsData.map(({ value, label, count }) => (
+              <TabsTrigger key={value} value={value}>
+                {label}
+                <span className="tabular-nums text-gray-400">{count}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search
+              className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400"
+              aria-hidden="true"
+            />
+            <Input
+              type="search"
+              aria-label={`Search ${noun}`}
+              placeholder={`Search ${noun}`}
+              value={globalFilter ?? ''}
+              onChange={(event) => setGlobalFilter(event.target.value)}
+              className="h-10 w-full pl-9"
+            />
+          </div>
+          <div className="flex gap-3">
+            {categoryFilter !== undefined && setCategoryFilter && (
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="h-10 flex-1 capitalize sm:w-44" aria-label="Category">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FILTER_CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category} className="capitalize">
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-10 shrink-0 shadow-none">
+                  <SlidersHorizontal aria-hidden="true" />
+                  Columns
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
+
+      {/* The table keeps its columns and scrolls sideways on narrow screens. */}
+      <div className="border-t border-gray-200/80">
+        <Table className="min-w-[640px]">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="h-11 bg-gray-50 px-4 text-xs font-medium text-gray-500"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="px-4 py-3">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
-
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-black-50">
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columnLength} className="text-center py-12">
-                    <Package className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      No {title.split(' ')[0]} found
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {globalFilter || categoryFilter !== 'All Categories'
-                        ? 'Try adjusting your search or filter criteria'
-                        : 'Get started by adding your first product'}
-                    </p>
-                    {title.split(' ')[0].toLowerCase() === 'products' && (
-                      <Link href="/admin/products/add-product">
-                        <Button className="w-40 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Product
-                        </Button>
-                      </Link>
-                    )}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-      <div className="border-t bg-white px-4 mx-4 mb-6 pb-6 mt-10">
-        <Pagination table={table} />
+              ))
+            ) : (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={columnLength} className="px-4 py-14 text-center">
+                  <p className="font-medium text-gray-900">No {noun} found</p>
+                  <p className="mt-1 text-sm text-gray-600">
+                    {filtered
+                      ? 'Try a different search or filter.'
+                      : `There are no ${noun} here yet.`}
+                  </p>
+                  {!filtered && emptyAction && <div className="mt-4">{emptyAction}</div>}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
-    </Card>
+
+      <Pagination table={table} />
+    </div>
   );
 };
 

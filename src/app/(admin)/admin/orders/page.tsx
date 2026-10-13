@@ -1,5 +1,7 @@
+import type { Metadata } from 'next';
 import OrdersPage from '@/components/admin/Orders/Orders';
-import React from 'react';
+
+export const metadata: Metadata = { title: 'Orders' };
 
 const page = () => {
   return <OrdersPage />;

@@ -4,74 +4,96 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper/types';
 import 'swiper/css';
 import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
+import { FreeMode, Thumbs } from 'swiper/modules';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
-const ProductImgCarousel = ({ images }: { images?: string[] }) => {
+const ProductImgCarousel = ({ images = [], title }: { images?: string[]; title: string }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const slides = images.length > 0 ? images : ['/placeholder.svg'];
+  const hasMany = slides.length > 1;
+
   return (
-    <div className="w-full">
-      <Swiper
-        spaceBetween={0}
-        thumbs={{ swiper: thumbsSwiper }}
-        modules={[FreeMode, Navigation, Thumbs]}
-        onSwiper={setMainSwiper}
-        onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
-        className="border border-gray-100"
-      >
-        {images?.map((item, index) => (
-          <SwiperSlide key={index}>
-            <Image
-              height={385}
-              width={385}
-              src={item || '/placeholder.svg'}
-              className="w-full h-full object-cover"
-              alt={item}
-            />
-          </SwiperSlide>
-        ))}
-        <button
-          onClick={() => mainSwiper?.slidePrev()}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 text-white transition-colors"
+    <div className="w-full min-w-0">
+      <div className="relative overflow-hidden rounded-xl border border-gray-200/80 bg-gray-50">
+        <Swiper
+          spaceBetween={0}
+          thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+          modules={[FreeMode, Thumbs]}
+          onSwiper={setMainSwiper}
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
         >
-          <IoIosArrowDropleftCircle size={30} />
-        </button>
-        <button
-          onClick={() => mainSwiper?.slideNext()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 text-white transition-colors"
+          {slides.map((src, index) => (
+            <SwiperSlide key={src}>
+              <div className="relative aspect-square">
+                <Image
+                  fill
+                  src={src}
+                  priority={index === 0}
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className="object-contain p-6 md:p-10"
+                  alt={`${title}, image ${index + 1} of ${slides.length}`}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        {hasMany && (
+          <>
+            <button
+              type="button"
+              onClick={() => mainSwiper?.slidePrev()}
+              disabled={activeIndex === 0}
+              className="absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-card transition-opacity hover:bg-white disabled:opacity-0"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => mainSwiper?.slideNext()}
+              disabled={activeIndex === slides.length - 1}
+              className="absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-card transition-opacity hover:bg-white disabled:opacity-0"
+              aria-label="Next image"
+            >
+              <ChevronRight className="size-5" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {hasMany && (
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          spaceBetween={8}
+          slidesPerView={5}
+          freeMode={true}
+          watchSlidesProgress={true}
+          modules={[FreeMode, Thumbs]}
+          className="mt-3"
         >
-          <IoIosArrowDroprightCircle size={30} />
-        </button>
-      </Swiper>
-      <Swiper
-        onSwiper={setThumbsSwiper}
-        spaceBetween={4}
-        slidesPerView={5}
-        freeMode={true}
-        watchSlidesProgress={true}
-        modules={[FreeMode, Navigation, Thumbs]}
-        className="mt-1"
-      >
-        {images?.map((item, index) => (
-          <SwiperSlide
-            key={index}
-            className={`cursor-pointer ${activeIndex === index ? 'border-2 border-green-600' : 'border-2 border-gray-100'}`}
-          >
-            <Image
-              height={50}
-              width={50}
-              src={item || '/placeholder.svg'}
-              className="w-full h-full object-cover"
-              alt={item}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+          {slides.map((src, index) => (
+            <SwiperSlide key={src}>
+              <button
+                type="button"
+                onClick={() => mainSwiper?.slideTo(index)}
+                aria-label={`Show image ${index + 1}`}
+                aria-current={activeIndex === index}
+                className={cn(
+                  'relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-gray-50 transition-colors',
+                  activeIndex === index ? 'border-brand' : 'border-transparent hover:border-gray-300',
+                )}
+              >
+                <Image fill src={src} sizes="96px" className="object-contain p-1.5" alt="" />
+              </button>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };

@@ -1,41 +1,42 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { ComponentType, SVGProps } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
+// Flat stat tile for the dashboards. `value` is shown as given, so format money before passing it.
 const DashboardCard = ({
-  bgColor,
   title,
   value,
-  subtitleIcon: SubtitleIcon,
   subtitle,
-  mainIcon: MainIcon,
+  trend,
+  icon: Icon,
 }: {
   title: string;
   value: string | number;
   subtitle?: string;
-  subtitleIcon?: ComponentType<SVGProps<SVGSVGElement>>;
-  bgColor: string;
-  mainIcon: ComponentType<SVGProps<SVGSVGElement>>;
+  trend?: 'up' | 'down';
+  icon: LucideIcon;
 }) => {
   return (
-    <Card className={`hover:shadow-lg transition-shadow bg-gradient-to-br ${bgColor} text-white`}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className={`text-sm font-medium`}>{title}</p>
-            <p className="text-xl lg:text-3xl font-bold mt-2">${value}</p>
-            {SubtitleIcon && (
-              <div className="flex items-center gap-1 mt-2">
-                {SubtitleIcon && <SubtitleIcon className="w-4 h-4" />}
-                <span className="text-sm">{subtitle}</span>
-              </div>
-            )}
-          </div>
-          <div className="bg-white/20 p-3 rounded-full">
-            <MainIcon className="w-6 h-6" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="h-full rounded-xl glass p-4 md:p-5">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm text-gray-600">{title}</p>
+        <Icon className="size-4 shrink-0 text-gray-400" aria-hidden="true" />
+      </div>
+      <p className="mt-2 break-words text-xl font-semibold tabular-nums text-gray-900 md:text-2xl">
+        {value}
+      </p>
+      {subtitle && (
+        <p
+          className={cn(
+            'mt-1 text-xs',
+            trend === 'up' && 'text-hGreen',
+            trend === 'down' && 'text-red',
+            !trend && 'text-gray-500',
+          )}
+        >
+          {subtitle}
+        </p>
+      )}
+    </div>
   );
 };
 

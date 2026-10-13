@@ -1,198 +1,151 @@
 'use client';
-import { RootState } from '@/redux/store';
-import { useMemo, useState } from 'react';
-import { Tag, Truck } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { SHIPPING_OPTIONS } from '@/docs/checkout';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
-import { useSelector } from 'react-redux';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { useState } from 'react';
 import Link from 'next/link';
-
-const Coupon = [{ code: 'SAVE10', discount: 10 }];
+import { ArrowRight, Tag, X } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { SHIPPING_OPTIONS } from '@/docs/checkout';
+import { applyCoupon, removeCoupon, setGiftWrap, setShipping } from '@/redux/features/cart/cartSlice';
+import { calculateTotals, findCoupon, GIFT_WRAP_FEE } from '@/lib/checkout';
+import { formatPrice } from '@/lib/utils';
+import OrderTotals from './OrderTotals';
 
 const PricingDetails = () => {
-  const tax = 5;
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [couponCode, setCouponCode] = useState('');
-  const [giftWrap, setGiftWrap] = useState(false);
-  const [couponApplied, setCouponApplied] = useState(false);
-  const [selectedShipping, setSelectedShipping] = useState('standard');
-  const calculations = useMemo(() => {
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const taxAmount = (subTotal * tax) / 100;
-    const appliedCoupon = Coupon.find((c) => c.code === couponCode);
-    const couponDiscount = appliedCoupon ? (subTotal * appliedCoupon.discount) / 100 : 0;
-    const shippingOption = SHIPPING_OPTIONS.find((opt) => opt.id === selectedShipping);
-    const shippingCost = shippingOption?.price || 0;
-    const giftWrapFee = giftWrap ? 4.99 : 0;
-    const total = subTotal + taxAmount + shippingCost + giftWrapFee;
+  const dispatch = useDispatch();
+  const { items, shippingId, couponCode, giftWrap } = useSelector((state: RootState) => state.cart);
+  const [codeInput, setCodeInput] = useState('');
+  const [couponError, setCouponError] = useState('');
 
-    return {
-      totalItems,
-      subTotal,
-      taxAmount,
-      couponDiscount,
-      shippingCost,
-      giftWrapFee,
-      total,
-      appliedCoupon,
-    };
-  }, [cartItems, couponCode, selectedShipping, giftWrap, tax]); // ADDED: Added all dependencies
+  const totals = calculateTotals(items, { shippingId, couponCode, giftWrap });
 
-  const applyCoupon = () => {
-    const isExist = Coupon.find((coupon) => coupon.code === couponCode); // CHANGED: Removed .toUpperCase()
-    if (!isExist) {
-      alert('Invalid Coupon!!');
-      setCouponCode('');
-      setCouponApplied(false);
-    } else {
-      calculations.total -= calculations.couponDiscount;
-      setCouponApplied(true);
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    const coupon = findCoupon(codeInput);
+    if (!coupon) {
+      setCouponError(`“${codeInput.trim()}” isn't a valid code. Check the spelling and try again.`);
+      return;
     }
+    dispatch(applyCoupon(coupon.code));
+    setCodeInput('');
+    setCouponError('');
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* Coupon Code */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Tag className="w-6 h-6" color="green" />
-            Promo Code
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <Input
-              placeholder="Enter promo code"
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-            />
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={applyCoupon}
-              disabled={!couponCode || couponApplied}
-            >
-              {couponApplied ? 'Applied' : 'Apply'}
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground">Try: SAVE10</p>{' '}
-        </CardContent>
-      </Card>
-      {/* Pricing Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Pricing Details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {cartItems.map((item) => (
-            <div key={item.id} className="grid grid-cols-[1fr_1fr] gap-5">
-              <label className="line-clamp-2">{item.title}</label>
-              <div className="flex justify-between">
-                {item.quantity} X {item.price.toFixed(2)} <span>=</span>{' '}
-                <span className="text-end">${(item.price * item.quantity).toFixed(2)}</span>
-              </div>
+    <aside aria-label="Order summary" className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
+      <div className="rounded-xl glass p-5 md:p-6">
+        <h2 className="text-lg text-gray-900">Order summary</h2>
+
+        <div className="mt-5">
+          {couponCode ? (
+            <div className="flex items-center justify-between gap-3 rounded-lg bg-green/10 px-3 py-2.5 text-sm">
+              <span className="flex items-center gap-2 font-medium text-green">
+                <Tag className="size-4" aria-hidden="true" />
+                {couponCode} applied
+              </span>
+              <button
+                type="button"
+                onClick={() => dispatch(removeCoupon())}
+                className="flex size-7 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-white hover:text-gray-900"
+                aria-label={`Remove promo code ${couponCode}`}
+              >
+                <X className="size-4" />
+              </button>
             </div>
-          ))}
-          <Separator />
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span>Subtotal ({calculations.totalItems} items)</span>
-              <span>${calculations.totalItems}</span>{' '}
-            </div>
-            {couponApplied && calculations.couponDiscount > 0 && (
-              <div className="flex justify-between text-green-600">
-                <span>Coupon ({couponCode})</span>
-                <span>-${calculations.couponDiscount.toFixed(2)}</span>{' '}
+          ) : (
+            <form onSubmit={handleApplyCoupon} noValidate>
+              <Label htmlFor="promo-code" className="text-sm font-medium text-gray-900">
+                Promo code
+              </Label>
+              <div className="mt-2 flex gap-2">
+                <Input
+                  id="promo-code"
+                  value={codeInput}
+                  onChange={(e) => {
+                    setCodeInput(e.target.value.toUpperCase());
+                    setCouponError('');
+                  }}
+                  placeholder="e.g. SAVE10"
+                  aria-invalid={Boolean(couponError)}
+                  aria-describedby={couponError ? 'promo-error' : 'promo-hint'}
+                  className="h-10 uppercase"
+                />
+                <button
+                  type="submit"
+                  disabled={!codeInput.trim()}
+                  className="h-10 shrink-0 rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Apply
+                </button>
               </div>
-            )}
+              {couponError ? (
+                <p id="promo-error" role="alert" className="mt-1.5 text-xs text-red">
+                  {couponError}
+                </p>
+              ) : (
+                <p id="promo-hint" className="mt-1.5 text-xs text-gray-500">
+                  Try SAVE10 for 10% off.
+                </p>
+              )}
+            </form>
+          )}
+        </div>
 
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>${calculations.shippingCost.toFixed(2)}</span>{' '}
-            </div>
+        <fieldset className="mt-6">
+          <legend className="text-sm font-medium text-gray-900">Delivery</legend>
+          <RadioGroup
+            value={shippingId}
+            onValueChange={(value) => dispatch(setShipping(value))}
+            className="mt-2 gap-2"
+          >
+            {SHIPPING_OPTIONS.map((option) => (
+              <Label
+                key={option.id}
+                htmlFor={`ship-${option.id}`}
+                className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 font-normal transition-colors hover:bg-gray-50 has-[[data-state=checked]]:border-brand has-[[data-state=checked]]:bg-brand-soft/60"
+              >
+                <RadioGroupItem value={option.id} id={`ship-${option.id}`} />
+                <span className="flex-1">
+                  <span className="block text-sm font-medium text-gray-900">{option.name}</span>
+                  <span className="block text-xs text-gray-500">{option.days}</span>
+                </span>
+                <span className="text-sm font-medium tabular-nums text-gray-900">
+                  {formatPrice(option.price)}
+                </span>
+              </Label>
+            ))}
+          </RadioGroup>
+        </fieldset>
 
-            {giftWrap && (
-              <div className="flex justify-between">
-                <span>Gift wrap</span>
-                <span>${calculations.giftWrapFee.toFixed(2)}</span>{' '}
-              </div>
-            )}
+        <div className="mt-4 flex items-center gap-3">
+          <Checkbox
+            id="gift-wrap"
+            checked={giftWrap}
+            onCheckedChange={(checked) => dispatch(setGiftWrap(checked === true))}
+            className="data-[state=checked]:border-brand data-[state=checked]:bg-brand"
+          />
+          <Label htmlFor="gift-wrap" className="flex flex-1 cursor-pointer justify-between text-sm font-normal text-gray-700">
+            Add gift wrap
+            <span className="tabular-nums text-gray-900">{formatPrice(GIFT_WRAP_FEE)}</span>
+          </Label>
+        </div>
 
-            <div className="flex justify-between">
-              <span>Tax {tax}%</span>
-              <span>${calculations.taxAmount.toFixed(2)}</span>{' '}
-            </div>
-          </div>
-          <Separator />
-          <div className="flex justify-between text-lg font-bold">
-            <span>Total</span>
-            <span>${calculations.total.toFixed(2)}</span>
-          </div>
-          <Link href="/order-summary">
-            <Button className="w-full" size="lg">
-              Proceed to Checkout
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
+        <div className="mt-6 border-t border-gray-100 pt-5">
+          <OrderTotals totals={totals} />
+        </div>
 
-      {/* Shipping Options */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Truck className="w-4 h-4" />
-            Shipping Options
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Select value={selectedShipping} onValueChange={setSelectedShipping}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {SHIPPING_OPTIONS.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  <div className="flex justify-between gap-16 items-center w-full">
-                    <div>
-                      <p className="font-medium">{option.name}</p>
-                      <p className="text-sm text-muted-foreground">{option.days}</p>
-                    </div>
-                    <span className="font-medium">${option.price}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
-
-      {/* Gift Wrap */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="gift-wrap"
-              checked={giftWrap}
-              onCheckedChange={(checked) => setGiftWrap(checked as boolean)}
-            />
-            <Label htmlFor="gift-wrap" className="flex-1">
-              <div className="flex justify-between">
-                <span>Gift wrap</span>
-                <span className="font-medium">$4.99</span>
-              </div>
-            </Label>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <Link
+          href="/order-summary"
+          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[15px] font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98]"
+        >
+          Continue to checkout
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </Link>
+      </div>
+    </aside>
   );
 };
 

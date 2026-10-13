@@ -1,50 +1,71 @@
-import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 const PhoneModal = ({
-  setShowPhoneModal,
+  onCancel,
   phoneNumber,
   setPhoneNumber,
   selectedProvider,
   handlePhoneSubmit,
+  error,
 }: {
-  setShowPhoneModal: (value: boolean) => void;
+  onCancel: () => void;
   phoneNumber: string;
   setPhoneNumber: (value: string) => void;
   selectedProvider: string;
   handlePhoneSubmit: () => void;
+  error?: string;
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-2xl lg:min-w-md w-full p-6">
-      <h3 className="text-lg font-bold mb-4 text-gray-800">Enter Phone Number</h3>
-      <p className="text-sm text-gray-600 mb-4">
-        Enter your {selectedProvider} registered phone number
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        handlePhoneSubmit();
+      }}
+    >
+      <h3 className="text-lg font-semibold text-gray-900">Pay with {selectedProvider}</h3>
+      <p className="mt-1 text-sm text-gray-600">
+        Enter the mobile number registered with your {selectedProvider} account. We&apos;ll send
+        you a verification code.
       </p>
+      <Label htmlFor="wallet-phone" className="mt-5 block text-sm font-medium text-gray-900">
+        Mobile number
+      </Label>
       <Input
+        id="wallet-phone"
         type="tel"
-        placeholder="Enter phone number"
+        inputMode="numeric"
+        autoComplete="tel-national"
+        autoFocus
+        placeholder="01XXXXXXXXX"
         value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
+        onChange={(e) => setPhoneNumber(e.target.value.replace(/[^\d]/g, '').slice(0, 11))}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? 'wallet-phone-error' : undefined}
+        className="mt-1.5 h-11 tabular-nums"
       />
-      <div className="flex gap-3">
-        <Button
-          onClick={() => {
-            setShowPhoneModal(false);
-            setPhoneNumber('');
-          }}
-          className="flex-1 bg-gray-200 text-gray-800 hover:bg-gray-300 font-semibold py-2 rounded"
+      {error && (
+        <p id="wallet-phone-error" role="alert" className="mt-1.5 text-xs text-red">
+          {error}
+        </p>
+      )}
+      <div className="mt-6 flex gap-3">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="h-11 flex-1 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
         >
-          Cancel
-        </Button>
-        <Button
-          onClick={handlePhoneSubmit}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
+          Back
+        </button>
+        <button
+          type="submit"
+          className="h-11 flex-1 rounded-lg bg-brand font-medium text-white transition-colors hover:bg-brand-hover"
         >
-          Submit
-        </Button>
+          Send code
+        </button>
       </div>
-    </div>
+    </form>
   );
 };
 

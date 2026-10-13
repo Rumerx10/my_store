@@ -1,165 +1,59 @@
-import React, { useRef, useState } from 'react';
-import { IoMdHeartEmpty } from 'react-icons/io';
-import {
-  MdOutlineCardGiftcard,
-  MdOutlineHome,
-} from 'react-icons/md';
-import { FiSearch } from 'react-icons/fi';
-import { useRouter } from 'next/navigation';
-import { RxCross2 } from 'react-icons/rx';
-import { AiOutlineProduct } from 'react-icons/ai';
-
+'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Home, LayoutGrid, Tag, Heart, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import CountBadge from '../CountBadge';
 
-const BottomNav = ({
-  searchTerm,
-  setSearchTerm,
-}: {
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
-}) => {
-  const [isSearchBoxOpen, setIsSearchBoxOpen] = useState(false);
-  const [selected, setSelected] = useState('home');
-  const router = useRouter();
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const isActive = (label: string) => selected === label.toLowerCase();
+const navItems = [
+  { label: 'Home', href: '/', icon: Home },
+  { label: 'Shop', href: '/products', icon: LayoutGrid },
+  { label: 'Deals', href: '/deals', icon: Tag },
+  { label: 'Wishlist', href: '/wish-list', icon: Heart },
+  { label: 'Account', href: '/profile', icon: User },
+];
 
-  const wishlistItems = useSelector((state: RootState) => state.wishlist.items).length;
+const isActivePath = (pathname: string, href: string) => {
+  if (href === '/') return pathname === '/';
+  if (href === '/profile') return pathname.startsWith('/profile') || pathname === '/orders';
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
 
-  const navItems = [
-    { label: 'Home', src: '/', icon: <MdOutlineHome size={24} />, badge: null, badgePosition: '' },
-    {
-      label: 'Offers',
-      src: '/offers',
-      icon: <MdOutlineCardGiftcard size={24} />,
-      badge: 0,
-      badgePosition: '-right-1',
-    },
-    {
-      label: 'Products',
-      src: '/products',
-      icon: <AiOutlineProduct size={24} />,
-      badge: null,
-      badgePosition: 'right-2',
-    },
-    {
-      label: 'Wish List',
-      src: 'wish-list',
-      icon: <IoMdHeartEmpty size={24} />,
-      badge: wishlistItems,
-      badgePosition: 'right-1.5',
-    },
-  ];
+const BottomNav = () => {
+  const pathname = usePathname();
+  const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
 
-  const handleSearch = () => {
-    router.push(`/products?searchTerm=${searchTerm}`);
-    setIsSearchBoxOpen(false);
-  };
   return (
-    <div className="lg:hidden">
-      {/* Search Box */}
-      <div
-        className={`fixed z-60 flex items-center duration-300 top-18 lg:top-20 w-full shadow-md bg-white ${
-          isSearchBoxOpen ? 'scale-100 h-12' : 'scale-0 h-0 pointer-events-none'
-        }`}
-      >
-        <div className="relative w-full">
-          <input
-            ref={searchInputRef}
-            placeholder="Search"
-            className="text-black w-full px-4 h-full outline-0"
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          />
-          {searchTerm && (
-            <div
-              onClick={() => {
-                setSearchTerm('');
-                router.push('/products');
-                searchInputRef.current?.focus();
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex shrink-0 rounded-sm items-center justify-center text-gray-400 hover:bg-gray-100 duration-300 cursor-pointer"
-            >
-              <RxCross2 size={22} />
-            </div>
-          )}
-        </div>
-        <button
-          className="group bg-green hover:bg-hGreen active:bg-hGreen duration-300 px-4 h-full"
-          onClick={handleSearch}
-        >
-          <Search color="white" size={24} className="group-active:scale-90 duration-200" />
-        </button>
-      </div>
-
-      {/* Bottom Navigation */}
-      <div className="lg:hidden z-40 fixed text-white bg-base bottom-0 w-full flex items-center justify-between px-8 py-2 gap-5">
-        {navItems.map(({ label, src, icon, badge, badgePosition }) => (
-          <Link
-            key={label}
-            href={src}
-            onClick={() => {
-              setSelected(label.toLowerCase());
-              setIsSearchBoxOpen(false);
-            }}
-            className={`cursor-pointer flex flex-col gap-1 items-center justify-between relative ${
-              isActive(label) ? 'text-green' : 'text-white'
-            }`}
-          >
-            <div className={isActive(label) ? 'text-green' : 'text-black'}>
-              {badge != null && badge !== 0 && (
-                <span
-                  className={`absolute text-white top-0 h-4 w-4 text-xs font-semibold flex justify-center items-center rounded-full bg-red-500 ${badgePosition}`}
-                >
-                  {badge}
+    <nav
+      aria-label="Quick links"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/70 bg-white/60 backdrop-blur-xl backdrop-saturate-150 pb-[env(safe-area-inset-bottom)]"
+    >
+      <ul className="grid h-16 grid-cols-5">
+        {navItems.map(({ label, href, icon: Icon }) => {
+          const active = isActivePath(pathname, href);
+          return (
+            <li key={href}>
+              <Link
+                href={href}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors',
+                  active ? 'text-brand' : 'text-gray-500 hover:text-gray-900',
+                )}
+              >
+                <span className="relative flex size-7 items-center justify-center">
+                  <Icon className="size-[22px]" strokeWidth={active ? 2.25 : 1.75} />
+                  {href === '/wish-list' && <CountBadge count={wishlistCount} />}
                 </span>
-              )}
-              {icon}
-            </div>
-            <p
-              className={`whitespace-nowrap font-medium text-xs ${
-                isActive(label) ? 'text-green' : 'text-black'
-              }`}
-            >
-              {label}
-            </p>
-          </Link>
-        ))}
-
-        {/* Search Icon */}
-        <div
-          className="text-black cursor-pointer flex flex-col gap-1 items-center justify-between relative"
-          onClick={() => {
-            setIsSearchBoxOpen(!isSearchBoxOpen);
-            // setSelected('search');
-            searchInputRef.current?.focus();
-          }}
-        >
-          <div className={`relative ${isActive('search') ? 'text-green' : ''}`}>
-            <FiSearch size={24} />
-          </div>
-          <p
-            className={`whitespace-nowrap font-medium text-xs ${
-              isActive('search') ? 'text-green' : ''
-            }`}
-          >
-            Search
-          </p>
-        </div>
-      </div>
-
-      {/* Overlay */}
-      {isSearchBoxOpen && (
-        <div
-          className={`fixed z-50 inset-0 top-18 bottom-15 backdrop-blur-sm bg-black/10 duration-300 ${isSearchBoxOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          onClick={() => setIsSearchBoxOpen(false)}
-        />
-      )}
-    </div>
+                {label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 };
 

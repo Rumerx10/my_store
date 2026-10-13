@@ -1,71 +1,86 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { notFound, useParams } from 'next/navigation';
+import { ChevronRight } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { categoryLabel } from '@/docs/navLinks';
+import ProductImgCarousel from '@/components/ProductImgCarousel';
 import { ProductDetailsTab } from './ProductDetailsTab';
 import { RelatedProducts } from './RelatedProducts';
-import { BackButton } from '../../BackButton';
 import { ProductDetailsInfo } from './ProductDetailsInfo';
-import ProductImgCarousel from '@/components/ProductImgCarousel';
-import { Card } from '@/components/ui/card';
 import ProductDetailFeatures from './ProductDetailFeatures';
-import { Products } from '@/docs/api_products';
-import { useParams } from 'next/navigation';
 import SellerInfo from './SellerInfo';
-import PricingDetails from './PricingDetails';
 
 export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
-  const [reviewFilter, setReviewFilter] = useState('all');
-  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const productId = Number(useParams().id);
-  const product = Products.find((product) => product.id === productId);
+  const product = useSelector((state: RootState) =>
+    state.products.find((item) => item.id === productId),
+  );
+
+  if (!product) notFound();
+
+  const showReviews = () => {
+    setActiveTab('reviews');
+    document.getElementById('product-tabs')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <div className="min-h-screen py-6">
-      <Card className="container mx-auto px-4 py-8 flex flex-col bg-white">
-        {/* Back Button */}
-        <BackButton name="Products" href="/products" />
-        <div className="mb-5 grid gap-6 gird-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_2fr_1.5fr]">
-          <div className="flex overflow-hidden ">
-            <ProductImgCarousel images={product?.images} />
-          </div>
+    <div className="container py-5 md:py-8">
+      <nav aria-label="Breadcrumb" className="mb-5 text-sm">
+        <ol className="flex min-w-0 items-center gap-1.5 text-gray-500">
+          <li>
+            <Link href="/" className="rounded transition-colors hover:text-gray-900">
+              Home
+            </Link>
+          </li>
+          <li className="flex items-center gap-1.5">
+            <ChevronRight className="size-3.5 shrink-0" aria-hidden="true" />
+            <Link
+              href={`/products?category=${product.category}`}
+              className="rounded transition-colors hover:text-gray-900"
+            >
+              {categoryLabel(product.category)}
+            </Link>
+          </li>
+          <li className="flex min-w-0 items-center gap-1.5">
+            <ChevronRight className="size-3.5 shrink-0" aria-hidden="true" />
+            <span aria-current="page" className="truncate font-medium text-gray-900">
+              {product.title}
+            </span>
+          </li>
+        </ol>
+      </nav>
 
-          {product && (
-            <ProductDetailsInfo
-              product={product}
-              quantity={quantity}
-              setQuantity={setQuantity}
-              setActiveTab={setActiveTab}
-            />
-          )}
-          <div className="lg:space-y-6">
-            <PricingDetails price={product?.price ? product.price : 0} quantity={quantity} />
-            <div className="hidden lg:block">
-              <SellerInfo />
-            </div>
-          </div>
-          <div className="lg:hidden">
-            <SellerInfo />
-          </div>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
+          <ProductImgCarousel images={product.images} title={product.title} />
         </div>
 
-        <div className="lg:hidden">
-          <ProductDetailFeatures />
+        <div className="flex flex-col gap-6">
+          <ProductDetailsInfo
+            product={product}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            onShowReviews={showReviews}
+          />
+          <ProductDetailFeatures product={product} />
+          <SellerInfo />
         </div>
-        {/* Product Details Tabs */}
-        <ProductDetailsTab
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          reviewFilter={reviewFilter}
-          setReviewFilter={setReviewFilter}
-          showAllReviews={showAllReviews}
-          setShowAllReviews={setShowAllReviews}
-        />
-        {/* Related Products */}
-        <RelatedProducts />
-      </Card>
+      </div>
+
+      <div className="mt-12 md:mt-16">
+        <ProductDetailsTab product={product} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+
+      <div className="mt-14 md:mt-20">
+        <RelatedProducts product={product} />
+      </div>
     </div>
   );
 }

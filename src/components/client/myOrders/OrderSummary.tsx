@@ -1,218 +1,216 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Label } from '@/components/ui/label';
-import { CreditCard, Truck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { useSelector } from 'react-redux';
+import { ArrowLeft, CreditCard, Home, Building2, Truck } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import PaymentGateway from '@/components/PaymentGateway';
-import { useState } from 'react';
 import PaymentOrOrderSuccess from '@/components/PaymentOrOrderSuccess';
-import { useRouter } from 'next/navigation';
+import OrderTotals from '@/components/cart/OrderTotals';
+import EmptyCart from '@/components/cart/EmptyCart';
+import { DELIVERY_ADDRESSES } from '@/docs/checkout';
+import { calculateTotals } from '@/lib/checkout';
+import { formatPrice } from '@/lib/utils';
+import { addOrder, PaymentMethodId } from '@/redux/features/order/orderSlice';
+import { clearCart } from '@/redux/features/cart/cartSlice';
+
+type Step = 'review' | 'pay' | 'done';
+
+const newOrderId = () => {
+  const now = new Date();
+  const yymm = `${String(now.getFullYear()).slice(2)}${String(now.getMonth() + 1).padStart(2, '0')}`;
+  return `NM-${yymm}-${Math.floor(1000 + Math.random() * 9000)}`;
+};
 
 const OrderSummary = () => {
-  const router = useRouter();
-  const [payNow, setPayNow] = useState(false);
-  const cartItems = useSelector((state: RootState) => state.cart.items) || [];
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const dispatch = useDispatch();
+  const { items, shippingId, couponCode, giftWrap } = useSelector((state: RootState) => state.cart);
+  const [step, setStep] = useState<Step>('review');
+  const [addressId, setAddressId] = useState(DELIVERY_ADDRESSES[0].id);
+  const [placed, setPlaced] = useState<{ id: string; method: PaymentMethodId } | null>(null);
 
-  const calculation = () => {
-    const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 5;
-    const total = subTotal + shipping;
-    return { subTotal, shipping, total };
+  const totals = calculateTotals(items, { shippingId, couponCode, giftWrap });
+  const address = DELIVERY_ADDRESSES.find((a) => a.id === addressId) ?? DELIVERY_ADDRESSES[0];
+
+  const placeOrder = (method: PaymentMethodId) => {
+    const id = newOrderId();
+    dispatch(
+      addOrder({
+        id,
+        date: new Date().toISOString().slice(0, 10),
+        items: items.map((item) => ({
+          productId: item.id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+        })),
+        totalAmount: Math.round(totals.total * 100) / 100,
+        status: 'pending',
+        paymentMethod: method,
+        paymentStatus: method === 'cod' ? 'unpaid' : 'paid',
+        address: { label: address.label, name: address.name, line: address.line, phone: address.phone },
+      }),
+    );
+    dispatch(clearCart());
+    setPlaced({ id, method });
+    setStep('done');
+    window.scrollTo({ top: 0 });
   };
-  const handleCashOnDelivery = () => {
-    setShowSuccessModal(true);
-    setTimeout(() => {
-      router.push('/orders');
-      setShowSuccessModal(false);
-    }, 3000);
-  };
+
+  if (step === 'done' && placed) {
+    return (
+      <div className="container py-10 md:py-16">
+        <PaymentOrOrderSuccess
+          title={placed.method === 'cod' ? 'Order placed' : 'Payment received, order placed'}
+          orderId={placed.id}
+          subTitle={
+            placed.method === 'cod'
+              ? "We'll call to confirm the order. Pay in cash when it arrives."
+              : "We've emailed your receipt. You can follow the delivery from My orders."
+          }
+        />
+      </div>
+    );
+  }
+
+  if (items.length === 0) return <EmptyCart />;
 
   return (
-    <div
-      className={`container px-4 mx-auto flex items-center justify-center transition-all duration-300 `}
-    >
-      <div className="w-full flex items-center justify-center min-h-screen">
-        {payNow ? (
-          <div className={`backdrop-blur-sm bg-transparent duration-300`}>
+    <div className="container py-6 md:py-10">
+      <Link
+        href="/cart"
+        className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        Back to cart
+      </Link>
+      <h1 className="mt-3 text-2xl text-gray-900 md:text-3xl">Checkout</h1>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
+        <div className="min-w-0 space-y-6">
+          {step === 'pay' ? (
             <PaymentGateway
-              showSuccessModal={showSuccessModal}
-              setShowSuccessModal={setShowSuccessModal}
-              payNow={payNow}
-              payable={calculation().total}
-              setPayNow={setPayNow}
+              payable={totals.total}
+              onPaid={placeOrder}
+              onBack={() => setStep('review')}
             />
-          </div>
-        ) : showSuccessModal ? (
-          <PaymentOrOrderSuccess
-            title="Order Placed Successfullt!"
-            subTitle="You will be called for confirmation. Payment will be collected after delivery."
-          />
-        ) : (
-          <div className="py-5 w-full grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5 md:p-4 h-auto">
-            {/* Left side - Cart Items */}
-            <Card className="relative bg-white p-5">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">Order Summary</h2>
-              <div className="flex flex-col gap-2">
-                {cartItems.map((item) => (
-                  <Link key={item.id} href={`/products/${item.id}`}>
-                    <div
-                      key={item.id}
-                      className="bg-gray-50 hover:bg-gray-100 rounded-sm transition-colors"
-                    >
-                      <CardContent className="p-2">
-                        <div className="flex gap-4">
-                          {/* Product Image */}
-                          <div className="relative w-18 h-18 border rounded-lg shrink-0">
-                            <Image
-                              src={item.image || '/placeholder.svg'}
-                              alt={item.title}
-                              fill
-                              className="object-cover rounded-md"
-                            />
-                          </div>
+          ) : (
+            <>
+              <section
+                aria-labelledby="delivery-heading"
+                className="rounded-xl glass p-5 md:p-6"
+              >
+                <h2 id="delivery-heading" className="text-lg text-gray-900">
+                  Delivery address
+                </h2>
+                <RadioGroup value={addressId} onValueChange={setAddressId} className="mt-4 gap-3 md:grid-cols-2">
+                  {DELIVERY_ADDRESSES.map((addr) => {
+                    const Icon = addr.id === 'home' ? Home : Building2;
+                    return (
+                      <Label
+                        key={addr.id}
+                        htmlFor={`addr-${addr.id}`}
+                        className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-4 font-normal transition-colors hover:bg-gray-50 has-[[data-state=checked]]:border-brand has-[[data-state=checked]]:bg-brand-soft/60"
+                      >
+                        <RadioGroupItem value={addr.id} id={`addr-${addr.id}`} className="mt-0.5" />
+                        <span className="min-w-0 flex-1 space-y-1">
+                          <span className="flex items-center gap-2 font-medium text-gray-900">
+                            <Icon className="size-4 text-gray-500" aria-hidden="true" />
+                            {addr.label}
+                          </span>
+                          <span className="block text-sm text-gray-700">{addr.name}</span>
+                          <span className="block text-sm leading-snug text-gray-600">{addr.line}</span>
+                          <span className="block text-sm tabular-nums text-gray-500">{addr.phone}</span>
+                        </span>
+                      </Label>
+                    );
+                  })}
+                </RadioGroup>
+                <Link
+                  href="/profile/address-book"
+                  className="mt-4 inline-block rounded text-sm font-medium text-brand hover:text-brand-hover"
+                >
+                  Manage addresses
+                </Link>
+              </section>
 
-                          {/* Product Details */}
-                          <div className="flex-1 space-y-2">
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                              <div>
-                                <h3 className="font-medium text-md text-gray-800">{item.title}</h3>
-                                <p className="text-xs text-gray-500">Brand Name</p>
-                              </div>
-                            </div>
-                            {/* Price and Quantity */}
-                            <div className="text-md font-medium flex justify-between sm:items-end gap-4">
-                              <div className="flex items-center gap-2">
-                                <span className="text-gray-800">${item.price}</span>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <Label htmlFor={`quantity-${item.id}`} className="text-gray-600">
-                                  Quantity:
-                                </Label>
-                                <div
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                  }}
-                                  className="flex items-center"
-                                >
-                                  <span className="text-gray-800 font-semibold">
-                                    {item.quantity}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                      {/* {cartItems.length > 1 && <hr className="my-2" />} */}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </Card>
-
-            {/* Right side - Address & Payment */}
-            <Card className="bg-white p-5 flex flex-col">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">Shipping & Payment</h2>
-
-              {/* Address Dropdown */}
-              <div className="">
-                <Label htmlFor="address" className="block mb-2 text-gray-700 font-medium">
-                  Select Delivery Address
-                </Label>
-                <div className="mt-4 space-y-3">
-                  {[
-                    {
-                      id: 'home',
-                      title: '🏠 Home Address',
-                      address: '123 Main Street, Mirpur-12, Pallabi, Dhaka-1216, Bangladesh',
-                      phone: '+880 1712 345678',
-                    },
-                    {
-                      id: 'office',
-                      title: '🏢 Office Address',
-                      address: '456 Business Road, Gulshan-2, Dhaka-1212, Bangladesh',
-                      phone: '+880 1812 345678',
-                    },
-                  ].map((addr) => (
-                    <div
-                      key={addr.id}
-                      className="p-3 border rounded-lg cursor-pointer hover:border-blue-500 transition-colors"
-                      onClick={() => console.log('Selected:', addr.id)}
-                    >
-                      <div className="flex items-start gap-2">
-                        <input
-                          type="radio"
-                          id={`addr-${addr.id}`}
-                          name="address"
-                          value={addr.id}
-                          className="mt-1"
+              <section
+                aria-labelledby="items-heading"
+                className="rounded-xl glass p-5 md:p-6"
+              >
+                <h2 id="items-heading" className="text-lg text-gray-900">
+                  Items ({totals.itemCount})
+                </h2>
+                <ul className="mt-4 divide-y divide-gray-100">
+                  {items.map((item) => (
+                    <li key={item.id} className="flex items-center gap-4 py-3">
+                      <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                        <Image
+                          src={item.image || '/placeholder.svg'}
+                          alt=""
+                          fill
+                          sizes="64px"
+                          className="object-contain p-1.5"
                         />
-                        <div>
-                          <label
-                            htmlFor={`addr-${addr.id}`}
-                            className="font-medium text-gray-800 cursor-pointer"
-                          >
-                            {addr.title}
-                          </label>
-                          <p className="text-sm text-gray-600 mt-1">{addr.address}</p>
-                          <p className="text-sm text-gray-500 mt-1">{addr.phone}</p>
-                        </div>
                       </div>
-                    </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-gray-900">{item.title}</p>
+                        <p className="text-sm tabular-nums text-gray-500">
+                          {item.quantity} × {formatPrice(item.price)}
+                        </p>
+                      </div>
+                      <p className="text-sm font-semibold tabular-nums text-gray-900">
+                        {formatPrice(item.price * item.quantity)}
+                      </p>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </section>
+            </>
+          )}
+        </div>
 
-              {/* Payment Methods */}
-              <div className="mt-10">
-                <h3 className="font-medium text-gray-700 mb-3">Payment Method</h3>
-                {/* Order Summary */}
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">${calculation().subTotal}</span>
-                  </div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">${calculation().shipping}</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-bold mt-4 pt-2 border-t">
-                    <span>Total</span>
-                    <span className="text-blue-700">${calculation().total}</span>
-                  </div>
-                </div>
-                <div className="mt-10 flex flex-col sm:flex-row gap-3">
-                  <div className="w-full" onClick={() => setPayNow(true)}>
-                    <Button
-                      size="lg"
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-6"
-                    >
-                      <CreditCard className="mr-2 h-5 w-5" />
-                      Pay Now
-                    </Button>
-                  </div>
-
-                  <div onClick={handleCashOnDelivery}>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full border-2 border-green-600 text-green-700 hover:bg-green-50 hover:text-green-800 hover:border-green-700 font-semibold py-6"
-                    >
-                      <Truck className="mr-2 h-5 w-5" />
-                      Cash on Delivery
-                    </Button>
-                  </div>
-                </div>
+        <aside
+          aria-label="Payment"
+          className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start"
+        >
+          <div className="rounded-xl glass p-5 md:p-6">
+            <h2 className="text-lg text-gray-900">Order total</h2>
+            <div className="mt-4">
+              <OrderTotals totals={totals} />
+            </div>
+            {step === 'review' && (
+              <div className="mt-6 space-y-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep('pay');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-brand font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98]"
+                >
+                  <CreditCard className="size-4" aria-hidden="true" />
+                  Pay now
+                </button>
+                <button
+                  type="button"
+                  onClick={() => placeOrder('cod')}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                >
+                  <Truck className="size-4" aria-hidden="true" />
+                  Cash on delivery
+                </button>
+                <p className="text-center text-xs text-gray-500">
+                  Delivering to {address.label.toLowerCase()} · {totals.shippingOption.days}
+                </p>
               </div>
-            </Card>
+            )}
           </div>
-        )}
+        </aside>
       </div>
     </div>
   );

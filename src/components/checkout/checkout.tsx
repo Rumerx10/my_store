@@ -49,6 +49,7 @@ import type {
   NewAddressForm,
   AddressFormErrors,
 } from "@/types/checkout"
+import { formatPrice } from "@/lib/utils"
 import { CART_ITEMS, PAYMENT_METHODS, SAVED_ADDRESSES, SHIPPING_OPTIONS, US_STATES } from "@/docs/checkout"
 
 
@@ -715,7 +716,7 @@ export default function Checkout() {
                     <p className="text-sm text-muted-foreground">{option.days}</p>
                   </div>
                   <div className="text-right">
-                    <span className="font-semibold">${option.price}</span>
+                    <span className="font-semibold">{formatPrice(option.price)}</span>
                     {option.id === "standard" && option.price === 5.99 && orderSummary.subtotal >= 50 && (
                       <div className="text-xs text-green-600">FREE on orders $50+</div>
                     )}
@@ -742,7 +743,7 @@ export default function Checkout() {
                 <p className="font-medium">Gift wrap this order</p>
                 <p className="text-sm text-muted-foreground">Beautiful gift wrapping with ribbon</p>
               </div>
-              <span className="font-semibold">$4.99</span>
+              <span className="font-semibold">{formatPrice(4.99)}</span>
             </div>
           </Label>
         </div>
@@ -933,7 +934,7 @@ export default function Checkout() {
                 </p>
               </div>
               <span className="font-semibold">
-                ${SHIPPING_OPTIONS.find((option) => option.id === checkoutState.selectedShipping)?.price}
+                {formatPrice(SHIPPING_OPTIONS.find((option) => option.id === checkoutState.selectedShipping)?.price ?? 0)}
               </span>
             </div>
           )}
@@ -989,7 +990,7 @@ export default function Checkout() {
                 <p className="text-sm text-muted-foreground">{item.brand}</p>
                 <div className="flex justify-between items-center mt-1">
                   <span className="text-sm">Qty: {item.quantity}</span>
-                  <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-medium">{formatPrice((item.price * item.quantity))}</span>
                 </div>
               </div>
             </div>
@@ -1026,15 +1027,15 @@ export default function Checkout() {
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
-        return <ShippingStep />
+        return ShippingStep()
       case 1:
-        return <PaymentStep />
+        return PaymentStep()
       case 2:
-        return <ReviewStep />
+        return ReviewStep()
       case 3:
         return <ConfirmationStep />
       default:
-        return <ShippingStep />
+        return ShippingStep()
     }
   }
 
@@ -1118,31 +1119,31 @@ export default function Checkout() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Subtotal ({orderSummary.itemCount} items)</span>
-                      <span>${orderSummary.subtotal.toFixed(2)}</span>
+                      <span>{formatPrice(orderSummary.subtotal)}</span>
                     </div>
 
                     {orderSummary.savings > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>You saved</span>
-                        <span>-${orderSummary.savings.toFixed(2)}</span>
+                        <span>-{formatPrice(orderSummary.savings)}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between">
                       <span>Shipping</span>
-                      <span>${orderSummary.shipping.toFixed(2)}</span>
+                      <span>{formatPrice(orderSummary.shipping)}</span>
                     </div>
 
                     {checkoutState.giftWrap && (
                       <div className="flex justify-between">
                         <span>Gift wrap</span>
-                        <span>${orderSummary.giftWrapFee.toFixed(2)}</span>
+                        <span>{formatPrice(orderSummary.giftWrapFee)}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between">
                       <span>Tax</span>
-                      <span>${orderSummary.tax.toFixed(2)}</span>
+                      <span>{formatPrice(orderSummary.tax)}</span>
                     </div>
                   </div>
 
@@ -1150,7 +1151,7 @@ export default function Checkout() {
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>${orderSummary.total.toFixed(2)}</span>
+                    <span>{formatPrice(orderSummary.total)}</span>
                   </div>
 
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">

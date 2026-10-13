@@ -59,11 +59,3 @@ export interface ICartItem {
   quantity: number;
   image: string;
 }
-
-export interface IOrderItem {
-  productId: string;
-  title: string;
-  price: number;
-  quantity: number;
-  img: string;
-}

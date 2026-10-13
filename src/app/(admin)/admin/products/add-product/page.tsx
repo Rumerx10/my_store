@@ -1,7 +1,10 @@
-import AddProduct from '@/components/admin/Products/AddProduct/AddProduct';
+import type { Metadata } from 'next';
+import ProductForm from '@/components/admin/Products/ProductForm';
+
+export const metadata: Metadata = { title: 'Add product' };
 
 const page = () => {
-  return <AddProduct />;
+  return <ProductForm />;
 };
 
 export default page;

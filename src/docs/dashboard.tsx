@@ -1,52 +1,30 @@
-import { LayoutDashboard, Package, ShoppingCart, CreditCard, Settings } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  CreditCard,
+  Settings,
+  Star,
+  Ticket,
+} from 'lucide-react';
+import type { SideNavItem } from '@/components/shared/SideNavShell';
 
-export const SidebarItems = (user: string) => {
-  if (user === 'admin') {
-    return [
-      {
-        name: '/',
-        label: 'Dashboard',
-        icon: <LayoutDashboard className="w-5 h-5" />,
-      },
-      {
-        name: 'products',
-        label: 'Products',
-        icon: <Package className="w-5 h-5" />,
-      },
-      {
-        name: 'orders',
-        label: 'Orders',
-        icon: <ShoppingCart className="w-5 h-5" />,
-      },
-      {
-        name: 'payments',
-        label: 'Payments',
-        icon: <CreditCard className="w-5 h-5" />,
-      },
-      {
-        name: 'settings',
-        label: 'Settings',
-        icon: <Settings className="w-5 h-5" />,
-      },
-    ];
-  } else {
-    return [
-      {
-        name: '/',
-        label: 'Dashboard',
-        icon: <LayoutDashboard className="w-5 h-5" />,
-      },
-      {
-        name: 'my-orders',
-        label: 'My Orders',
-        icon: <CreditCard className="w-5 h-5" />,
-      },
-      {
-        name: 'reviews',
-        label: 'Reviews',
-        icon: <Settings className="w-5 h-5" />,
-      },
+export type DashboardRole = 'admin' | 'client';
 
-    ];
-  }
+const ITEMS: Record<DashboardRole, SideNavItem[]> = {
+  admin: [
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { href: '/admin/products', label: 'Products', icon: Package },
+    { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
+    { href: '/admin/payments', label: 'Payments', icon: CreditCard },
+    { href: '/admin/settings', label: 'Settings', icon: Settings },
+  ],
+  client: [
+    { href: '/client', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { href: '/client/my-orders', label: 'My orders', icon: Package },
+    { href: '/client/reviews', label: 'Reviews', icon: Star },
+    { href: '/client/coupons', label: 'Coupons', icon: Ticket },
+  ],
 };
+
+export const SidebarItems = (role: DashboardRole) => ITEMS[role];

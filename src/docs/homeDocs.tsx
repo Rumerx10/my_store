@@ -1,121 +1,51 @@
-import {
-  ShoppingCart,
-  Eye,
-  Truck,
-  Shield,
-  Headphones,
-  RotateCcw,
-  CheckCircle,
-  Users,
-  Award,
-  Zap,
-} from 'lucide-react';
+import { ShoppingCart, Eye, Truck, Shield, Headphones, RotateCcw } from 'lucide-react';
 
 export const FEATURES = [
   {
-    icon: <Truck className="w-6 h-6" />,
-    title: 'Free Shipping',
-    description: 'Free shipping on orders over $50',
+    icon: <Truck className="size-5" />,
+    title: 'Cash on delivery',
+    description: 'Pay when your order arrives',
   },
   {
-    icon: <Shield className="w-6 h-6" />,
-    title: 'Secure Payment',
-    description: '100% secure payment processing',
+    icon: <Shield className="size-5" />,
+    title: 'Pay your way',
+    description: 'bKash, Nagad, Rocket or card',
   },
   {
-    icon: <RotateCcw className="w-6 h-6" />,
-    title: 'Easy Returns',
-    description: '30-day hassle-free returns',
+    icon: <RotateCcw className="size-5" />,
+    title: 'Simple returns',
+    description: 'Each product lists its return window',
   },
   {
-    icon: <Headphones className="w-6 h-6" />,
-    title: '24/7 Support',
-    description: 'Round-the-clock customer support',
+    icon: <Headphones className="size-5" />,
+    title: 'Real support',
+    description: 'Chat or call us 7 days a week',
   },
 ];
 
 export const HOW_IT_WORKS = [
   {
     step: 1,
-    title: 'Browse & Discover',
-    description: 'Explore our curated collection of premium products across multiple categories',
-    icon: <Eye className="w-8 h-8" />,
-    color: 'from-blue-500 to-blue-600',
+    title: 'Find what you need',
+    description: 'Search by name or brand, or browse a category and filter by price.',
+    icon: <Eye className="size-5" />,
   },
   {
     step: 2,
-    title: 'Add to Cart',
-    description: 'Select your favorite items and add them to your shopping cart with one click',
-    icon: <ShoppingCart className="w-8 h-8" />,
-    color: 'from-purple-500 to-purple-600',
+    title: 'Add it to your cart',
+    description: 'Adjust quantities in the cart and apply a promo code if you have one.',
+    icon: <ShoppingCart className="size-5" />,
   },
   {
     step: 3,
-    title: 'Secure Checkout',
-    description: 'Complete your purchase with our secure and fast checkout process',
-    icon: <Shield className="w-8 h-8" />,
-    color: 'from-green-500 to-green-600',
+    title: 'Choose how to pay',
+    description: 'Pay now with a card or mobile banking, or pay in cash on delivery.',
+    icon: <Shield className="size-5" />,
   },
   {
     step: 4,
-    title: 'Fast Delivery',
-    description: 'Receive your order quickly with our reliable shipping partners',
-    icon: <Truck className="w-8 h-8" />,
-    color: 'from-orange-500 to-orange-600',
+    title: 'Track the delivery',
+    description: 'Follow the order status from My orders until it reaches your door.',
+    icon: <Truck className="size-5" />,
   },
-];
-
-export const FEATURED_PRODUCTS = [
-  {
-    id: 1,
-    name: 'Premium Wireless Headphones',
-    price: 299.99,
-    originalPrice: 399.99,
-    rating: 4.8,
-    reviews: 1247,
-    image: '/placeholder.svg?height=400&width=400',
-    badge: 'Best Seller',
-    category: 'Electronics',
-  },
-  {
-    id: 2,
-    name: 'Designer Leather Handbag',
-    price: 189.99,
-    originalPrice: 249.99,
-    rating: 4.9,
-    reviews: 892,
-    image: '/placeholder.svg?height=400&width=400',
-    badge: 'Limited Edition',
-    category: 'Fashion',
-  },
-  {
-    id: 3,
-    name: 'Smart Fitness Watch',
-    price: 249.99,
-    originalPrice: 299.99,
-    rating: 4.7,
-    reviews: 2156,
-    image: '/placeholder.svg?height=400&width=400',
-    badge: 'New',
-    category: 'Electronics',
-  },
-  {
-    id: 4,
-    name: 'Organic Cotton T-Shirt',
-    price: 39.99,
-    originalPrice: 59.99,
-    rating: 4.6,
-    reviews: 634,
-    image: '/placeholder.svg?height=400&width=400',
-    badge: 'Eco-Friendly',
-    category: 'Fashion',
-  },
-];
-
-
-export const STATS = [
-  { number: '50K+', label: 'Happy Customers', icon: <Users className="w-6 h-6" /> },
-  { number: '10K+', label: 'Products Sold', icon: <Award className="w-6 h-6" /> },
-  { number: '99%', label: 'Satisfaction Rate', icon: <CheckCircle className="w-6 h-6" /> },
-  { number: '24/7', label: 'Support Available', icon: <Zap className="w-6 h-6" /> },
 ];

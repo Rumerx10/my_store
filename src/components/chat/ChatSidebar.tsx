@@ -1,113 +1,88 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
-import { Search, MoreVertical } from 'lucide-react';
-
-interface ChatContact {
-  id: number;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  timestamp: string;
-  isOnline: boolean;
-  unreadCount: number;
-}
+import { Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ChatContact } from './chatData';
+import ChatAvatar from './ChatAvatar';
 
 interface ChatSidebarProps {
   chats: ChatContact[];
   selectedChatId: number | null;
   onSelectChat: (id: number) => void;
+  className?: string;
 }
 
-const ChatSidebar = ({ chats, selectedChatId, onSelectChat }: ChatSidebarProps) => {
+const ChatSidebar = ({ chats, selectedChatId, onSelectChat, className }: ChatSidebarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredChats = chats.filter((chat) =>
-    chat.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    chat.name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
   );
 
   return (
-    <div className="w-full lg:w-80 bg-white border-r border-gray-200 flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <MoreVertical size={20} className="text-gray-600" />
-          </button>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative">
+    <div className={cn('flex h-full w-full flex-col border-r border-gray-100 bg-white md:w-80', className)}>
+      <div className="border-b border-gray-100 p-4">
+        <h1 className="text-xl text-gray-900">Messages</h1>
+        <div className="relative mt-3">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          />
           <input
-            type="text"
-            placeholder="Search chats..."
+            type="search"
+            aria-label="Search conversations"
+            placeholder="Search conversations"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-full text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all"
-          />
-          <Search
-            size={16}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            className="h-10 w-full rounded-lg border border-gray-200 bg-gray-50 pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-500 focus:border-brand focus:bg-white focus:outline-none focus:ring-3 focus:ring-brand/15"
           />
         </div>
       </div>
 
-      {/* Chat List */}
-      <div className="flex-1 overflow-y-auto">
+      <ul className="flex-1 overflow-y-auto">
         {filteredChats.length > 0 ? (
           filteredChats.map((chat) => (
-            <button
-              key={chat.id}
-              onClick={() => onSelectChat(chat.id)}
-              className={`w-full px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3 ${
-                selectedChatId === chat.id ? 'bg-blue-50' : ''
-              }`}
-            >
-              {/* Avatar */}
-              <div className="relative flex-shrink-0">
-                <Image
-                  src={chat.avatar || '/placeholder.svg'}
-                  alt={chat.name}
-                  width={48}
-                  height={48}
-                  className="rounded-full w-12 h-12 object-cover"
-                />
-                {chat.isOnline && (
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            <li key={chat.id}>
+              <button
+                type="button"
+                onClick={() => onSelectChat(chat.id)}
+                aria-current={selectedChatId === chat.id ? 'true' : undefined}
+                className={cn(
+                  'flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50',
+                  selectedChatId === chat.id && 'bg-brand-soft/60 hover:bg-brand-soft/60',
                 )}
-              </div>
-
-              {/* Chat Info */}
-              <div className="flex-1 min-w-0 text-left">
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <h3 className="font-semibold text-gray-900 truncate">{chat.name}</h3>
-                  <span className="text-xs text-gray-500 flex-shrink-0">{chat.timestamp}</span>
-                </div>
-                <p
-                  className={`text-sm truncate ${
-                    chat.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'
-                  }`}
-                >
-                  {chat.lastMessage}
-                </p>
-              </div>
-
-              {/* Unread Badge */}
-              {chat.unreadCount > 0 && (
-                <div className="w-5 h-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-semibold flex-shrink-0">
-                  {chat.unreadCount}
-                </div>
-              )}
-            </button>
+              >
+                <ChatAvatar chat={chat} />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="truncate font-medium text-gray-900">{chat.name}</span>
+                    <span className="shrink-0 text-xs text-gray-500">{chat.timestamp}</span>
+                  </span>
+                  <span className="mt-0.5 flex items-center justify-between gap-2">
+                    <span
+                      className={cn(
+                        'truncate text-sm',
+                        chat.unreadCount > 0 ? 'font-medium text-gray-900' : 'text-gray-500',
+                      )}
+                    >
+                      {chat.lastMessage}
+                    </span>
+                    {chat.unreadCount > 0 && (
+                      <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-brand px-1.5 text-xs font-semibold text-white">
+                        {chat.unreadCount}
+                        <span className="sr-only"> unread</span>
+                      </span>
+                    )}
+                  </span>
+                </span>
+              </button>
+            </li>
           ))
         ) : (
-          <div className="flex items-center justify-center h-32 text-gray-500">
-            <p className="text-sm">No chats found</p>
-          </div>
+          <li className="px-4 py-10 text-center text-sm text-gray-500">No conversations match.</li>
         )}
-      </div>
+      </ul>
     </div>
   );
 };

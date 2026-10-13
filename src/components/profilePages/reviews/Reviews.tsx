@@ -1,145 +1,140 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Star, Edit, Trash2, MessageSquare } from 'lucide-react';
+import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { Pencil, Star, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import Rating from '@/components/shared/Rating';
+import PageHeading from '../PageHeading';
+
+interface MyReview {
+  id: number;
+  productId: number;
+  productName: string;
+  productImage: string;
+  rating: number;
+  title: string;
+  content: string;
+  date: string;
+  helpful: number;
+}
+
+const INITIAL_REVIEWS: MyReview[] = [
+  {
+    id: 1,
+    productId: 6,
+    productName: 'Calvin Klein CK One',
+    productImage:
+      'https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/thumbnail.webp',
+    rating: 5,
+    title: 'Fresh and lasts all day',
+    content:
+      'Light citrus opening that settles into something clean. Still noticeable after a full day at the office.',
+    date: '2 Oct 2026',
+    helpful: 14,
+  },
+  {
+    id: 2,
+    productId: 4,
+    productName: 'Red Lipstick',
+    productImage: 'https://cdn.dummyjson.com/product-images/beauty/red-lipstick/thumbnail.webp',
+    rating: 4,
+    title: 'Great colour, slightly drying',
+    content:
+      'The shade is exactly as pictured. It needs a balm underneath, otherwise it dries out by the afternoon.',
+    date: '1 Oct 2026',
+    helpful: 6,
+  },
+  {
+    id: 3,
+    productId: 29,
+    productName: 'Juice',
+    productImage: 'https://cdn.dummyjson.com/product-images/groceries/juice/thumbnail.webp',
+    rating: 3,
+    title: 'Fine, but sweeter than expected',
+    content: 'Arrived cold and well packed. Tastes more like a fruit drink than fresh juice.',
+    date: '6 Sep 2026',
+    helpful: 2,
+  },
+];
 
 const Reviews = () => {
-  const reviews = [
-    {
-      id: 1,
-      productName: 'Premium Wireless Headphones',
-      productImage: '/placeholder.svg',
-      rating: 5,
-      title: 'Excellent sound quality!',
-      content:
-        'These headphones exceeded my expectations. The sound quality is crystal clear and the battery life is impressive.',
-      date: '2 weeks ago',
-      helpful: 24,
-      verified: true,
-    },
-    {
-      id: 2,
-      productName: 'Smartphone Case',
-      productImage: '/placeholder.svg',
-      rating: 4,
-      title: 'Good protection, great design',
-      content:
-        'The case offers great protection and looks sleek. Only downside is it can be a bit slippery on smooth surfaces.',
-      date: '1 month ago',
-      helpful: 15,
-      verified: true,
-    },
-    {
-      id: 3,
-      productName: 'USB-C Charging Cable',
-      productImage: '/placeholder.svg',
-      rating: 3,
-      title: 'Average quality',
-      content: 'It works as expected but durability could be better. The cable feels a bit thin.',
-      date: '2 months ago',
-      helpful: 8,
-      verified: true,
-    },
-  ];
+  const [reviews, setReviews] = useState(INITIAL_REVIEWS);
 
-  const renderStars = (rating: number) => {
-    return (
-      <div className="flex gap-1">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            size={16}
-            className={i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-          />
-        ))}
-      </div>
-    );
+  const handleDelete = (review: MyReview) => {
+    setReviews((prev) => prev.filter((r) => r.id !== review.id));
+    toast.success(`Deleted your review of ${review.productName}`);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="pt-28 pb-12">
-        <div className="container mx-auto px-4 flex flex-col">
-          {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Reviews</h1>
-            <p className="text-gray-600 mt-2">You have written {reviews.length} reviews</p>
-          </div>
+    <div>
+      <PageHeading
+        title="My reviews"
+        desc={`You've reviewed ${reviews.length} ${reviews.length === 1 ? 'product' : 'products'}.`}
+      />
 
-          {/* Reviews List */}
-          <div className="mt-8 space-y-4">
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
-              >
-                {/* Product Info */}
-                <div className="flex items-start gap-4 mb-4">
-                  <Image
-                    src={review.productImage || '/placeholder.svg'}
-                    alt={review.productName}
-                    width={80}
-                    height={80}
-                    className="rounded-lg bg-gray-100 object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-500">Product</p>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {review.productName}
-                        </h3>
-                      </div>
-                      {review.verified && (
-                        <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-                          Verified Purchase
-                        </span>
-                      )}
-                    </div>
-                  </div>
+      {reviews.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
+          <Star className="mx-auto size-10 text-gray-300" aria-hidden="true" />
+          <p className="mt-3 font-medium text-gray-900">No reviews yet</p>
+          <Link
+            href="/profile/to-review"
+            className="mt-1 inline-block rounded text-sm font-medium text-brand hover:text-brand-hover"
+          >
+            See products waiting for your review
+          </Link>
+        </div>
+      ) : (
+        <ul className="space-y-4">
+          {reviews.map((review) => (
+            <li key={review.id} className="rounded-xl glass p-5 md:p-6">
+              <div className="flex items-center gap-4">
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                  <Image src={review.productImage} alt="" fill sizes="56px" className="object-contain p-1" />
                 </div>
-
-                {/* Review Content */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      {renderStars(review.rating)}
-                      <span className="text-sm font-semibold text-gray-700">{review.rating}.0</span>
-                    </div>
-                    <span className="text-sm text-gray-500">{review.date}</span>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">{review.title}</h4>
-                  <p className="text-gray-700 leading-relaxed">{review.content}</p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                  <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-                      <MessageSquare size={16} />
-                      <span className="text-sm">{review.helpful} found helpful</span>
-                    </button>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                      <Edit size={16} />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2 text-red-600 hover:text-red-700 bg-transparent"
-                    >
-                      <Trash2 size={16} />
-                      Delete
-                    </Button>
+                <div className="min-w-0 flex-1">
+                  <Link
+                    href={`/products/${review.productId}`}
+                    className="block truncate rounded font-medium text-gray-900 hover:underline"
+                  >
+                    {review.productName}
+                  </Link>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <Rating value={review.rating} />
+                    <span className="text-xs text-gray-500">{review.date}</span>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+
+              <h3 className="mt-4 font-semibold text-gray-900">{review.title}</h3>
+              <p className="mt-1 text-[15px] leading-relaxed text-gray-700">{review.content}</p>
+
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
+                <span className="text-sm text-gray-500">
+                  {review.helpful} {review.helpful === 1 ? 'person' : 'people'} found this helpful
+                </span>
+                <div className="flex gap-2">
+                  <Link
+                    href={`/products/${review.productId}`}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                  >
+                    <Pencil className="size-3.5" aria-hidden="true" />
+                    Edit
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(review)}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-medium text-red transition-colors hover:bg-red/5"
+                  >
+                    <Trash2 className="size-3.5" aria-hidden="true" />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

@@ -1,86 +1,175 @@
 'use client';
-import Image from 'next/image';
-import { useState } from 'react';
-import BottomNav from './BottomNav';
-// import { usePathname } from 'next/navigation';
-import { Turn as Hamburger } from 'hamburger-react';
-import { PiShoppingCart } from 'react-icons/pi';
-// import { NavLinks } from '@/docs/navLinks';
-import { GrChatOption } from 'react-icons/gr';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { menuItems } from '@/docs/navLinks';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { Menu, Search, ShoppingCart, MessageCircle, LogOut, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { menuItems, NavLinks } from '@/docs/navLinks';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import BottomNav from './BottomNav';
+import Logo from '../../Logo';
+import SearchForm from '../SearchForm';
+import CountBadge from '../CountBadge';
+import PromoBar from '../PromoBar';
+
+const iconButtonClass =
+  'relative flex size-10 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-white/80 active:bg-white';
 
 const MobileNav = ({
   searchTerm,
   setSearchTerm,
+  submitSearch,
 }: {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
+  submitSearch: () => void;
 }) => {
-  const [isOpen, setOpen] = useState(false);
-  const cartItems = useSelector((state: RootState) => state.cart.items).length;
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const pathname = usePathname();
+  const cartItemCount = useSelector((state: RootState) => state.cart.items.length);
+
+  // Close the search panel whenever the route changes.
+  useEffect(() => {
+    setIsSearchOpen(false);
+  }, [pathname]);
 
   return (
-    <div>
-      <div className="lg:hidden bg-navWhite fixed z-50 right-0 left-0 backdrop-blur-2xl text-white h-18 flex items-center justify-center">
-        <div className="container px-4 w-full flex items-center justify-between">
-          <div className="text-black">
-            <Hamburger size={24} toggled={isOpen} toggle={setOpen} />
+    <div className="lg:hidden">
+      <div className="fixed inset-x-0 top-0 z-50 border-b border-white/70 bg-white/60 backdrop-blur-xl backdrop-saturate-150">
+        <PromoBar />
+        <div className="container flex h-14 items-center justify-between gap-2">
+          <div className="flex items-center gap-1">
+            <Sheet>
+              <SheetTrigger className={`${iconButtonClass} -ml-2`} aria-label="Open menu">
+                <Menu className="size-6" />
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[85%] max-w-sm gap-0 overflow-y-auto p-0">
+                <div className="flex items-center gap-3 border-b border-gray-100 px-5 py-5 pr-14">
+                  <Image
+                    src="/user.webp"
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-11 rounded-full object-cover"
+                  />
+                  <div>
+                    <SheetTitle className="text-base font-semibold text-gray-900">
+                      Welcome back
+                    </SheetTitle>
+                    <SheetDescription className="text-sm text-gray-500">
+                      Browse categories or manage your account
+                    </SheetDescription>
+                  </div>
+                </div>
+
+                <nav aria-label="Shop" className="px-3 py-4">
+                  <p className="px-2 pb-2 text-xs font-medium text-gray-500">Shop</p>
+                  <ul>
+                    {NavLinks.map((link) => (
+                      <li key={link.href}>
+                        <SheetClose asChild>
+                          <Link
+                            href={link.href}
+                            className="flex rounded-md px-2 py-2.5 text-[15px] font-medium text-gray-800 transition-colors hover:bg-gray-50"
+                          >
+                            {link.label}
+                          </Link>
+                        </SheetClose>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+
+                <nav aria-label="Account" className="border-t border-gray-100 px-3 py-4">
+                  <p className="px-2 pb-2 text-xs font-medium text-gray-500">My account</p>
+                  <ul>
+                    {menuItems.map(({ icon: Icon, label, href }) => (
+                      <li key={label}>
+                        <SheetClose asChild>
+                          <Link
+                            href={href}
+                            aria-current={pathname === href ? 'page' : undefined}
+                            className="flex items-center gap-3 rounded-md px-2 py-2.5 text-[15px] text-gray-800 transition-colors hover:bg-gray-50 aria-[current=page]:bg-brand-soft aria-[current=page]:text-brand-ink"
+                          >
+                            <Icon className="size-[18px] text-gray-500" />
+                            {label}
+                          </Link>
+                        </SheetClose>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+
+                <div className="mt-auto border-t border-gray-100 px-3 py-4">
+                  <button className="flex w-full items-center gap-3 rounded-md px-2 py-2.5 text-[15px] text-red-600 transition-colors hover:bg-red-50">
+                    <LogOut className="size-[18px]" />
+                    Log out
+                  </button>
+                </div>
+              </SheetContent>
+            </Sheet>
+            <Logo />
           </div>
-          <Link href="/">
-            <Image src={'/logo.png'} alt="logo" height={100} width={120} />
-          </Link>
-          <div className="flex gap-5 text-black">
+
+          <div className="flex items-center">
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen((open) => !open)}
+              className={iconButtonClass}
+              aria-label={isSearchOpen ? 'Close search' : 'Search products'}
+              aria-expanded={isSearchOpen}
+              aria-controls="mobile-search"
+            >
+              {isSearchOpen ? <X className="size-5" /> : <Search className="size-5" />}
+            </button>
+            <Link href="/chat" className={iconButtonClass} aria-label="Messages">
+              <MessageCircle className="size-5" />
+            </Link>
             <Link
               href="/cart"
-              className="flex flex-col gap-1 items-center justify-between relative"
+              className={`${iconButtonClass} -mr-2`}
+              aria-label={`Cart, ${cartItemCount} items`}
             >
-              <div className="relative">
-                <div className="absolute z-40 -right-0.5 -top-0.5 h-3.5 w-3.5 text-xs text-white font-semibold flex justify-center items-center rounded-full bg-red-500">
-                  {cartItems}
-                </div>
-                <PiShoppingCart size={24} className="active:scale-90 duration-200" />
-              </div>
-              <p className="whitespace-nowrap font-medium text-xs">Cart</p>
-            </Link>
-
-            <Link
-              href="/chat"
-              className="flex flex-col gap-1 relative items-center justify-center font-medium text-gray-700 cursor-pointer"
-            >
-              <GrChatOption size={24} />
-              <p className="whitespace-nowrap font-medium text-xs">Chat</p>
+              <ShoppingCart className="size-5" />
+              <CountBadge count={cartItemCount} />
             </Link>
           </div>
         </div>
+
+        {isSearchOpen && (
+          <div id="mobile-search" className="border-t border-white/70 py-3">
+            <SearchForm
+              className="container"
+              autoFocus
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              onSubmit={() => {
+                submitSearch();
+                setIsSearchOpen(false);
+              }}
+            />
+          </div>
+        )}
       </div>
-      <BottomNav searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      {/* <CategorySidebar isOpen={isOpen} setOpen={setOpen} activeLabel={activeLabel} mobile={true} /> */}
-      <aside
-        className={`lg:hidden fixed z-50 top-17.5 lg:top-20 inset-0 duration-300
-          ${isOpen ? 'backdrop-blur-sm bg-white/50 opacity-100' : 'opacity-0 pointer-events-none'} `}
-        onClick={() => setOpen(false)}
-      >
+
+      {isSearchOpen && (
         <div
-          className={`absolute duration-300 bg-white ${isOpen ? 'translate-x-0' : '-translate-x-full'} top-0 bottom-0 left-0 w-[80%] md:w-[45%] shadow-xl z-50`}
-        >
-          {menuItems.map((item) => {
-            const IconComponent = item.icon;
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                <IconComponent size={18} className="text-gray-500 flex-shrink-0" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </aside>
+          className="fixed inset-0 z-40 bg-gray-900/20"
+          onClick={() => setIsSearchOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <BottomNav />
     </div>
   );
 };

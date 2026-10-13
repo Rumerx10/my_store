@@ -1,22 +1,7 @@
+import { useMemo, useState } from 'react';
+import { BadgeCheck, Package, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PRODUCT, TABSTITLES } from '@/docs/products';
-import Image from 'next/image';
-import {
-  Star,
-  Truck,
-  RotateCcw,
-  Check,
-  MessageCircle,
-  ThumbsUp,
-  Zap,
-  Package,
-  CreditCard,
-  MapPin,
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import {
   Select,
   SelectContent,
@@ -24,284 +9,230 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { REVIEWS } from '@/docs/reviews';
-import { ReviewType } from '@/types/review';
-import ProductDetailFeatures from './ProductDetailFeatures';
-
-interface RatingDistribution {
-  stars: number;
-  count: number;
-  percentage: number;
-}
+import { IProduct } from '@/types/api_types';
+import { categoryLabel } from '@/docs/navLinks';
+import Rating from '@/components/shared/Rating';
 
 interface ProductDetailsTabProps {
+  product: IProduct;
   activeTab: string;
   setActiveTab: (value: string) => void;
-  reviewFilter: string;
-  setReviewFilter: (value: string) => void;
-  showAllReviews: boolean;
-  setShowAllReviews: (value: boolean) => void;
 }
 
-const ratingDistribution = [
-    { stars: 5, count: 1847, percentage: 65 },
-    { stars: 4, count: 712, percentage: 25 },
-    { stars: 3, count: 199, percentage: 7 },
-    { stars: 2, count: 57, percentage: 2 },
-    { stars: 1, count: 32, percentage: 1 },
+const INITIAL_REVIEWS = 3;
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductDetailsTabProps) {
+  const [reviewFilter, setReviewFilter] = useState('all');
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const reviews = product.reviews;
+
+  const distribution = useMemo(
+    () =>
+      [5, 4, 3, 2, 1].map((stars) => {
+        const count = reviews.filter((r) => Math.round(r.rating) === stars).length;
+        return { stars, count, percentage: reviews.length ? (count / reviews.length) * 100 : 0 };
+      }),
+    [reviews],
+  );
+
+  const filteredReviews =
+    reviewFilter === 'all'
+      ? reviews
+      : reviews.filter((r) => Math.round(r.rating) === Number(reviewFilter));
+  const visibleReviews = showAllReviews
+    ? filteredReviews
+    : filteredReviews.slice(0, INITIAL_REVIEWS);
+
+  const specifications: [string, string][] = [
+    ['Brand', product.brand ?? 'Unbranded'],
+    ['Category', categoryLabel(product.category)],
+    ['SKU', product.sku],
+    ['Weight', `${product.weight} kg`],
+    [
+      'Dimensions',
+      `${product.dimensions.width} × ${product.dimensions.height} × ${product.dimensions.depth} cm`,
+    ],
+    ['Minimum order', `${product.minimumOrderQuantity} units`],
+    ['Warranty', product.warrantyInformation],
+    ['Availability', product.availabilityStatus],
   ];
 
-export function ProductDetailsTab(props: ProductDetailsTabProps) {
   return (
-    <div className="rounded-lg bg-white shadow-sm border border-gray-200 overflow-hidden mb-12">
-      <Tabs value={props.activeTab} onValueChange={props.setActiveTab} className="w-full">
-        <TabsList className="w-full flex-col lg:flex-row px-3 py-2">
-          {TABSTITLES.map(({ value, label }: { value: string; label: string }) => (
-            <TabsTrigger
-              key={value}
-              value={value}
-              className="py-2 px-6 font-semibold hover:bg-bgGray data-[state=active]:bg-white border-b-2 border-b-transparent data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
-            >
-              {label}
-            </TabsTrigger>
-          ))}
+    <section id="product-tabs" aria-label="Product information" className="scroll-mt-[calc(var(--header-h)+1rem)]">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full justify-start sm:w-auto">
+          <TabsTrigger value="description">Description</TabsTrigger>
+          <TabsTrigger value="specifications">Specifications</TabsTrigger>
+          <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
+          <TabsTrigger value="shipping">Shipping & returns</TabsTrigger>
         </TabsList>
-        <TabsContent value="description" className="p-6 space-y-6">
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Product Description</h3>
-            <p className="text-gray-700 text-lg leading-relaxed mb-6">{PRODUCT.description}</p>
 
-            <h4 className="text-xl font-semibold text-gray-900 mb-4">Key Features</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {PRODUCT.features.map((feature: string, index: number) => (
-                <div key={index} className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
-                  <span className="text-gray-700">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </TabsContent>
+        <div className="mt-4 rounded-xl glass p-5 md:p-8">
+          <TabsContent value="description" className="mt-0">
+            <h2 className="text-lg text-gray-900">About this product</h2>
+            <p className="mt-3 max-w-[70ch] leading-relaxed text-gray-700">{product.description}</p>
+            {product.tags.length > 0 && (
+              <ul className="mt-5 flex flex-wrap gap-2" aria-label="Tags">
+                {product.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-md bg-gray-100 px-2.5 py-1 text-sm capitalize text-gray-700"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </TabsContent>
 
-        <TabsContent value="specifications" className="p-6">
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Technical Specifications</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {Object.entries(PRODUCT.specifications).map(([key, value]: [string, string]) => (
+          <TabsContent value="specifications" className="mt-0">
+            <h2 className="text-lg text-gray-900">Specifications</h2>
+            <dl className="mt-4 grid gap-x-10 md:grid-cols-2">
+              {specifications.map(([key, value]) => (
                 <div
                   key={key}
-                  className="flex justify-between items-center py-3 border-b border-gray-200"
+                  className="flex justify-between gap-6 border-b border-gray-100 py-3 text-sm"
                 >
-                  <span className="font-semibold text-gray-900">{key}</span>
-                  <span className="text-gray-700">{value}</span>
+                  <dt className="text-gray-500">{key}</dt>
+                  <dd className="text-right font-medium text-gray-900">{value}</dd>
                 </div>
               ))}
-            </div>
-          </div>
-        </TabsContent>
+            </dl>
+          </TabsContent>
 
-        <TabsContent value="reviews" className="p-6 space-y-6">
-          {/* Review Summary */}
-          <div id="reviews" className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Customer Reviews</h3>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-900">{PRODUCT.rating}</div>
-                  <div className="flex items-center justify-center gap-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${i < Math.floor(PRODUCT.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                      />
-                    ))}
-                  </div>
-                  <div className="text-sm text-gray-600">{PRODUCT.reviewCount} reviews</div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Rating Distribution</h4>
-              <div className="space-y-3">
-                {ratingDistribution.map((rating: RatingDistribution) => (
-                  <div key={rating.stars} className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-700 w-8">{rating.stars}★</span>
-                    <Progress value={rating.percentage} className="flex-1 h-2" />
-                    <span className="text-sm text-gray-600 w-12">{rating.count}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Review Filters */}
-          <div className="flex items-center gap-4">
-            <Select value={props.reviewFilter} onValueChange={props.setReviewFilter}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filter reviews" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Reviews</SelectItem>
-                <SelectItem value="5">5 Stars</SelectItem>
-                <SelectItem value="4">4 Stars</SelectItem>
-                <SelectItem value="3">3 Stars</SelectItem>
-                <SelectItem value="2">2 Stars</SelectItem>
-                <SelectItem value="1">1 Star</SelectItem>
-                <SelectItem value="verified">Verified Only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Reviews List */}
-          <div className="space-y-6">
-            {REVIEWS.slice(0, props.showAllReviews ? REVIEWS.length : 3).map(
-              (review: ReviewType) => (
-                <div key={review.id} className="border border-gray-200 rounded-lg p-6">
-                  <div className="flex items-start gap-4">
-                    <Image
-                      src={review.avatar || '/placeholder.svg'}
-                      alt={review.user as string}
-                      width={48}
-                      height={48}
-                      className="rounded-full"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="font-semibold text-gray-900">{review.user}</span>
-                        {review.verified && (
-                          <Badge className="bg-green-100 text-green-800 text-xs">
-                            <Check className="w-3 h-3 mr-1" />
-                            Verified Purchase
-                          </Badge>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-600">{review.date}</span>
-                      </div>
-
-                      <h4 className="font-semibold text-gray-900 mb-2">{review.title}</h4>
-                      <p className="text-gray-700 mb-4">{review.content}</p>
-
-                      {review.images.length > 0 && (
-                        <div className="flex gap-2 mb-4">
-                          {review.images.map((image: string, index: number) => (
-                            <Image
-                              key={index}
-                              src={image || '/placeholder.svg'}
-                              alt={`Review image ${index + 1}`}
-                              width={80}
-                              height={80}
-                              className="rounded-lg object-cover"
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-                          <ThumbsUp className="w-4 h-4" />
-                          <span className="text-sm">Helpful ({review.helpful})</span>
-                        </button>
-                        <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-                          <MessageCircle className="w-4 h-4" />
-                          <span className="text-sm">Reply</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ),
-            )}
-          </div>
-
-          {REVIEWS.length > 3 && (
-            <div className="text-center">
-              <Button
-                variant="outline"
-                onClick={() => props.setShowAllReviews(!props.showAllReviews)}
-                className="px-8"
-              >
-                {props.showAllReviews ? 'Show Less' : `Show All ${REVIEWS.length} Reviews`}
-              </Button>
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="shipping" className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Shipping Information</h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Truck className="w-5 h-5 text-blue-600" />
+          <TabsContent value="reviews" className="mt-0">
+            {reviews.length === 0 ? (
+              <p className="text-gray-600">No reviews yet. Bought this product? Share what you think from My orders.</p>
+            ) : (
+              <>
+                <div className="grid gap-8 md:grid-cols-[auto_1fr] md:gap-14">
                   <div>
-                    <p className="font-semibold">Free Standard Shipping</p>
-                    <p className="text-sm text-gray-600">{PRODUCT.shipping.estimatedDays}</p>
+                    <h2 className="text-lg text-gray-900">Customer reviews</h2>
+                    <p className="mt-3 text-5xl font-semibold tabular-nums text-gray-900">
+                      {product.rating.toFixed(1)}
+                    </p>
+                    <Rating value={product.rating} className="mt-2" />
+                    <p className="mt-1 text-sm text-gray-500">
+                      Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                    </p>
                   </div>
+                  <ul className="space-y-2 self-center" aria-label="Rating distribution">
+                    {distribution.map((row) => (
+                      <li key={row.stars} className="flex items-center gap-3 text-sm">
+                        <span className="w-12 tabular-nums text-gray-700">{row.stars} star</span>
+                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-gray-100">
+                          <span
+                            className="block h-full rounded-full bg-amber-400"
+                            style={{ width: `${row.percentage}%` }}
+                          />
+                        </span>
+                        <span className="w-6 text-right tabular-nums text-gray-500">{row.count}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                {PRODUCT.shipping.express.available && (
-                  <div className="flex items-center gap-3">
-                    <Zap className="w-5 h-5 text-orange-600" />
-                    <div>
-                      <p className="font-semibold">
-                        Express Shipping - ${PRODUCT.shipping.express.price}
-                      </p>
-                      <p className="text-sm text-gray-600">{PRODUCT.shipping.express.days}</p>
-                    </div>
+
+                <div className="mt-8 flex items-center justify-between gap-4 border-t border-gray-100 pt-6">
+                  <p className="text-sm text-gray-600">
+                    Showing {visibleReviews.length} of {filteredReviews.length}
+                  </p>
+                  <Select
+                    value={reviewFilter}
+                    onValueChange={(value) => {
+                      setReviewFilter(value);
+                      setShowAllReviews(false);
+                    }}
+                  >
+                    <SelectTrigger className="w-40" aria-label="Filter reviews by rating">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All ratings</SelectItem>
+                      {[5, 4, 3, 2, 1].map((stars) => (
+                        <SelectItem key={stars} value={String(stars)}>
+                          {stars} {stars === 1 ? 'star' : 'stars'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {filteredReviews.length === 0 ? (
+                  <p className="py-8 text-center text-sm text-gray-600">
+                    No reviews with this rating yet.
+                  </p>
+                ) : (
+                  <ul className="mt-2 divide-y divide-gray-100">
+                    {visibleReviews.map((review) => (
+                      <li key={`${review.reviewerEmail}-${review.date}`} className="py-5">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-3">
+                            <span
+                              aria-hidden="true"
+                              className="flex size-9 items-center justify-center rounded-lg bg-brand-soft text-sm font-semibold text-brand-ink"
+                            >
+                              {review.reviewerName.charAt(0)}
+                            </span>
+                            <div>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {review.reviewerName}
+                              </p>
+                              <p className="flex items-center gap-1 text-xs text-green">
+                                <BadgeCheck className="size-3.5" aria-hidden="true" />
+                                Verified purchase
+                              </p>
+                            </div>
+                          </div>
+                          <time dateTime={review.date} className="text-xs text-gray-500">
+                            {formatDate(review.date)}
+                          </time>
+                        </div>
+                        <Rating value={review.rating} className="mt-3" />
+                        <p className="mt-2 text-[15px] text-gray-700">{review.comment}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {filteredReviews.length > INITIAL_REVIEWS && (
+                  <div className="mt-2 text-center">
+                    <Button variant="outline" onClick={() => setShowAllReviews(!showAllReviews)}>
+                      {showAllReviews ? 'Show fewer reviews' : `Show all ${filteredReviews.length} reviews`}
+                    </Button>
                   </div>
                 )}
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-green-600" />
-                  <div>
-                    <p className="font-semibold">Worldwide Shipping</p>
-                    <p className="text-sm text-gray-600">Available to most countries</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
+          </TabsContent>
 
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Return Policy</h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <RotateCcw className="w-5 h-5 text-blue-600" />
+          <TabsContent value="shipping" className="mt-0">
+            <h2 className="text-lg text-gray-900">Shipping and returns</h2>
+            <ul className="mt-5 grid gap-5 md:grid-cols-2">
+              {[
+                { icon: Truck, title: 'Delivery', text: product.shippingInformation },
+                { icon: RotateCcw, title: 'Returns', text: product.returnPolicy },
+                { icon: ShieldCheck, title: 'Warranty', text: product.warrantyInformation },
+                {
+                  icon: Package,
+                  title: 'Packaging',
+                  text: 'Returned items must be unused and in their original packaging.',
+                },
+              ].map(({ icon: Icon, title, text }) => (
+                <li key={title} className="flex gap-3">
+                  <Icon className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
                   <div>
-                    <p className="font-semibold">30-Day Returns</p>
-                    <p className="text-sm text-gray-600">Hassle-free returns within 30 days</p>
+                    <p className="font-semibold text-gray-900">{title}</p>
+                    <p className="text-sm text-gray-600">{text}</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Package className="w-5 h-5 text-green-600" />
-                  <div>
-                    <p className="font-semibold">Original Packaging</p>
-                    <p className="text-sm text-gray-600">Items must be in original condition</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CreditCard className="w-5 h-5 text-purple-600" />
-                  <div>
-                    <p className="font-semibold">Full Refund</p>
-                    <p className="text-sm text-gray-600">Money back guarantee</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <ProductDetailFeatures />
-          </div>
-        </TabsContent>
+                </li>
+              ))}
+            </ul>
+          </TabsContent>
+        </div>
       </Tabs>
-    </div>
+    </section>
   );
 }

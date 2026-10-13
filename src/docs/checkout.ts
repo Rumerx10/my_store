@@ -123,10 +123,28 @@ export const US_STATES = [
   "WY",
 ]
 
+// Saved delivery addresses offered at checkout (mock account data).
+export const DELIVERY_ADDRESSES = [
+  {
+    id: 'home',
+    label: 'Home',
+    name: 'Tanvir Hasan',
+    line: 'House 18, Road 7, Mirpur 12, Pallabi, Dhaka 1216',
+    phone: '+880 1712-345678',
+  },
+  {
+    id: 'office',
+    label: 'Office',
+    name: 'Tanvir Hasan',
+    line: 'Level 6, 45 Gulshan Avenue, Gulshan 2, Dhaka 1212',
+    phone: '+880 1812-345678',
+  },
+];
+
 export const SHIPPING_OPTIONS: ShippingOption[] = [
-  { id: "standard", name: "Standard Shipping", price: 5.99, days: "5-7 business days" },
-  { id: "express", name: "Express Shipping", price: 12.99, days: "2-3 business days" },
-  { id: "overnight", name: "Overnight Shipping", price: 24.99, days: "Next business day" },
+  { id: "standard", name: "Standard delivery", price: 5.99, days: "3 to 5 days" },
+  { id: "express", name: "Express delivery", price: 12.99, days: "1 to 2 days" },
+  { id: "overnight", name: "Next-day delivery", price: 24.99, days: "Next day, inside Dhaka" },
 ]
 
 export const PAYMENT_METHODS: PaymentMethod[] = [

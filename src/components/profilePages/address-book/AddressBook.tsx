@@ -1,274 +1,261 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Plus, Pencil, Trash2, MapPin, Phone } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, MapPin, Phone } from 'lucide-react';
+import PageHeading from '../PageHeading';
+
+interface Address {
+  id: number;
+  name: string;
+  street: string;
+  area: string;
+  city: string;
+  postCode: string;
+  phone: string;
+  default: boolean;
+}
+
+type AddressForm = Omit<Address, 'id' | 'default'>;
+
+const EMPTY_FORM: AddressForm = { name: '', street: '', area: '', city: '', postCode: '', phone: '' };
+
+const FORM_FIELDS: { key: keyof AddressForm; label: string; placeholder: string; wide?: boolean }[] = [
+  { key: 'name', label: 'Label', placeholder: 'Home, Office, Parents' },
+  { key: 'phone', label: 'Mobile number', placeholder: '01XXXXXXXXX' },
+  { key: 'street', label: 'House and road', placeholder: 'House 18, Road 7', wide: true },
+  { key: 'area', label: 'Area', placeholder: 'Mirpur 12, Pallabi' },
+  { key: 'city', label: 'City', placeholder: 'Dhaka' },
+  { key: 'postCode', label: 'Post code', placeholder: '1216' },
+];
 
 const AddressBook = () => {
-  const [addresses, setAddresses] = useState([
+  const [addresses, setAddresses] = useState<Address[]>([
     {
       id: 1,
       name: 'Home',
-      street: '123 Main Street',
-      city: 'New York',
-      state: 'NY',
-      zipCode: '10001',
-      phone: '+1 (555) 123-4567',
+      street: 'House 18, Road 7',
+      area: 'Mirpur 12, Pallabi',
+      city: 'Dhaka',
+      postCode: '1216',
+      phone: '+880 1712-345678',
       default: true,
     },
     {
       id: 2,
       name: 'Office',
-      street: '456 Business Ave',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      phone: '+1 (555) 987-6543',
+      street: 'Level 6, 45 Gulshan Avenue',
+      area: 'Gulshan 2',
+      city: 'Dhaka',
+      postCode: '1212',
+      phone: '+880 1812-345678',
       default: false,
     },
   ]);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    street: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    phone: '',
-  });
+  const [formData, setFormData] = useState<AddressForm>(EMPTY_FORM);
+  const [formError, setFormError] = useState('');
 
-  const handleAddress = (id: number) => {
-    setAddresses(
-      addresses.map((addr) =>
-        addr.id === id ? { ...addr, default: !addr.default } : { ...addr, default: false },
-      ),
-    );
+  const isFormOpen = isAddingNew || editingId !== null;
+
+  const closeForm = () => {
+    setIsAddingNew(false);
+    setEditingId(null);
+    setFormData(EMPTY_FORM);
+    setFormError('');
   };
 
-  const handleEdit = (address: (typeof addresses)[0]) => {
+  const makeDefault = (id: number) => {
+    setAddresses((prev) => prev.map((addr) => ({ ...addr, default: addr.id === id })));
+  };
+
+  const handleEdit = (address: Address) => {
+    setIsAddingNew(false);
     setEditingId(address.id);
     setFormData({
       name: address.name,
       street: address.street,
+      area: address.area,
       city: address.city,
-      state: address.state,
-      zipCode: address.zipCode,
+      postCode: address.postCode,
       phone: address.phone,
     });
   };
 
-  const handleDelete = (id: number) => {
-    setAddresses(addresses.filter((addr) => addr.id !== id));
+  const handleDelete = (address: Address) => {
+    setAddresses((prev) => {
+      const rest = prev.filter((addr) => addr.id !== address.id);
+      // Keep one default address when the default one is removed.
+      if (address.default && rest.length > 0) rest[0] = { ...rest[0], default: true };
+      return rest;
+    });
+    toast.success(`Removed ${address.name}`);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
-  };
-
-  const handleSaveAddress = () => {
-    if (editingId) {
-      setAddresses(
-        addresses.map((addr) => (addr.id === editingId ? { ...addr, ...formData } : addr)),
-      );
-      setEditingId(null);
-    } else {
-      const newAddress = {
-        id: Math.max(...addresses.map((a) => a.id), 0) + 1,
-        ...formData,
-        default: false,
-      };
-      setAddresses([...addresses, newAddress]);
-      setIsAddingNew(false);
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (FORM_FIELDS.some(({ key }) => !formData[key].trim())) {
+      setFormError('Fill in every field to save this address.');
+      return;
     }
-    setFormData({
-      name: '',
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      phone: '',
-    });
-  };
-
-  const handleCancel = () => {
-    setIsAddingNew(false);
-    setEditingId(null);
-    setFormData({
-      name: '',
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      phone: '',
-    });
+    if (editingId !== null) {
+      setAddresses((prev) =>
+        prev.map((addr) => (addr.id === editingId ? { ...addr, ...formData } : addr)),
+      );
+      toast.success('Address updated');
+    } else {
+      setAddresses((prev) => [
+        ...prev,
+        {
+          id: Math.max(0, ...prev.map((a) => a.id)) + 1,
+          ...formData,
+          default: prev.length === 0,
+        },
+      ]);
+      toast.success('Address added');
+    }
+    closeForm();
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="pt-28 pb-12">
-        <div className="container flex flex-col mx-auto px-4">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Address Book</h1>
-              <p className="text-gray-600 mt-2">Manage your delivery addresses</p>
-            </div>
-            <Button
-              onClick={() => setIsAddingNew(!isAddingNew)}
-              className="gap-2 bg-blue-600 hover:bg-blue-700"
+    <div>
+      <PageHeading
+        title="Address book"
+        desc="Where we deliver your orders."
+        action={
+          !isFormOpen && (
+            <button
+              type="button"
+              onClick={() => setIsAddingNew(true)}
+              className="inline-flex h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
             >
-              <Plus size={20} />
-              Add Address
-            </Button>
-          </div>
+              <Plus className="size-4" aria-hidden="true" />
+              Add address
+            </button>
+          )
+        }
+      />
 
-          {/* Add/Edit Address Form */}
-          {(isAddingNew || editingId) && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                {editingId ? 'Edit Address' : 'New Address'}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name" className="text-gray-700">
-                    Address Name
-                  </Label>
-                  <Input
-                    id="name"
-                    placeholder="e.g., Home, Office"
-                    className="mt-2"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone" className="text-gray-700">
-                    Phone Number
-                  </Label>
-                  <Input
-                    id="phone"
-                    placeholder="+1 (555) 000-0000"
-                    className="mt-2"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <Label htmlFor="street" className="text-gray-700">
-                    Street Address
-                  </Label>
-                  <Input
-                    id="street"
-                    placeholder="123 Main Street"
-                    className="mt-2"
-                    value={formData.street}
-                    onChange={(e) => handleInputChange('street', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="city" className="text-gray-700">
-                    City
-                  </Label>
-                  <Input
-                    id="city"
-                    placeholder="New York"
-                    className="mt-2"
-                    value={formData.city}
-                    onChange={(e) => handleInputChange('city', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="state" className="text-gray-700">
-                    State
-                  </Label>
-                  <Input
-                    id="state"
-                    placeholder="NY"
-                    className="mt-2"
-                    value={formData.state}
-                    onChange={(e) => handleInputChange('state', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="zip" className="text-gray-700">
-                    Zip Code
-                  </Label>
-                  <Input
-                    id="zip"
-                    placeholder="10001"
-                    className="mt-2"
-                    value={formData.zipCode}
-                    onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3 mt-6">
-                <Button onClick={handleSaveAddress} className="bg-blue-600 hover:bg-blue-700">
-                  Save Address
-                </Button>
-                <Button variant="outline" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Address Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {addresses.map((address) => (
-              <div
-                key={address.id}
-                className={`rounded-lg border-2 p-6 transition-all ${
-                  address.default
-                    ? 'bg-blue-50 border-blue-300'
-                    : 'bg-white border-gray-200 hover:border-gray-300'
-                }`}
-                onClick={() => handleAddress(address.id)}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <button className="flex items-center gap-2 cursor-pointer hover:opacity-75 transition-opacity">
-                    <MapPin size={20} className="text-blue-600" />
-                    <h3 className="text-lg font-semibold text-gray-900">{address.name}</h3>
-                    {address.default && (
-                      <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                        Default
-                      </span>
-                    )}
-                  </button>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(address)}
-                      className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(address.id)}
-                      className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-gray-700">{address.street}</p>
-                  <p className="text-gray-700">
-                    {address.city}, {address.state} {address.zipCode}
-                  </p>
-                  <div className="flex items-center gap-2 text-gray-600 pt-2 border-t border-gray-200">
-                    <Phone size={16} />
-                    <span>{address.phone}</span>
-                  </div>
-                </div>
+      {isFormOpen && (
+        <form
+          onSubmit={handleSave}
+          noValidate
+          className="mb-6 rounded-xl glass p-5 md:p-6"
+        >
+          <h2 className="text-lg text-gray-900">
+            {editingId !== null ? 'Edit address' : 'New address'}
+          </h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {FORM_FIELDS.map((field) => (
+              <div key={field.key} className={field.wide ? 'md:col-span-2' : undefined}>
+                <Label htmlFor={`address-${field.key}`} className="text-sm font-medium text-gray-900">
+                  {field.label}
+                </Label>
+                <Input
+                  id={`address-${field.key}`}
+                  placeholder={field.placeholder}
+                  value={formData[field.key]}
+                  onChange={(e) => {
+                    setFormData({ ...formData, [field.key]: e.target.value });
+                    setFormError('');
+                  }}
+                  className="mt-1.5 h-11"
+                />
               </div>
             ))}
           </div>
+          {formError && (
+            <p role="alert" className="mt-4 text-sm text-red">
+              {formError}
+            </p>
+          )}
+          <div className="mt-6 flex gap-3">
+            <button
+              type="submit"
+              className="h-11 rounded-lg bg-brand px-5 font-medium text-white transition-colors hover:bg-brand-hover"
+            >
+              Save address
+            </button>
+            <button
+              type="button"
+              onClick={closeForm}
+              className="h-11 rounded-lg border border-gray-300 px-5 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
+      {addresses.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
+          <MapPin className="mx-auto size-10 text-gray-300" aria-hidden="true" />
+          <p className="mt-3 font-medium text-gray-900">No saved addresses</p>
+          <p className="text-sm text-gray-600">Add one to speed up checkout.</p>
         </div>
-      </div>
+      ) : (
+        <ul className="grid gap-4 md:grid-cols-2">
+          {addresses.map((address) => (
+            <li
+              key={address.id}
+              className={`flex flex-col rounded-xl border bg-white p-5 ${
+                address.default ? 'border-brand ring-1 ring-brand' : 'border-gray-200/80'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="flex items-center gap-2 font-semibold text-gray-900">
+                  <MapPin className="size-4 text-brand" aria-hidden="true" />
+                  {address.name}
+                  {address.default && (
+                    <span className="rounded-md bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand-ink">
+                      Default
+                    </span>
+                  )}
+                </h3>
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handleEdit(address)}
+                    aria-label={`Edit ${address.name}`}
+                    className="flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    <Pencil className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(address)}
+                    aria-label={`Delete ${address.name}`}
+                    className="flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-red/10 hover:text-red"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
+              </div>
+              <address className="mt-3 text-sm not-italic leading-relaxed text-gray-700">
+                {address.street}
+                <br />
+                {address.area}, {address.city} {address.postCode}
+              </address>
+              <p className="mt-3 flex items-center gap-2 border-t border-gray-100 pt-3 text-sm tabular-nums text-gray-600">
+                <Phone className="size-4 text-gray-400" aria-hidden="true" />
+                {address.phone}
+              </p>
+              {!address.default && (
+                <button
+                  type="button"
+                  onClick={() => makeDefault(address.id)}
+                  className="mt-3 self-start rounded text-sm font-medium text-brand hover:text-brand-hover"
+                >
+                  Set as default
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

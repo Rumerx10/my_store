@@ -1,7 +1,3 @@
-import { Filter, Download } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-
 import {
   Select,
   SelectContent,
@@ -9,38 +5,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { TIME_RANGES, type TimeRange } from '@/docs/adminDashboard';
 
-interface TimeRangeSelectorProps {
-  timeRange: string;
-  setTimeRange: (value: string) => void;
-}
-
-const TimeRangeSelector = (props: TimeRangeSelectorProps) => {
+const TimeRangeSelector = ({
+  timeRange,
+  setTimeRange,
+}: {
+  timeRange: TimeRange;
+  setTimeRange: (value: TimeRange) => void;
+}) => {
   return (
-    <div className="flex items-center justify-between mt-5 lg:mt-0">
-      <div className="flex items-center gap-4 w-5/12">
-        <Select value={props.timeRange} onValueChange={props.setTimeRange}>
-          <SelectTrigger className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="week">This Week</SelectItem>
-            <SelectItem value="month">This Month</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex md:justify-end items-center gap-2 lg:w-5/12">
-        <Button variant="outline" className="w-auto px-3">
-          <Download className="w-4 h-4 mr-2" />
-          Export
-        </Button>
-        <Button variant="outline" className="w-auto px-3">
-          <Filter className="w-4 h-4 mr-2" />
-          Filter
-        </Button>
-      </div>
-    </div>
+    <Select value={timeRange} onValueChange={(value) => setTimeRange(value as TimeRange)}>
+      <SelectTrigger className="w-full bg-white sm:w-40" aria-label="Time range">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {TIME_RANGES.map((range) => (
+          <SelectItem key={range.value} value={range.value}>
+            {range.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };
 

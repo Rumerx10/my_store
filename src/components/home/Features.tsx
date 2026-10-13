@@ -1,35 +1,34 @@
 import { FEATURES } from '@/docs/homeDocs';
-import Marquee from 'react-fast-marquee';
+
+// Icon chip colours, one per feature.
+const CHIP_COLORS = [
+  'bg-rose-100 text-rose-600',
+  'bg-violet-100 text-violet-600',
+  'bg-amber-100 text-amber-700',
+  'bg-emerald-100 text-emerald-600',
+];
 
 const Features = () => {
   return (
-    <section className="py-4">
-      <Marquee gradient={false} speed={100}>
-        <div className="flex items-center space-x-6 sm:space-x-10 md:space-x-16 px-2">
-          {FEATURES.map((feature, index) => (
-            <div
-              key={index}
-              className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-full bg-card/80 border border-border/50 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300"
+    <section aria-label="Why shop with us" className="container mt-4 md:mt-6">
+      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+        {FEATURES.map((feature, index) => (
+          <li
+            key={feature.title}
+            className="flex items-start gap-3 rounded-2xl glass p-4 md:items-center md:p-5"
+          >
+            <span
+              className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${CHIP_COLORS[index % CHIP_COLORS.length]}`}
             >
-              {/* Icon */}
-              <div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary/10 text-primary">
-                {feature.icon}
-              </div>
-
-              {/* Text */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                <span className="font-semibold text-xs sm:text-sm text-foreground">
-                  {feature.title}
-                </span>
-                <span className="hidden sm:inline text-xs text-muted-foreground">•</span>
-                <span className="text-[10px] sm:text-xs text-muted-foreground">
-                  {feature.description}
-                </span>
-              </div>
+              {feature.icon}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-900">{feature.title}</p>
+              <p className="text-xs text-gray-600 md:text-sm">{feature.description}</p>
             </div>
-          ))}
-        </div>
-      </Marquee>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 };

@@ -1,47 +1,23 @@
 import Link from 'next/link';
-import { Heart, ShoppingCart, ShoppingBag } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Heart } from 'lucide-react';
 
 const EmptyWhislist = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="mb-8">
-            <Heart className="w-24 h-24 mx-auto text-gray-300 mb-4" />
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Wishlist is Empty</h1>
-            <p className="text-gray-600 mb-6">
-              Start adding items to your wishlist to keep track of products you love.
-            </p>
-            <Link href="/products">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-0 shadow-lg"
-              >
-                <ShoppingBag className="w-5 h-5 mr-2" />
-                Start Shopping
-              </Button>
-            </Link>
-          </div>
-
-          <div className="flex items-center justify-center gap-6 mt-12">
-            <div className="text-center">
-              <Heart className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-              <h3 className="font-semibold mb-1">Save Favorites</h3>
-              <p className="text-sm text-gray-600">Keep track of items you love</p>
-            </div>
-            {/* <div className="text-center">
-              <TrendingUp className="w-8 h-8 mx-auto mb-2 text-green-600" />
-              <h3 className="font-semibold mb-1">Price Tracking</h3>
-              <p className="text-sm text-gray-600">Get notified of price drops</p>
-            </div> */}
-            <div className="text-center">
-              <ShoppingCart className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-              <h3 className="font-semibold mb-1">Easy Shopping</h3>
-              <p className="text-sm text-gray-600">Add multiple items to cart</p>
-            </div>
-          </div>
-        </div>
+    <div className="container py-12 md:py-20">
+      <div className="mx-auto flex max-w-md flex-col items-center text-center">
+        <span className="flex size-16 items-center justify-center rounded-2xl bg-red/10 text-red">
+          <Heart className="size-7" aria-hidden="true" />
+        </span>
+        <h1 className="mt-6 text-2xl text-gray-900 md:text-3xl">Your wishlist is empty</h1>
+        <p className="mt-2 text-gray-600">
+          Tap the heart on any product to save it here and come back to it later.
+        </p>
+        <Link
+          href="/products"
+          className="mt-8 inline-flex h-12 items-center justify-center rounded-lg bg-brand px-6 font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98]"
+        >
+          Browse products
+        </Link>
       </div>
     </div>
   );

@@ -1,48 +1,71 @@
-import React from 'react';
 import { Input } from './ui/input';
-import { Button } from './ui/button';
+import { Label } from './ui/label';
 
 const OTPModal = ({
-  setShowOTPModal,
+  onCancel,
   otpInput,
   setOtpInput,
   handleOTPSubmit,
+  phoneNumber,
+  error,
 }: {
-  setShowOTPModal: (value: boolean) => void;
+  onCancel: () => void;
   otpInput: string;
   setOtpInput: (value: string) => void;
   handleOTPSubmit: () => void;
+  phoneNumber: string;
+  error?: string;
 }) => {
   return (
-    <div className="bg-white lg:min-w-md rounded-lg shadow-xl p-6">
-      <h3 className="text-lg font-bold mb-2 text-gray-800">Enter OTP</h3>
-      <p className="text-sm text-gray-600 mb-4">An OTP has been sent to your phone</p>
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleOTPSubmit();
+      }}
+    >
+      <h3 className="text-lg font-semibold text-gray-900">Enter verification code</h3>
+      <p className="mt-1 text-sm text-gray-600">
+        We sent a 5-digit code to <span className="font-medium tabular-nums">{phoneNumber}</span>.
+      </p>
+      <Label htmlFor="otp" className="mt-5 block text-sm font-medium text-gray-900">
+        Verification code
+      </Label>
       <Input
-        type="text"
-        placeholder="Enter 5-digit OTP"
+        id="otp"
+        inputMode="numeric"
+        autoComplete="one-time-code"
+        autoFocus
+        placeholder="•••••"
         value={otpInput}
         onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 5))}
         maxLength={5}
-        className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 text-center tracking-widest font-semibold"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? 'otp-error' : undefined}
+        className="mt-1.5 h-12 text-center text-lg font-semibold tracking-[0.5em] tabular-nums"
       />
-      <div className="flex gap-3">
-        <Button
-          onClick={() => {
-            setShowOTPModal(false);
-            setOtpInput('');
-          }}
-          className="flex-1 bg-gray-200 text-gray-800 hover:bg-gray-300 font-semibold py-2 rounded"
+      {error && (
+        <p id="otp-error" role="alert" className="mt-1.5 text-xs text-red">
+          {error}
+        </p>
+      )}
+      <div className="mt-6 flex gap-3">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="h-11 flex-1 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
         >
-          Cancel
-        </Button>
-        <Button
-          onClick={handleOTPSubmit}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
+          Back
+        </button>
+        <button
+          type="submit"
+          disabled={otpInput.length < 5}
+          className="h-11 flex-1 rounded-lg bg-brand font-medium text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Verify
-        </Button>
+          Verify and pay
+        </button>
       </div>
-    </div>
+    </form>
   );
 };
 

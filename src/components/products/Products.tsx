@@ -1,101 +1,110 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import ProductCardGrid from './ProductCardGrid';
-import { redirect, useSearchParams } from 'next/navigation';
-import { Badge } from '@/components/ui/badge';
-import { RxCross2 } from 'react-icons/rx';
 import FilterContent from '../FilterContent';
 import { IProduct } from '@/types/api_types';
-import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { PRICE_CEILING } from '@/docs/products';
+import { categoryLabel } from '@/docs/navLinks';
+import { formatPrice } from '@/lib/utils';
+
+// These search terms come from the home page "View all" links.
+const COLLECTIONS: Record<string, { title: string; match: (p: IProduct) => boolean }> = {
+  popular: { title: 'Popular right now', match: (p) => p.popular },
+  latest: { title: 'New arrivals', match: (p) => p.latest },
+  trending: { title: 'Trending this week', match: (p) => p.trending },
+};
+
+const SORT_OPTIONS = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'price-low', label: 'Price: low to high' },
+  { value: 'price-high', label: 'Price: high to low' },
+  { value: 'rating', label: 'Highest rated' },
+  { value: 'discount', label: 'Biggest discount' },
+  { value: 'name', label: 'Name A to Z' },
+];
+
+const Chip = ({ label, onRemove }: { label: string; onRemove: () => void }) => (
+  <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white py-1 pl-3 pr-1 text-sm text-gray-700">
+    {label}
+    <button
+      type="button"
+      onClick={onRemove}
+      className="flex size-6 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+      aria-label={`Remove filter: ${label}`}
+    >
+      <X className="size-3.5" />
+    </button>
+  </span>
+);
 
 const Products = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState([0, 300]);
+  const [priceRange, setPriceRange] = useState([0, PRICE_CEILING]);
   const [sortBy, setSortBy] = useState('featured');
   const [showInStockOnly, setShowInStockOnly] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const searchParams = useSearchParams();
 
   const productsData = useSelector((state: RootState) => state.products);
+
+  // Keep the filters in sync with ?searchTerm= and ?category= from the header and links.
   useEffect(() => {
     setSearchQuery(searchParams.get('searchTerm')?.toLowerCase() || '');
+    const category = searchParams.get('category');
+    setSelectedCategories(category ? [category] : []);
   }, [searchParams]);
 
-  useEffect(() => {
-    if (isFilterOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isFilterOpen]);
+  const collection = COLLECTIONS[searchQuery];
 
   const filteredAndSortedProducts = useMemo(() => {
-    const lowerSearchTerm = searchQuery;
-    // If searchTerm is 'latest', 'popular', or 'trending', apply the corresponding filter
-    if (lowerSearchTerm === 'latest') {
-      return productsData.filter((p) => p.latest);
-    } else if (lowerSearchTerm === 'popular') {
-      return productsData.filter((p) => p.popular);
-    } else if (lowerSearchTerm === 'trending') {
-      return productsData.filter((p) => p.trending);
-    }
-
     const filtered = productsData.filter((product) => {
-      const brandLower = product.brand?.toLowerCase() || '';
-
-      // 1. Search filter - checks title AND brand
-      const matchesSearch =
-        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        brandLower.includes(searchQuery.toLowerCase());
-
-      // 2. Category filter
+      const matchesSearch = collection
+        ? collection.match(product)
+        : product.title.toLowerCase().includes(searchQuery) ||
+          (product.brand?.toLowerCase() || '').includes(searchQuery);
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(product.category);
-
-      // 3. Brand filter
       const matchesBrand =
         selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand));
-
-      // 4. Price filter
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-
-      // 5. Stock filter (using availabilityStatus OR stock > 0)
-      const matchesStock =
-        !showInStockOnly || product.availabilityStatus === 'In Stock' || product.stock > 0;
-
-      // 6. BONUS: Filter by rating if needed
-      // const matchesRating = minRating === 0 || product.rating >= minRating;
-
-      // All conditions must be true
+      const matchesStock = !showInStockOnly || product.stock > 0;
       return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock;
-      // If using bonus filters:
-      // return matchesSearch && matchesCategory && matchesBrand &&
-      //        matchesPrice && matchesStock && matchesDiscount && matchesRating;
     });
 
-    // Sorting logic
-    filtered.sort((a: IProduct, b: IProduct) => {
+    return [...filtered].sort((a: IProduct, b: IProduct) => {
       switch (sortBy) {
         case 'price-low':
-          return a.price - b.price; // Lowest price first
+          return a.price - b.price;
         case 'price-high':
-          return b.price - a.price; // Highest price first
+          return b.price - a.price;
         case 'rating':
-          return b.rating - a.rating; // Highest rating first
+          return b.rating - a.rating;
         case 'name':
-          return a.title.localeCompare(b.title); // Alphabetical by title
+          return a.title.localeCompare(b.title);
         case 'discount':
-          return b.discountPercentage - a.discountPercentage; // Highest discount first
+          return b.discountPercentage - a.discountPercentage;
         case 'featured':
         default:
           if (b.popular !== a.popular) return b.popular ? 1 : -1;
@@ -103,165 +112,177 @@ const Products = () => {
           return b.rating - a.rating;
       }
     });
-
-    return filtered;
   }, [
     productsData,
+    collection,
     searchQuery,
     selectedCategories,
     selectedBrands,
     priceRange,
     sortBy,
     showInStockOnly,
-    // Add if using bonus filters:
-    // minDiscount,
-    // minRating
   ]);
+
   const handleCategoryChange = (category: string, checked: boolean) => {
-    if (checked) {
-      setSelectedCategories([...selectedCategories, category]);
-    } else {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
-    }
+    setSelectedCategories((prev) =>
+      checked ? [...prev, category] : prev.filter((c) => c !== category),
+    );
   };
 
   const handleBrandChange = (brand: string, checked: boolean) => {
-    if (checked) {
-      setSelectedBrands([...selectedBrands, brand]);
-    } else {
-      setSelectedBrands(selectedBrands.filter((b) => b !== brand));
-    }
+    setSelectedBrands((prev) => (checked ? [...prev, brand] : prev.filter((b) => b !== brand)));
   };
 
   const clearAllFilters = () => {
     setSearchQuery('');
     setSelectedCategories([]);
     setSelectedBrands([]);
-    setPriceRange([0, 300]);
+    setPriceRange([0, PRICE_CEILING]);
     setShowInStockOnly(false);
     setSortBy('featured');
-    redirect('/products');
+    router.push('/products');
+  };
+
+  const priceFiltered = priceRange[0] > 0 || priceRange[1] < PRICE_CEILING;
+  const hasActiveFilters =
+    Boolean(searchQuery) ||
+    selectedCategories.length > 0 ||
+    selectedBrands.length > 0 ||
+    priceFiltered ||
+    showInStockOnly;
+
+  const title = collection
+    ? collection.title
+    : searchQuery
+      ? `Results for “${searchQuery}”`
+      : selectedCategories.length === 1
+        ? categoryLabel(selectedCategories[0])
+        : 'All products';
+
+  const count = filteredAndSortedProducts.length;
+
+  const filterProps = {
+    selectedBrands,
+    selectedCategories,
+    priceRange,
+    setPriceRange,
+    sortBy,
+    setSortBy,
+    showInStockOnly,
+    setShowInStockOnly,
+    handleCategoryChange,
+    handleBrandChange,
+    clearAllFilters,
   };
 
   return (
-    <div className="relative min-h-screen">
-      {isFilterOpen && (
-        <div
-          className={`lg:hidden fixed inset-0 bg-white/50 backdrop-blur-sm 
-            z-40 duration-300 ${isFilterOpen ? 'opacity-100' : 'opacity-0'}`}
-          onClick={() => setIsFilterOpen(false)}
-        />
-      )}
-      {/* mobile navigation */}
-      <div className="container mx-auto px-4 flex flex-col">
-        <div
-          className={`lg:hidden fixed z-50 w-[80%] md:w-[45%] right-0 bottom-0 top-18 lg:top-20 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
-            isFilterOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
-          <div className="p-6">
-            <FilterContent
-              selectedBrands={selectedBrands}
-              selectedCategories={selectedCategories}
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              showInStockOnly={showInStockOnly}
-              setShowInStockOnly={setShowInStockOnly}
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              setIsFilterOpen={setIsFilterOpen}
-              handleCategoryChange={handleCategoryChange}
-              handleBrandChange={handleBrandChange}
-              clearAllFilters={clearAllFilters}
-            />{' '}
-          </div>
+    <div className="container py-6 md:py-10">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="text-2xl text-gray-900 md:text-3xl">{title}</h1>
+          <p className="mt-1 text-sm text-gray-600" aria-live="polite">
+            {count} {count === 1 ? 'product' : 'products'}
+          </p>
         </div>
-        {/* Mobile Filter  */}
-        <div className="flex flex-col lg:hidden gap-4 mt-6">
-          <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div>
-              <h2 className="font-semibold text-gray-900">Filter Products</h2>
-              <p className="text-sm text-gray-500">
-                {filteredAndSortedProducts.length} products found
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => setIsFilterOpen(true)}
-              className="flex items-center gap-2 border-gray-200 hover:bg-gray-50"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-            </Button>
-          </div>
+
+        <div className="flex items-center gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="h-10 gap-2 lg:hidden">
+                <SlidersHorizontal className="size-4" />
+                Filters
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[85%] max-w-sm overflow-y-auto p-5 pt-14">
+              <SheetTitle className="sr-only">Filter products</SheetTitle>
+              <SheetDescription className="sr-only">
+                Narrow the list by category, brand, price and availability.
+              </SheetDescription>
+              <FilterContent {...filterProps} />
+            </SheetContent>
+          </Sheet>
+
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="h-10 w-full min-w-48 bg-white md:w-56" aria-label="Sort products">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
-      <div className="container min-h-screen mx-auto px-4 flex flex-col">
-        {/* Main Content */}
-        <div className="flex gap-8 mb-10">
-          <aside className="hidden lg:block w-72 flex-shrink-0 mt-6">
-            <div className="sticky top-6 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              {/* <FilterContent /> */}
-              <FilterContent
-                selectedBrands={selectedBrands}
-                selectedCategories={selectedCategories}
-                priceRange={priceRange}
-                setPriceRange={setPriceRange}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-                showInStockOnly={showInStockOnly}
-                setShowInStockOnly={setShowInStockOnly}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-                setIsFilterOpen={setIsFilterOpen}
-                handleCategoryChange={handleCategoryChange}
-                handleBrandChange={handleBrandChange}
-                clearAllFilters={clearAllFilters}
-              />
-            </div>
-          </aside>
 
-          {/* Products */}
-          <main className="flex-1">
-            {searchQuery && (
-              <div className="flex flex-wrap items-center gap-2 pt-6 pb-4 border-b border-gray-200">
-                <span className="text-sm font-medium text-gray-700">Active Filters:</span>
-                <Badge
-                  variant="secondary"
-                  className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-2"
-                >
-                  Search: &quot;{searchQuery}&quot;
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="flex items-center justify-center w-4 h-4 rounded-full bg-blue-200 hover:bg-blue-300 transition-colors"
-                  >
-                    <RxCross2 className="w-3 h-3" />
-                  </button>
-                </Badge>
-              </div>
-            )}
-
-            {filteredAndSortedProducts.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <Search className="w-8 h-8 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-500 mb-4">Try adjusting your filters or search terms</p>
-                <Button className="w-40" onClick={clearAllFilters} variant="outline">
-                  Clear all filters
-                </Button>
-              </div>
-            ) : (
-              <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-3">
-                {filteredAndSortedProducts.map((product: IProduct) => (
-                  <ProductCardGrid key={product.id} product={product} textColor="#2b2b2b" />
-                ))}
-              </div>
-            )}
-          </main>
+      {hasActiveFilters && (
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          {searchQuery && (
+            <Chip
+              label={collection ? collection.title : `“${searchQuery}”`}
+              onRemove={() => router.push('/products')}
+            />
+          )}
+          {selectedCategories.map((category) => (
+            <Chip
+              key={category}
+              label={categoryLabel(category)}
+              onRemove={() => handleCategoryChange(category, false)}
+            />
+          ))}
+          {selectedBrands.map((brand) => (
+            <Chip key={brand} label={brand} onRemove={() => handleBrandChange(brand, false)} />
+          ))}
+          {priceFiltered && (
+            <Chip
+              label={`${formatPrice(priceRange[0])} to ${formatPrice(priceRange[1])}`}
+              onRemove={() => setPriceRange([0, PRICE_CEILING])}
+            />
+          )}
+          {showInStockOnly && (
+            <Chip label="In stock" onRemove={() => setShowInStockOnly(false)} />
+          )}
+          <button
+            type="button"
+            onClick={clearAllFilters}
+            className="ml-1 rounded text-sm font-medium text-brand transition-colors hover:text-brand-hover"
+          >
+            Clear all
+          </button>
         </div>
+      )}
+
+      <div className="mt-6 flex gap-8">
+        <aside aria-label="Filters" className="hidden w-64 shrink-0 lg:block">
+          <div className="sticky top-[calc(var(--header-h)+1.5rem)] rounded-xl glass p-5">
+            <FilterContent {...filterProps} />
+          </div>
+        </aside>
+
+        <section aria-label="Products" className="min-w-0 flex-1">
+          {count === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center">
+              <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-gray-100">
+                <Search className="size-6 text-gray-400" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">No products match</h2>
+              <p className="mt-1 max-w-sm text-sm text-gray-600">
+                Try a different search term, or remove a filter to see more products.
+              </p>
+              <Button className="mt-5" variant="outline" onClick={clearAllFilters}>
+                Clear all filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
+              {filteredAndSortedProducts.map((product: IProduct, index) => (
+                <ProductCardGrid key={product.id} product={product} priority={index < 4} />
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

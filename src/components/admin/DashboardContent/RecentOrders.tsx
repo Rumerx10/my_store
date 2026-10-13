@@ -1,85 +1,46 @@
-import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { getStatusColor, getStatusIcon } from '@/lib/utils';
-import { ShoppingCart } from 'lucide-react';
+import Link from 'next/link';
+import Panel from '@/components/dashboard/Panel';
+import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
+import { MockOrders } from '@/docs/Orders';
+import { formatPrice } from '@/lib/utils';
 
 const RecentOrders = () => {
-  const recentOrders = [
-    {
-      id: '#ORD-2024-001',
-      customer: 'John Doe',
-      product: 'Wireless Headphones',
-      amount: 299.99,
-      status: 'delivered',
-      date: '2024-01-15',
-    },
-    {
-      id: '#ORD-2024-002',
-      customer: 'Sarah Chen',
-      product: 'Smart Watch',
-      amount: 199.99,
-      status: 'shipped',
-      date: '2024-01-14',
-    },
-    {
-      id: '#ORD-2024-003',
-      customer: 'Mike Johnson',
-      product: 'Laptop Stand',
-      amount: 49.99,
-      status: 'pending',
-      date: '2024-01-14',
-    },
-    {
-      id: '#ORD-2024-004',
-      customer: 'Emily Davis',
-      product: 'USB-C Cable',
-      amount: 19.99,
-      status: 'canceled',
-      date: '2024-01-13',
-    },
-    {
-      id: '#ORD-2024-005',
-      customer: 'Alex Wilson',
-      product: 'Phone Case',
-      amount: 24.99,
-      status: 'delivered',
-      date: '2024-01-13',
-    },
-  ];
+  const orders = [...MockOrders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ShoppingCart className="w-5 h-5 text-orange-600" />
-          Recent Orders
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {recentOrders.map((order) => (
-            <div
-              key={order.id}
-              className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+    <Panel
+      title="Recent orders"
+      action={
+        <Link
+          href="/admin/orders"
+          className="rounded text-sm font-medium text-brand hover:text-brand-hover"
+        >
+          View all
+        </Link>
+      }
+    >
+      <ul className="divide-y divide-gray-100">
+        {orders.map((order) => (
+          <li key={order.id} className="py-3 first:pt-0 last:pb-0">
+            <Link
+              href={`/admin/orders/${order.id}`}
+              className="flex items-center justify-between gap-3 rounded"
             >
-              <div className="flex items-center gap-3">
-                {getStatusIcon(order.status)}
-                <div>
-                  <p className="font-semibold text-gray-900">{order.id}</p>
-                  <p className="text-sm text-gray-600">{order.customer}</p>
-                  <p className="text-xs text-gray-500">{order.product}</p>
-                </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium tabular-nums text-gray-900">{order.id}</p>
+                <p className="truncate text-xs text-gray-500">{order.buyerName}</p>
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900">${order.amount}</p>
-                <Badge className={`text-xs ${getStatusColor(order.status)}`}>{order.status}</Badge>
-                <p className="text-xs text-gray-500 mt-1">{order.date}</p>
+              <div className="flex shrink-0 items-center gap-3">
+                <OrderStatusBadge status={order.status} />
+                <p className="w-24 text-right text-sm font-semibold tabular-nums text-gray-900">
+                  {formatPrice(order.amount)}
+                </p>
               </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Panel>
   );
 };
 

@@ -1,24 +1,42 @@
-import { Badge } from "./ui/badge";
-
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const SectionHeader = ({
-  badgeTxt,
   title,
   desc,
+  href,
+  linkLabel = 'View all',
+  className,
+  id,
 }: {
-  badgeTxt: string;
   title: string;
-  desc: string;
+  desc?: string;
+  href?: string;
+  linkLabel?: string;
+  className?: string;
+  id?: string;
 }) => {
   return (
-    <div className="flex flex-col items-center text-center mb-8 md:mb-12 lg:mb-16">
-      <Badge className="bg-blue-700 border-0 mb-3 md:mb-4 shadow-lg backdrop-blur-sm text-sm md:text-base">
-        {badgeTxt}
-      </Badge>
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight">
-        {title}
-      </h2>
-      <p className="sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">{desc}</p>
+    <div className={cn('mb-6 flex items-end justify-between gap-4 md:mb-8', className)}>
+      <div className="max-w-2xl">
+        <h2 id={id} className="text-2xl text-gray-900 md:text-3xl">
+          {title}
+        </h2>
+        {desc && <p className="mt-2 text-sm text-gray-600 md:text-base">{desc}</p>}
+      </div>
+      {href && (
+        <Link
+          href={href}
+          className="group inline-flex h-9 shrink-0 items-center gap-1 rounded-full border border-white/80 bg-white/70 px-4 text-sm font-semibold text-brand-ink shadow-card backdrop-blur-md transition-colors hover:bg-white"
+        >
+          {linkLabel}
+          <ArrowRight
+            className="size-4 transition-transform group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
+        </Link>
+      )}
     </div>
   );
 };

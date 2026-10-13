@@ -1,182 +1,129 @@
 'use client';
-import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import {
   increaseQuantityInCart,
+  MAX_QUANTITY_PER_ITEM,
   reduceQuantityFromCart,
   removeFromCart,
 } from '@/redux/features/cart/cartSlice';
+import { formatPrice } from '@/lib/utils';
 import PricingDetails from './PricingDetails';
 import EmptyCart from './EmptyCart';
 
-// Sample cart data
-
 const Cart = () => {
-  const cartItems = useSelector((state: RootState) => state.cart.items) || [];
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const products = useSelector((state: RootState) => state.products);
   const dispatch = useDispatch();
 
-  return cartItems.length === 0 ? (
-    <EmptyCart />
-  ) : (
-    <div className="min-h-screen bg-background">
-      <div className="container  flex flex-col mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Shopping Cart</h1>
-            <p className="text-muted-foreground">
-              {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
-            </p>
-          </div>
-          <Link href="/products" className="hidden md:block border rounded-lg">
-            <Button variant="ghost" size="sm" className="bg-gray-50">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Continue Shopping
-            </Button>
-          </Link>
+  if (cartItems.length === 0) return <EmptyCart />;
+
+  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  return (
+    <div className="container py-6 md:py-10">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl text-gray-900 md:text-3xl">Your cart</h1>
+          <p className="mt-1 text-sm text-gray-600">
+            {itemCount} {itemCount === 1 ? 'item' : 'items'}
+          </p>
         </div>
+        <Link
+          href="/products"
+          className="inline-flex items-center gap-2 rounded text-sm font-medium text-brand transition-colors hover:text-brand-hover"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Continue shopping
+        </Link>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
-          {/* Cart Items */}
-          <div className="flex flex-col gap-5">
-            {cartItems.map((item) => {
-              return (
-                <Link key={item.id} href={`/products/${item.id}`}>
-                  <Card key={item.id}>
-                    <CardContent className="p-4 md:p-6">
-                      <div className="flex gap-2 md:gap-4">
-                        {/* Product Image */}
-                        <div className="relative w-25 md:w-32 h-25 md:h-32 shrink-0">
-                          <Image
-                            src={item.image || '/placeholder.svg'}
-                            alt={item.title}
-                            fill
-                            className="object-cover rounded-md"
-                          />
-                        </div>
-
-                        {/* Product Details */}
-                        <div className="flex-1 space-y-2">
-                          <div className="flex justify-between items-start gap-2">
-                            <div>
-                              <h3 className="font-semibold text-lg">{item.title}</h3>
-                              <p className="text-sm text-muted-foreground">
-                                {/* {item.brand} */}
-                                Brand Name
-                              </p>
-                            </div>
-                            <div
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                dispatch(removeFromCart(item.id));
-                              }}
-                              className="text-destructive hover:text-destructive p-2 duration-300 cursor-pointer rounded-full bg-gray-100 hover:bg-gray-200"
-                            >
-                              <Trash2 className="w-5 h-5 shrink-0" />
-                            </div>
-                          </div>
-
-                          {/* Price and Quantity */}
-                          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg font-bold">${item.price}</span>
-                            </div>
-
-                            <div className="flex flex-col md:flex-row md:items-center gap-3">
-                              <div className="flex gap-2 items-center md:justify-between">
-                                <Label
-                                  htmlFor={`quantity-${item.id}`}
-                                  className="hidden md:block text-sm"
-                                >
-                                  Quantiy:
-                                </Label>
-                                <div
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                  }}
-                                  className="flex w-full items-center border rounded-md"
-                                >
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-                                      dispatch(reduceQuantityFromCart(item.id));
-                                    }}
-                                    disabled={item.quantity <= 1}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Minus className="w-3 h-3" />
-                                  </Button>
-                                  <Input
-                                    id={`quantity-${item.id}`}
-                                    type="number"
-                                    value={item.quantity}
-                                    className="w-full border-0 shadow-none h-8 text-center"
-                                    min="1"
-                                    max="10"
-                                  />
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-                                      dispatch(increaseQuantityInCart(item.id));
-                                    }}
-                                    disabled={item.quantity >= 10}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Plus className="w-3 h-3" />
-                                  </Button>
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <Label htmlFor="price" className="text-md font-medium md:hidden">
-                                  Price:
-                                </Label>
-                                <p className="font-medium">
-                                  ${(item.price * item.quantity).toFixed(2)}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col md:flex-row gap-1">
-                            <div className="flex items-center gap-1">
-                              <div className="flex">
-                                <FaStar className="w-5 h-5 text-yellow-400" />
-                                <FaStar className="w-5 h-5 text-yellow-400" />
-                                <FaStar className="w-5 h-5 text-yellow-400" />
-                                <FaStar className="w-5 h-5 text-yellow-400" />
-                                <FaStarHalfAlt className="w-5 h-5 text-yellow-400" />
-                              </div>
-                              {item.rating}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <span className="hidden md:block">|</span> {item.sold} sold{' '}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
+        <ul className="divide-y divide-gray-100 self-start rounded-xl glass">
+          {cartItems.map((item) => {
+            const brand = products.find((p) => p.id === item.id)?.brand;
+            return (
+              <li key={item.id} className="flex gap-4 p-4 md:gap-5 md:p-5">
+                <Link
+                  href={`/products/${item.id}`}
+                  className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-gray-50 md:size-24"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                >
+                  <Image
+                    src={item.image || '/placeholder.svg'}
+                    alt=""
+                    fill
+                    sizes="96px"
+                    className="object-contain p-2"
+                  />
                 </Link>
-              );
-            })}
-          </div>
-          <PricingDetails />
-        </div>
+
+                <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    {brand && <p className="text-xs font-medium text-gray-500">{brand}</p>}
+                    <h2 className="text-[15px] font-medium leading-snug text-gray-900">
+                      <Link href={`/products/${item.id}`} className="rounded hover:underline">
+                        {item.title}
+                      </Link>
+                    </h2>
+                    <p className="mt-1 text-sm tabular-nums text-gray-600">
+                      {formatPrice(item.price)} each
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
+                    <div
+                      role="group"
+                      aria-label={`Quantity of ${item.title}`}
+                      className="flex h-9 items-center rounded-lg border border-gray-300"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => dispatch(reduceQuantityFromCart(item.id))}
+                        disabled={item.quantity <= 1}
+                        aria-label="Decrease quantity"
+                        className="flex size-9 items-center justify-center rounded-l-lg text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        <Minus className="size-3.5" />
+                      </button>
+                      <output className="min-w-8 text-center text-sm font-semibold tabular-nums">
+                        {item.quantity}
+                      </output>
+                      <button
+                        type="button"
+                        onClick={() => dispatch(increaseQuantityInCart(item.id))}
+                        disabled={item.quantity >= MAX_QUANTITY_PER_ITEM}
+                        aria-label="Increase quantity"
+                        className="flex size-9 items-center justify-center rounded-r-lg text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        <Plus className="size-3.5" />
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold tabular-nums text-gray-900">
+                        {formatPrice(item.price * item.quantity)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => dispatch(removeFromCart(item.id))}
+                        aria-label={`Remove ${item.title} from cart`}
+                        className="flex size-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red/10 hover:text-red"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <PricingDetails />
       </div>
     </div>
   );

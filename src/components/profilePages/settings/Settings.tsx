@@ -15,7 +15,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Bell, Lock, Eye, Shield, Trash2, LogOut, Save } from 'lucide-react';
+import { Bell, Lock, KeyRound, Shield, Trash2, LogOut, Save } from 'lucide-react';
+import toast from 'react-hot-toast';
+import PageHeading from '../PageHeading';
 
 interface Preferences {
   emailNotifications: boolean;
@@ -51,20 +53,15 @@ const Settings = () => {
   };
 
   const handleSavePreferences = () => {
-    console.log('[v0] Preferences saved:', preferences);
+    toast.success('Notification preferences saved');
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-          <p className="mt-2 text-muted-foreground">Manage your account preferences and security</p>
-        </div>
+    <div>
+      <PageHeading title="Settings" desc="Notifications, security and account options." />
 
         <Tabs defaultValue="notifications" className="w-full">
-          <TabsList className="border-border bg-muted/50 w-full justify-start">
+          <TabsList className="w-full justify-start sm:w-auto">
             <TabsTrigger value="notifications" className="gap-2">
               <Bell size={16} />
               Notifications
@@ -80,10 +77,10 @@ const Settings = () => {
           </TabsList>
 
           {/* Notifications Tab */}
-          <TabsContent value="notifications" className="space-y-4">
-            <Card className="border-border">
+          <TabsContent value="notifications" className="mt-5 space-y-4">
+            <Card className="border-gray-200/80 shadow-none">
               <div className="border-b border-border px-6 py-4">
-                <h2 className="font-semibold text-foreground">Email Notifications</h2>
+                <h2 className="font-semibold text-foreground">Email notifications</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Choose what emails you&apos;d like to receive
                 </p>
@@ -93,7 +90,7 @@ const Settings = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="email-notif" className="text-foreground font-medium">
-                      Email Notifications
+                      Email notifications
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
                       Receive all notification emails from us
@@ -109,7 +106,7 @@ const Settings = () => {
                 <div className="border-t border-border pt-4 flex items-center justify-between">
                   <div>
                     <Label htmlFor="order-updates" className="text-foreground font-medium">
-                      Order Updates
+                      Order updates
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
                       Get notifications about your orders
@@ -125,7 +122,7 @@ const Settings = () => {
                 <div className="border-t border-border pt-4 flex items-center justify-between">
                   <div>
                     <Label htmlFor="product-updates" className="text-foreground font-medium">
-                      Product Updates
+                      Product updates
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
                       Receive news about new products and sales
@@ -141,7 +138,7 @@ const Settings = () => {
                 <div className="border-t border-border pt-4 flex items-center justify-between">
                   <div>
                     <Label htmlFor="weekly-digest" className="text-foreground font-medium">
-                      Weekly Digest
+                      Weekly digest
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
                       Get a weekly summary of your activity
@@ -156,9 +153,9 @@ const Settings = () => {
               </div>
             </Card>
 
-            <Card className="border-border">
+            <Card className="border-gray-200/80 shadow-none">
               <div className="border-b border-border px-6 py-4">
-                <h2 className="font-semibold text-foreground">Push Notifications</h2>
+                <h2 className="font-semibold text-foreground">Push notifications</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Get real-time notifications on your device
                 </p>
@@ -168,7 +165,7 @@ const Settings = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="push-notif" className="text-foreground font-medium">
-                      Push Notifications
+                      Push notifications
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
                       Enable notifications on your device
@@ -184,7 +181,7 @@ const Settings = () => {
                 <div className="border-t border-border pt-4 flex items-center justify-between">
                   <div>
                     <Label htmlFor="security-alerts" className="text-foreground font-medium">
-                      Security Alerts
+                      Security alerts
                     </Label>
                     <p className="text-sm text-muted-foreground mt-1">
                       Important alerts about your account security
@@ -201,15 +198,15 @@ const Settings = () => {
 
             <Button onClick={handleSavePreferences} className="gap-2">
               <Save size={16} />
-              Save Notification Preferences
+              Save preferences
             </Button>
           </TabsContent>
 
           {/* Security Tab */}
-          <TabsContent value="security" className="space-y-4">
-            <Card className="border-border">
+          <TabsContent value="security" className="mt-5 space-y-4">
+            <Card className="border-gray-200/80 shadow-none">
               <div className="border-b border-border px-6 py-4">
-                <h2 className="font-semibold text-foreground">Two-Factor Authentication</h2>
+                <h2 className="font-semibold text-foreground">Two-factor authentication</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Add an extra layer of security to your account
                 </p>
@@ -235,9 +232,9 @@ const Settings = () => {
               </div>
             </Card>
 
-            <Card className="border-border">
+            <Card className="border-gray-200/80 shadow-none">
               <div className="border-b border-border px-6 py-4">
-                <h2 className="font-semibold text-foreground">Change Password</h2>
+                <h2 className="font-semibold text-foreground">Change password</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Update your password regularly for security
                 </p>
@@ -245,15 +242,15 @@ const Settings = () => {
 
               <div className="p-6">
                 <Button variant="outline" className="gap-2 bg-transparent">
-                  <Eye size={16} />
-                  Change Password
+                  <KeyRound size={16} />
+                  Change password
                 </Button>
               </div>
             </Card>
 
-            <Card className="border-border">
+            <Card className="border-gray-200/80 shadow-none">
               <div className="border-b border-border px-6 py-4">
-                <h2 className="font-semibold text-foreground">Active Sessions</h2>
+                <h2 className="font-semibold text-foreground">Active sessions</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Manage your active login sessions
                 </p>
@@ -275,7 +272,7 @@ const Settings = () => {
                     <p className="text-sm text-muted-foreground">2 days ago</p>
                   </div>
                   <Button variant="ghost" size="sm">
-                    Logout
+                    Log out
                   </Button>
                 </div>
               </div>
@@ -283,10 +280,10 @@ const Settings = () => {
           </TabsContent>
 
           {/* Account Tab */}
-          <TabsContent value="account" className="space-y-4">
-            <Card className="border-border">
+          <TabsContent value="account" className="mt-5 space-y-4">
+            <Card className="border-gray-200/80 shadow-none">
               <div className="border-b border-border px-6 py-4">
-                <h2 className="font-semibold text-foreground">Account Information</h2>
+                <h2 className="font-semibold text-foreground">Account information</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   View and manage your account details
                 </p>
@@ -294,17 +291,17 @@ const Settings = () => {
 
               <div className="p-6 space-y-4">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Email Address</p>
-                  <p className="mt-2 font-medium text-foreground">john.doe@example.com</p>
+                  <p className="text-sm font-medium text-muted-foreground">Email address</p>
+                  <p className="mt-2 font-medium text-foreground">tanvir.hasan@example.com</p>
                 </div>
 
                 <div className="border-t border-border pt-4">
-                  <p className="text-sm font-medium text-muted-foreground">Member Since</p>
+                  <p className="text-sm font-medium text-muted-foreground">Member since</p>
                   <p className="mt-2 font-medium text-foreground">January 15, 2023</p>
                 </div>
 
                 <div className="border-t border-border pt-4">
-                  <p className="text-sm font-medium text-muted-foreground">Account Status</p>
+                  <p className="text-sm font-medium text-muted-foreground">Account status</p>
                   <p className="mt-2 flex items-center gap-2 font-medium text-foreground">
                     <span className="h-2 w-2 rounded-full bg-green-500" />
                     Active
@@ -313,9 +310,9 @@ const Settings = () => {
               </div>
             </Card>
 
-            <Card className="border-border border-red-200 bg-red-50/30">
+            <Card className="border-red-200 bg-red-50/30 shadow-none">
               <div className="border-b border-red-200 px-6 py-4">
-                <h2 className="font-semibold text-red-900">Danger Zone</h2>
+                <h2 className="font-semibold text-red-900">Danger zone</h2>
                 <p className="text-sm text-red-800 mt-1">Irreversible actions</p>
               </div>
 
@@ -326,7 +323,7 @@ const Settings = () => {
                   onClick={() => setShowLogoutDialog(true)}
                 >
                   <LogOut size={16} />
-                  Logout All Sessions
+                  Log out of all devices
                 </Button>
 
                 <Button
@@ -335,18 +332,18 @@ const Settings = () => {
                   onClick={() => setShowDeleteDialog(true)}
                 >
                   <Trash2 size={16} />
-                  Delete Account
+                  Delete account
                 </Button>
               </div>
             </Card>
           </TabsContent>
         </Tabs>
 
-        {/* Delete Account Dialog */}
+        {/* Delete account Dialog */}
         <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Account</AlertDialogTitle>
+              <AlertDialogTitle>Delete account</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your account and remove
                 all your data from our servers.
@@ -355,7 +352,7 @@ const Settings = () => {
             <div className="flex gap-3">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Delete Account
+                Delete account
               </AlertDialogAction>
             </div>
           </AlertDialogContent>
@@ -365,7 +362,7 @@ const Settings = () => {
         <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Logout All Sessions</AlertDialogTitle>
+              <AlertDialogTitle>Log out of all devices</AlertDialogTitle>
               <AlertDialogDescription>
                 You will be logged out from all devices. You&apos;ll need to sign in again to access your
                 account.
@@ -373,11 +370,10 @@ const Settings = () => {
             </AlertDialogHeader>
             <div className="flex gap-3">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Logout All</AlertDialogAction>
+              <AlertDialogAction>Log out everywhere</AlertDialogAction>
             </div>
           </AlertDialogContent>
         </AlertDialog>
-      </main>
     </div>
   );
 };

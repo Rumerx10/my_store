@@ -1,5 +1,7 @@
+import type { Metadata } from 'next';
 import Feedback from '@/components/profilePages/feedback/Feedback';
-import React from 'react';
+
+export const metadata: Metadata = { title: 'Feedback' };
 
 const page = () => {
   return <Feedback />;

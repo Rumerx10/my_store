@@ -1,82 +1,45 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { CheckCircle, Clock, Truck, XCircle } from 'lucide-react';
+import Panel from '@/components/dashboard/Panel';
+import { ORDERS_BY_RANGE, type TimeRange } from '@/docs/adminDashboard';
+import { capitalize } from '@/lib/utils';
 
-const OrderStatus = ({ timeRange }: { timeRange: string }) => {
-  const todayOrders = { pending: 8, shipped: 12, delivered: 25, canceled: 2 };
-  const weekOrders = { pending: 45, shipped: 78, delivered: 156, canceled: 12 };
-  const monthOrders = { pending: 189, shipped: 298, delivered: 567, canceled: 45 };
+const BAR_COLORS: Record<string, string> = {
+  delivered: 'bg-green',
+  shipped: 'bg-brand',
+  pending: 'bg-yellow',
+  cancelled: 'bg-red',
+};
 
-  const getOrderStats = () => {
-    switch (timeRange) {
-      case 'today':
-        return todayOrders;
-      case 'week':
-        return weekOrders;
-      case 'month':
-      default:
-        return monthOrders;
-    }
-  };
-  const orderStatsData = [
-    {
-      label: 'Pending Orders',
-      value: getOrderStats().pending,
-      textColor: 'text-yellow-600',
-      bgColor: 'bg-yellow-100',
-      icon: <Clock className="w-6 h-6 text-yellow-600" />,
-      progress: 65,
-      progressText: '65% of total orders',
-    },
-    {
-      label: 'Shipped Orders',
-      value: getOrderStats().shipped,
-      textColor: 'text-blue-600',
-      bgColor: 'bg-blue-100',
-      icon: <Truck className="w-6 h-6 text-blue-600" />,
-      progress: 45,
-      progressText: '45% of total orders',
-    },
-    {
-      label: 'Delivered Orders',
-      value: getOrderStats().delivered,
-      textColor: 'text-green-600',
-      bgColor: 'bg-green-100',
-      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-      progress: 85,
-      progressText: '85% of total orders',
-    },
-    {
-      label: 'Canceled Orders',
-      value: getOrderStats().canceled,
-      textColor: 'text-red-600',
-      bgColor: 'bg-red-100',
-      icon: <XCircle className="w-6 h-6 text-red-600" />,
-      progress: 15,
-      progressText: '15% of total orders',
-    },
-  ];
+// Share of orders in each status for the selected period.
+const OrderStatus = ({ timeRange, className }: { timeRange: TimeRange; className?: string }) => {
+  const stats = ORDERS_BY_RANGE[timeRange];
+  const total = Object.values(stats).reduce((a, b) => a + b, 0);
+  const rows = (['delivered', 'shipped', 'pending', 'cancelled'] as const).map((status) => ({
+    status,
+    count: stats[status],
+    share: total > 0 ? Math.round((stats[status] / total) * 100) : 0,
+  }));
 
   return (
-    <>
-      {orderStatsData.map((stat, idx) => (
-        <Card key={idx} className="hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-                <p className={`text-2xl font-bold ${stat.textColor}`}>{stat.value}</p>
-              </div>
-              <div className={`${stat.bgColor} p-3 rounded-full`}>{stat.icon}</div>
+    <Panel title="Orders by status" className={className}>
+      <ul className="space-y-4">
+        {rows.map((row) => (
+          <li key={row.status}>
+            <div className="flex items-baseline justify-between gap-3 text-sm">
+              <span className="text-gray-700">{capitalize(row.status)}</span>
+              <span className="tabular-nums text-gray-500">
+                <span className="font-medium text-gray-900">{row.count}</span> · {row.share}%
+              </span>
             </div>
-            <div className="mt-4">
-              <Progress value={stat.progress} className="h-2" />
-              <p className="text-xs text-gray-500 mt-1">{stat.progressText}</p>
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-100" aria-hidden="true">
+              <div
+                className={`h-full rounded-full ${BAR_COLORS[row.status]}`}
+                style={{ width: `${row.share}%` }}
+              />
             </div>
-          </CardContent>
-        </Card>
-      ))}
-    </>
+          </li>
+        ))}
+      </ul>
+    </Panel>
   );
 };
 

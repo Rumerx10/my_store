@@ -1,26 +1,34 @@
-import type { Metadata } from 'next';
-import { Poppins, Inter } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Geist } from 'next/font/google';
 import './globals.css';
-import 'quill/dist/quill.snow.css';
 import Navbar from '@/components/shared/Navbar/Navbar';
 import Footer from '@/components/shared/Footer/Footer';
 import ReduxProvider from '@/redux/provider';
 import { Toaster } from 'react-hot-toast';
+import { SITE } from '@/docs/site';
 
-const poppins = Poppins({
-  variable: '--font-poppins',
+const geist = Geist({
+  variable: '--font-geist',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
-
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Home | TechGen',
-  description: 'Landing page',
+  title: {
+    default: `${SITE.name} | ${SITE.tagline}`,
+    template: `%s | ${SITE.name}`,
+  },
+  description: SITE.description,
+  openGraph: {
+    siteName: SITE.name,
+    title: SITE.name,
+    description: SITE.description,
+    type: 'website',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#e11d48',
 };
 
 export default function RootLayout({
@@ -30,12 +38,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${inter.variable} antialiased`}>
+      <body className={`${geist.variable} antialiased`}>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lift"
+        >
+          Skip to content
+        </a>
         <Toaster position="top-center" reverseOrder={false} />
         <ReduxProvider>
           <Navbar />
-          <div className="pt-18 lg:pt-20 bg-gray-50">{children}</div>
-          <Footer />
+          <div className="pt-(--header-h) pb-[calc(var(--bottom-nav-h)+env(safe-area-inset-bottom))]">
+            <main id="main" className="min-h-[60dvh]">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </ReduxProvider>
       </body>
     </html>
