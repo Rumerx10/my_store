@@ -17,7 +17,6 @@ import {
 import Logo from '../Logo';
 import SearchForm from './SearchForm';
 import CountBadge from './CountBadge';
-import PromoBar from './PromoBar';
 import { cn } from '@/lib/utils';
 
 const iconLinkClass =
@@ -41,7 +40,6 @@ const DesktopNav = ({
       aria-label="Main"
       className="fixed inset-x-0 top-0 z-50 hidden border-b border-white/70 bg-white/60 backdrop-blur-xl backdrop-saturate-150 shadow-card lg:block"
     >
-      <PromoBar />
       <div className="container flex h-16 items-center gap-8">
         <Logo className="shrink-0" />
 
@@ -110,7 +108,7 @@ const DesktopNav = ({
       </div>
 
       <div className="border-t border-white/70">
-        <ul className="container flex h-11 items-center gap-1 text-sm">
+        <ul className="no-scrollbar container flex h-11 items-center gap-1 overflow-x-auto whitespace-nowrap text-sm">
           {NavLinks.map((link) => {
             const isActive =
               (link.href === '/products' && pathname === '/products') ||

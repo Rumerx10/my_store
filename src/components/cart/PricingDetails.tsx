@@ -9,18 +9,25 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { SHIPPING_OPTIONS } from '@/docs/checkout';
-import { applyCoupon, removeCoupon, setGiftWrap, setShipping } from '@/redux/features/cart/cartSlice';
-import { calculateTotals, findCoupon, GIFT_WRAP_FEE } from '@/lib/checkout';
+import {
+  applyCoupon,
+  removeCoupon,
+  setInstallation,
+  setShipping,
+} from '@/redux/features/cart/cartSlice';
+import { calculateTotals, findCoupon, INSTALLATION_FEE } from '@/lib/checkout';
 import { formatPrice } from '@/lib/utils';
 import OrderTotals from './OrderTotals';
 
 const PricingDetails = () => {
   const dispatch = useDispatch();
-  const { items, shippingId, couponCode, giftWrap } = useSelector((state: RootState) => state.cart);
+  const { items, shippingId, couponCode, installation } = useSelector(
+    (state: RootState) => state.cart,
+  );
   const [codeInput, setCodeInput] = useState('');
   const [couponError, setCouponError] = useState('');
 
-  const totals = calculateTotals(items, { shippingId, couponCode, giftWrap });
+  const totals = calculateTotals(items, { shippingId, couponCode, installation });
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +42,10 @@ const PricingDetails = () => {
   };
 
   return (
-    <aside aria-label="Order summary" className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
+    <aside
+      aria-label="Order summary"
+      className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start"
+    >
       <div className="rounded-xl glass p-5 md:p-6">
         <h2 className="text-lg text-gray-900">Order summary</h2>
 
@@ -122,14 +132,17 @@ const PricingDetails = () => {
 
         <div className="mt-4 flex items-center gap-3">
           <Checkbox
-            id="gift-wrap"
-            checked={giftWrap}
-            onCheckedChange={(checked) => dispatch(setGiftWrap(checked === true))}
+            id="installation"
+            checked={installation}
+            onCheckedChange={(checked) => dispatch(setInstallation(checked === true))}
             className="data-[state=checked]:border-brand data-[state=checked]:bg-brand"
           />
-          <Label htmlFor="gift-wrap" className="flex flex-1 cursor-pointer justify-between text-sm font-normal text-gray-700">
-            Add gift wrap
-            <span className="tabular-nums text-gray-900">{formatPrice(GIFT_WRAP_FEE)}</span>
+          <Label
+            htmlFor="installation"
+            className="flex flex-1 cursor-pointer justify-between text-sm font-normal text-gray-700"
+          >
+            Add professional installation
+            <span className="tabular-nums text-gray-900">{formatPrice(INSTALLATION_FEE)}</span>
           </Label>
         </div>
 

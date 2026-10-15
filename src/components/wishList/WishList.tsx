@@ -35,7 +35,9 @@ export default function Wishlist() {
   const handleAddAllToCart = () => {
     inStock.forEach((product) => dispatch(addToCart(toCartItem(product))));
     dispatch(clearWishlist());
-    toast.success(`Moved ${inStock.length} ${inStock.length === 1 ? 'item' : 'items'} to your cart`);
+    toast.success(
+      `Moved ${inStock.length} ${inStock.length === 1 ? 'item' : 'items'} to your cart`,
+    );
   };
 
   if (wishlistItems.length === 0) return <EmptyWhislist />;
@@ -83,7 +85,7 @@ export default function Wishlist() {
           ))}
         </div>
       ) : (
-        <div className="mt-6 rounded-xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
+        <div className="mt-6 rounded-xl border border-dashed border-sky-300 bg-white/55 backdrop-blur-xl px-6 py-14 text-center">
           <h2 className="text-lg font-semibold text-gray-900">
             Nothing in your wishlist matches “{searchQuery}”
           </h2>

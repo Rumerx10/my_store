@@ -20,7 +20,9 @@ const OrderTotals = ({ totals }: { totals: Totals }) => {
         ]
       : []),
     { label: `Delivery · ${totals.shippingOption.name}`, value: formatPrice(totals.shipping) },
-    ...(totals.giftWrapFee > 0 ? [{ label: 'Gift wrap', value: formatPrice(totals.giftWrapFee) }] : []),
+    ...(totals.installationFee > 0
+      ? [{ label: 'Installation', value: formatPrice(totals.installationFee) }]
+      : []),
     { label: `VAT (${VAT_RATE}%)`, value: formatPrice(totals.vat) },
   ];
 

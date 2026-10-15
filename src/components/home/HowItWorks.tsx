@@ -5,10 +5,10 @@ const HowItWorks = () => {
     <section aria-labelledby="how-it-works" className="container mt-14 md:mt-20">
       <div className="rounded-3xl glass p-6 md:p-10">
         <h2 id="how-it-works" className="text-2xl text-gray-900 md:text-3xl">
-          How ordering works
+          How going solar works
         </h2>
         <p className="mt-2 max-w-xl text-sm text-gray-600 md:text-base">
-          From search to your doorstep in four steps.
+          From your electricity bill to a working system in four steps.
         </p>
         <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {HOW_IT_WORKS.map((step) => (

@@ -5,6 +5,8 @@ export type PaymentMethodId = 'cod' | 'card' | 'bkash' | 'nagad' | 'rocket';
 
 export interface IOrderItem {
   productId: string | number;
+  // Chosen options, e.g. "Capacity: 9.6 kWh".
+  variant?: string;
   title: string;
   price: number;
   quantity: number;
@@ -50,9 +52,7 @@ const HOME_ADDRESS: IOrderAddress = {
 
 // Past orders so the order history isn't empty in the demo. Totals follow the
 // checkout rules: subtotal + delivery + 5% VAT.
-const seedOrder = (
-  order: Omit<IOrder, 'totalAmount'> & { delivery: number },
-): IOrder => {
+const seedOrder = (order: Omit<IOrder, 'totalAmount'> & { delivery: number }): IOrder => {
   const { delivery, ...rest } = order;
   const subTotal = rest.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subTotal + delivery + subTotal * 0.05;
@@ -68,15 +68,15 @@ const initialState: OrderState = {
       paymentMethod: 'card',
       paymentStatus: 'paid',
       address: HOME_ADDRESS,
-      delivery: 12.99,
+      delivery: 3500,
       items: [
         {
-          productId: 13,
-          title: 'Bedside Table African Cherry',
-          price: 299.99,
-          quantity: 1,
+          productId: 12,
+          title: 'GoodWe Lynx U G3 Battery 5kWh',
+          price: 145000,
+          quantity: 2,
           image:
-            'https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/thumbnail.webp',
+            'https://en.goodwe.com/Public/Uploads/uploadfile/images/20241213/20241213-111922.png',
         },
       ],
     }),
@@ -87,28 +87,22 @@ const initialState: OrderState = {
       paymentMethod: 'cod',
       paymentStatus: 'unpaid',
       address: HOME_ADDRESS,
-      delivery: 5.99,
+      delivery: 1500,
       items: [
         {
-          productId: 27,
-          title: 'Honey Jar',
-          price: 6.99,
-          quantity: 2,
-          image: 'https://cdn.dummyjson.com/product-images/groceries/honey-jar/thumbnail.webp',
-        },
-        {
-          productId: 23,
-          title: 'Eggs',
-          price: 2.99,
+          productId: 24,
+          title: 'GoodWe GMK330 Smart Energy Meter',
+          price: 9500,
           quantity: 1,
-          image: 'https://cdn.dummyjson.com/product-images/groceries/eggs/thumbnail.webp',
+          image: 'https://en.goodwe.com/Public/Uploads/uploadfile/images/20240425/GMK330-1(2).png',
         },
         {
-          productId: 29,
-          title: 'Juice',
-          price: 3.99,
-          quantity: 3,
-          image: 'https://cdn.dummyjson.com/product-images/groceries/juice/thumbnail.webp',
+          productId: 27,
+          title: 'GoodWe Wi-Fi Kit-20',
+          price: 4500,
+          quantity: 1,
+          image:
+            'https://en.goodwe.com/Public/Uploads/uploadfile/images/20211227/64f17b603937f.png',
         },
       ],
     }),
@@ -119,22 +113,22 @@ const initialState: OrderState = {
       paymentMethod: 'bkash',
       paymentStatus: 'paid',
       address: HOME_ADDRESS,
-      delivery: 5.99,
+      delivery: 3500,
       items: [
         {
-          productId: 6,
-          title: 'Calvin Klein CK One',
-          price: 49.99,
+          productId: 4,
+          title: 'GoodWe XS G3 Single-phase Inverter 3.3kW',
+          price: 58000,
           quantity: 1,
-          image:
-            'https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/thumbnail.webp',
+          image: 'https://en.goodwe.com/Public/Uploads/uploadfile/images/20240201/XS-G3-1.png',
         },
         {
-          productId: 4,
-          title: 'Red Lipstick',
-          price: 12.99,
-          quantity: 2,
-          image: 'https://cdn.dummyjson.com/product-images/beauty/red-lipstick/thumbnail.webp',
+          productId: 1,
+          title: 'GoodWe Galaxy 570W Ultra-lightweight Solar Panel',
+          price: 19500,
+          quantity: 6,
+          image:
+            'https://en.pvbm.com/Public/Uploads/uploadfile/images/20260327/Galaxy570FrontBack.png',
         },
       ],
     }),
@@ -145,15 +139,15 @@ const initialState: OrderState = {
       paymentMethod: 'nagad',
       paymentStatus: 'refunded',
       address: HOME_ADDRESS,
-      delivery: 5.99,
+      delivery: 1500,
       items: [
         {
-          productId: 10,
-          title: 'Gucci Bloom Eau de',
-          price: 79.99,
+          productId: 23,
+          title: 'GoodWe HCA G2 Smart EV Charger 7kW',
+          price: 85000,
           quantity: 1,
           image:
-            'https://cdn.dummyjson.com/product-images/fragrances/gucci-bloom-eau-de/thumbnail.webp',
+            'https://en.goodwe.com/Public/Uploads/uploadfile/images/20241206/20241206-151632.png',
         },
       ],
     }),

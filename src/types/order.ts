@@ -35,4 +35,3 @@ export interface TimelineEvent {
   date: string;
   status: 'completed' | 'current' | 'pending';
 }
-

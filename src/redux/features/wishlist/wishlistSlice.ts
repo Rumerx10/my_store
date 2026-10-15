@@ -17,13 +17,14 @@ interface IWishlist {
 const initialState: IWishlist = {
   items: [
     {
-      id: 5,
-      title: 'Red Nail Polish',
-      price: 8.99,
-      rating: 4.32,
-      sold: 21,
-      stock: 10,
-      image: 'https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/1.webp',
+      id: 16,
+      title: 'GoodWe ESA All-in-One Home Energy Storage 10kW',
+      price: 720000,
+      rating: 4.9,
+      sold: 0,
+      stock: 6,
+      image:
+        'https://en.goodwe.com/Public/Uploads/uploadfile/images/20251014/ESA3-10KAll-in-oneSystem-1.png',
     },
   ],
 };

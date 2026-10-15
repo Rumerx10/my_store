@@ -5,7 +5,7 @@ import ProductGridSkeleton from '@/components/products/ProductGridSkeleton';
 
 export const metadata: Metadata = {
   title: 'Shop all products',
-  description: 'Browse beauty, fragrances, furniture and groceries. Filter by brand, price and stock.',
+  description: 'Browse GoodWe solar panels, inverters, batteries and EV chargers. Filter by category, price and stock.',
 };
 
 const page = () => {

@@ -1,11 +1,11 @@
 // Store-wide details used in the header, footer, and info pages.
 // Contact details are placeholders until the real ones are available.
 export const SITE = {
-  name: 'NextMart',
-  tagline: 'Everyday essentials, delivered across Bangladesh',
+  name: 'NextPower',
+  tagline: 'Solar power for homes and businesses across Bangladesh',
   description:
-    'Shop beauty, fragrances, furniture and groceries from trusted brands, with cash on delivery and bKash, Nagad or Rocket payments.',
-  email: 'support@nextmart.com.bd',
+    'GoodWe solar panels, inverters, batteries and EV chargers, delivered and installed across Bangladesh. Pay with cash on delivery, bKash, Nagad, Rocket or card.',
+  email: 'support@nextpower.com.bd',
   phone: '+880 9612-345678',
   phoneHref: '+8809612345678',
   address: 'House 42, Road 11, Banani, Dhaka 1213',
@@ -34,7 +34,7 @@ export const FOOTER_LINKS = [
   {
     title: 'Company',
     links: [
-      { label: 'About NextMart', href: '/about' },
+      { label: 'About NextPower', href: '/about' },
       { label: 'Privacy policy', href: '/privacy' },
       { label: 'Terms of service', href: '/terms' },
       { label: 'Cookie policy', href: '/cookies' },

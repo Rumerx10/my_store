@@ -6,21 +6,36 @@ import { addToCart, MAX_QUANTITY_PER_ITEM } from '@/redux/features/cart/cartSlic
 import { RootState } from '@/redux/store';
 import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
 import { cn, formatPrice } from '@/lib/utils';
-import { hasNotableDiscount, originalPrice, toCartItem, toWishlistItem } from '@/lib/products';
+import {
+  hasNotableDiscount,
+  toCartItem,
+  toWishlistItem,
+  variantLabel,
+  variantPrice,
+  type OptionSelection,
+} from '@/lib/products';
+import { excerpt, htmlToText } from '@/lib/richText';
 import Rating from '@/components/shared/Rating';
+import VariantPicker from './VariantPicker';
 
 interface ProductDetailsInfoProps {
   product: IProduct;
   quantity: number;
   setQuantity: (value: number) => void;
+  selection: OptionSelection;
+  onSelect: (optionName: string, valueLabel: string) => void;
   onShowReviews: () => void;
+  onShowDescription: () => void;
 }
 
 export function ProductDetailsInfo({
   product,
   quantity,
   setQuantity,
+  selection,
+  onSelect,
   onShowReviews,
+  onShowDescription,
 }: ProductDetailsInfoProps) {
   const dispatch = useDispatch();
   const isWishlisted = useSelector((state: RootState) =>
@@ -30,10 +45,17 @@ export function ProductDetailsInfo({
   const outOfStock = product.stock === 0;
   const maxQuantity = Math.min(MAX_QUANTITY_PER_ITEM, product.stock);
   const showDiscount = hasNotableDiscount(product);
+  const unitPrice = variantPrice(product, selection);
+  const wasPrice = unitPrice / (1 - product.discountPercentage / 100);
+  const summary = excerpt(product.description);
+  const hasMore = summary.length < htmlToText(product.description).length;
 
   const handleAddToCart = () => {
-    dispatch(addToCart(toCartItem(product, quantity)));
-    toast.success(`Added ${quantity} × ${product.title} to your cart`);
+    dispatch(addToCart(toCartItem(product, quantity, selection)));
+    const variant = variantLabel(product, selection);
+    toast.success(
+      `Added ${quantity} × ${product.title}${variant ? ` (${variant})` : ''} to your cart`,
+    );
   };
 
   return (
@@ -53,12 +75,12 @@ export function ProductDetailsInfo({
       <div>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-3xl font-semibold tabular-nums text-gray-900">
-            {formatPrice(product.price)}
+            {formatPrice(unitPrice)}
           </span>
           {showDiscount && (
             <>
               <span className="text-base tabular-nums text-gray-400 line-through">
-                {formatPrice(originalPrice(product))}
+                {formatPrice(wasPrice)}
               </span>
               <span className="rounded-md bg-red/10 px-2 py-0.5 text-sm font-semibold text-red">
                 Save {Math.round(product.discountPercentage)}%
@@ -80,7 +102,22 @@ export function ProductDetailsInfo({
         </p>
       </div>
 
-      <p className="text-[15px] leading-relaxed text-gray-700">{product.description}</p>
+      {summary && (
+        <p className="text-[15px] leading-relaxed text-gray-700">
+          {summary}{' '}
+          {hasMore && (
+            <button
+              type="button"
+              onClick={onShowDescription}
+              className="rounded font-medium text-brand underline underline-offset-2 hover:no-underline"
+            >
+              Read the full description
+            </button>
+          )}
+        </p>
+      )}
+
+      <VariantPicker product={product} selection={selection} onChange={onSelect} />
 
       {!outOfStock && (
         <div>
@@ -102,7 +139,10 @@ export function ProductDetailsInfo({
               >
                 <Minus className="size-4" />
               </button>
-              <output aria-live="polite" className="min-w-10 text-center font-semibold tabular-nums">
+              <output
+                aria-live="polite"
+                className="min-w-10 text-center font-semibold tabular-nums"
+              >
                 {quantity}
               </output>
               <button
@@ -118,7 +158,7 @@ export function ProductDetailsInfo({
             <p className="text-sm text-gray-600">
               Subtotal{' '}
               <span className="font-semibold tabular-nums text-gray-900">
-                {formatPrice(product.price * quantity)}
+                {formatPrice(unitPrice * quantity)}
               </span>
               <span className="block text-xs text-gray-500">Max {maxQuantity} per order</span>
             </p>

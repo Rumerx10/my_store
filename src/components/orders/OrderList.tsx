@@ -31,7 +31,7 @@ const OrderCard = ({ order, href }: { order: IOrder; href: string }) => {
           <div className="flex -space-x-3">
             {order.items.slice(0, 4).map((item) => (
               <span
-                key={item.productId}
+                key={`${item.productId}-${item.variant ?? ''}`}
                 className="relative size-12 overflow-hidden rounded-lg border-2 border-white bg-gray-50"
               >
                 <Image src={item.image} alt="" fill sizes="48px" className="object-contain p-1" />

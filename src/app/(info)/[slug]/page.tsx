@@ -21,7 +21,7 @@ const page = async ({ params }: Props) => {
 
   return (
     <article className="container py-8 md:py-14">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-3xl rounded-3xl glass p-6 md:p-12">
         <h1 className="text-3xl text-gray-900 md:text-4xl">{info.title}</h1>
         <p className="mt-3 text-lg text-gray-600">{info.intro}</p>
         {info.updated && <p className="mt-2 text-sm text-gray-500">Last updated {info.updated}</p>}

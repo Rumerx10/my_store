@@ -3,12 +3,13 @@ import { SHIPPING_OPTIONS } from '@/docs/checkout';
 
 export const COUPONS = [{ code: 'SAVE10', discount: 10 }];
 export const VAT_RATE = 5;
-export const GIFT_WRAP_FEE = 4.99;
+// Flat fee for a standard home installation (up to 10 kW); larger jobs are quoted separately.
+export const INSTALLATION_FEE = 15000;
 
 export interface CheckoutOptions {
   shippingId: string;
   couponCode: string | null;
-  giftWrap: boolean;
+  installation: boolean;
 }
 
 export const findCoupon = (code: string) =>
@@ -23,9 +24,9 @@ export const calculateTotals = (items: ICartItem[], options: CheckoutOptions) =>
   const shippingOption =
     SHIPPING_OPTIONS.find((option) => option.id === options.shippingId) ?? SHIPPING_OPTIONS[0];
   const shipping = items.length > 0 ? shippingOption.price : 0;
-  const giftWrapFee = options.giftWrap && items.length > 0 ? GIFT_WRAP_FEE : 0;
+  const installationFee = options.installation && items.length > 0 ? INSTALLATION_FEE : 0;
   const vat = ((subTotal - couponDiscount) * VAT_RATE) / 100;
-  const total = subTotal - couponDiscount + shipping + giftWrapFee + vat;
+  const total = subTotal - couponDiscount + shipping + installationFee + vat;
 
   return {
     itemCount,
@@ -34,7 +35,7 @@ export const calculateTotals = (items: ICartItem[], options: CheckoutOptions) =>
     couponDiscount,
     shippingOption,
     shipping,
-    giftWrapFee,
+    installationFee,
     vat,
     total,
   };

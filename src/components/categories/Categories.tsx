@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { CATEGORY_INFO, categoryLabel } from '@/docs/navLinks';
-import { RootState } from '@/redux/store';
+import { selectStoreProducts } from '@/redux/selectors';
 
 // One card per catalog category, illustrated with its best-rated product.
 const Categories = () => {
-  const products = useSelector((state: RootState) => state.products);
+  const products = useSelector(selectStoreProducts);
   const categories = Array.from(new Set(products.map((product) => product.category))).map(
     (category) => {
       const items = products.filter((product) => product.category === category);

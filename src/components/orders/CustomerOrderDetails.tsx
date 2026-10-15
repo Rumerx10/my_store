@@ -2,7 +2,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
-import { ArrowLeft, CreditCard, MapPin, X } from 'lucide-react';
+import { CreditCard, MapPin, X } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -37,20 +38,15 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
 
   return (
     <div>
-      <Link
-        href={backHref}
-        className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-      >
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        All orders
-      </Link>
-
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl tabular-nums text-gray-900 md:text-3xl">Order {order.id}</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl tabular-nums text-gray-900 md:text-3xl">Order {order.id}</h1>
+            <OrderStatusBadge status={order.status} className="text-sm" />
+          </div>
           <p className="mt-1 text-sm text-gray-600">Placed {formatOrderDate(order.date)}</p>
         </div>
-        <OrderStatusBadge status={order.status} className="text-sm" />
+        <BackButton href={backHref}>All orders</BackButton>
       </div>
 
       <section aria-label="Delivery progress" className="mt-6 rounded-xl glass p-5 md:p-6">
@@ -72,7 +68,10 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
           </h2>
           <ul className="mt-3 divide-y divide-gray-100">
             {order.items.map((item) => (
-              <li key={item.productId} className="flex items-center gap-4 py-3">
+              <li
+                key={`${item.productId}-${item.variant ?? ''}`}
+                className="flex items-center gap-4 py-3"
+              >
                 <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50">
                   <Image src={item.image} alt="" fill sizes="56px" className="object-contain p-1" />
                 </div>
@@ -83,6 +82,7 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
                   >
                     {item.title}
                   </Link>
+                  {item.variant && <p className="truncate text-xs text-gray-500">{item.variant}</p>}
                   <p className="text-sm tabular-nums text-gray-500">
                     {item.quantity} × {formatPrice(item.price)}
                   </p>
@@ -113,7 +113,10 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
 
         <div className="space-y-4">
           <section aria-labelledby="order-address" className="rounded-xl glass p-5">
-            <h2 id="order-address" className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+            <h2
+              id="order-address"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900"
+            >
               <MapPin className="size-4 text-gray-400" aria-hidden="true" />
               Delivery to {order.address.label.toLowerCase()}
             </h2>
@@ -122,11 +125,16 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
             <p className="text-sm tabular-nums text-gray-500">{order.address.phone}</p>
           </section>
           <section aria-labelledby="order-payment" className="rounded-xl glass p-5">
-            <h2 id="order-payment" className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+            <h2
+              id="order-payment"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900"
+            >
               <CreditCard className="size-4 text-gray-400" aria-hidden="true" />
               Payment
             </h2>
-            <p className="mt-2 text-sm text-gray-700">{PAYMENT_METHOD_LABELS[order.paymentMethod]}</p>
+            <p className="mt-2 text-sm text-gray-700">
+              {PAYMENT_METHOD_LABELS[order.paymentMethod]}
+            </p>
             <p className="text-sm capitalize text-gray-500">{order.paymentStatus}</p>
           </section>
 

@@ -9,10 +9,23 @@ import { RootState } from '@/redux/store';
 import { addToWishlist } from '@/redux/features/wishlist/wishlistSlice';
 import { addToCart } from '@/redux/features/cart/cartSlice';
 import { cn, formatPrice } from '@/lib/utils';
-import { hasNotableDiscount, originalPrice, toCartItem, toWishlistItem } from '@/lib/products';
+import {
+  hasNotableDiscount,
+  hasOptions,
+  originalPrice,
+  priceRange,
+  toCartItem,
+  toWishlistItem,
+} from '@/lib/products';
 import Rating from '../shared/Rating';
 
-const ProductCardGrid = ({ product, priority = false }: { product: IProduct; priority?: boolean }) => {
+const ProductCardGrid = ({
+  product,
+  priority = false,
+}: {
+  product: IProduct;
+  priority?: boolean;
+}) => {
   const dispatch = useDispatch();
   const isWishlisted = useSelector((state: RootState) =>
     state.wishlist.items.some((item) => item.id === product.id),
@@ -20,6 +33,9 @@ const ProductCardGrid = ({ product, priority = false }: { product: IProduct; pri
   const outOfStock = product.stock === 0;
   const lowStock = product.stock > 0 && product.stock <= 5;
   const showDiscount = hasNotableDiscount(product);
+  // Products with options are added from their page, where the options are chosen.
+  const withOptions = hasOptions(product);
+  const range = withOptions ? priceRange(product) : null;
 
   const handleAddToCart = () => {
     dispatch(addToCart(toCartItem(product)));
@@ -28,7 +44,7 @@ const ProductCardGrid = ({ product, priority = false }: { product: IProduct; pri
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl glass-card transition-[box-shadow,transform] duration-300 ease-out-soft hover:-translate-y-1 hover:shadow-lift">
-      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-white via-rose-50/60 to-violet-50/70">
+      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-white/80 via-sky-50/70 to-amber-50/60">
         <Image
           src={product.thumbnail || product.images?.[0] || '/placeholder.svg'}
           alt=""
@@ -38,7 +54,7 @@ const ProductCardGrid = ({ product, priority = false }: { product: IProduct; pri
           className="object-contain p-4 drop-shadow-md transition-transform duration-500 ease-out-soft group-hover:scale-[1.07]"
         />
         {showDiscount && (
-          <span className="absolute left-2.5 top-2.5 rounded-full bg-brand px-2 py-0.5 text-xs font-semibold tabular-nums text-white shadow-card">
+          <span className="absolute left-2.5 top-2.5 rounded-full bg-sun px-2 py-0.5 text-xs font-bold tabular-nums text-gray-900 shadow-card">
             −{Math.round(product.discountPercentage)}%
           </span>
         )}
@@ -46,7 +62,11 @@ const ProductCardGrid = ({ product, priority = false }: { product: IProduct; pri
           type="button"
           onClick={() => dispatch(addToWishlist(toWishlistItem(product)))}
           aria-pressed={isWishlisted}
-          aria-label={isWishlisted ? `Remove ${product.title} from wishlist` : `Save ${product.title} to wishlist`}
+          aria-label={
+            isWishlisted
+              ? `Remove ${product.title} from wishlist`
+              : `Save ${product.title} to wishlist`
+          }
           className="absolute right-2 top-2 z-10 flex size-9 items-center justify-center rounded-full border border-white/80 bg-white/70 text-gray-600 shadow-card backdrop-blur-md transition-colors hover:text-red active:scale-95"
         >
           <Heart className={cn('size-[18px]', isWishlisted && 'fill-red text-red')} />
@@ -69,6 +89,7 @@ const ProductCardGrid = ({ product, priority = false }: { product: IProduct; pri
         <Rating value={product.rating} />
 
         <div className="mt-auto flex flex-wrap items-baseline gap-x-2 pt-1">
+          {range && range.max > range.min && <span className="text-xs text-gray-500">From</span>}
           <span className="text-base font-semibold tabular-nums text-gray-900 md:text-lg">
             {formatPrice(product.price)}
           </span>
@@ -85,15 +106,24 @@ const ProductCardGrid = ({ product, priority = false }: { product: IProduct; pri
           </p>
         )}
 
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={outOfStock}
-          className="relative z-10 mt-1 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-brand px-3 text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
-        >
-          <ShoppingCart className="size-4" aria-hidden="true" />
-          {outOfStock ? 'Out of stock' : 'Add to cart'}
-        </button>
+        {withOptions && !outOfStock ? (
+          <Link
+            href={`/products/${product.id}`}
+            className="relative z-10 mt-1 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-brand px-3 text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+          >
+            Choose options
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={outOfStock}
+            className="relative z-10 mt-1 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-brand px-3 text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+          >
+            <ShoppingCart className="size-4" aria-hidden="true" />
+            {outOfStock ? 'Out of stock' : 'Add to cart'}
+          </button>
+        )}
       </div>
     </article>
   );

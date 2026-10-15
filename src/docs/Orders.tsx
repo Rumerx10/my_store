@@ -1,6 +1,5 @@
 import { Order } from '@/types/order';
 
-
 // Mock data
 export const MockOrders: Order[] = [
   {

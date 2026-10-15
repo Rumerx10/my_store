@@ -1,51 +1,51 @@
-import { ShoppingCart, Eye, Truck, Shield, Headphones, RotateCcw } from 'lucide-react';
+import { Banknote, ClipboardList, Headphones, Smartphone, Truck, Wrench, Zap } from 'lucide-react';
 
 export const FEATURES = [
   {
-    icon: <Truck className="size-5" />,
-    title: 'Cash on delivery',
-    description: 'Pay when your order arrives',
+    icon: <Wrench className="size-5" />,
+    title: 'Installed for you',
+    description: 'Certified team, from survey to switch-on',
   },
   {
-    icon: <Shield className="size-5" />,
+    icon: <Banknote className="size-5" />,
     title: 'Pay your way',
-    description: 'bKash, Nagad, Rocket or card',
+    description: 'Cash on delivery, bKash, Nagad, Rocket or card',
   },
   {
-    icon: <RotateCcw className="size-5" />,
-    title: 'Simple returns',
-    description: 'Each product lists its return window',
+    icon: <Truck className="size-5" />,
+    title: 'Delivered nationwide',
+    description: 'Panels and batteries packed for the road',
   },
   {
     icon: <Headphones className="size-5" />,
-    title: 'Real support',
-    description: 'Chat or call us 7 days a week',
+    title: 'Free system design',
+    description: 'Tell us your bill, we size the system',
   },
 ];
 
 export const HOW_IT_WORKS = [
   {
     step: 1,
-    title: 'Find what you need',
-    description: 'Search by name or brand, or browse a category and filter by price.',
-    icon: <Eye className="size-5" />,
+    title: 'Share your bill',
+    description: 'Send us your monthly electricity bill and roof photos in chat.',
+    icon: <ClipboardList className="size-5" />,
   },
   {
     step: 2,
-    title: 'Add it to your cart',
-    description: 'Adjust quantities in the cart and apply a promo code if you have one.',
-    icon: <ShoppingCart className="size-5" />,
+    title: 'Get a design',
+    description: 'We size the panels, inverter and battery and send a fixed quote.',
+    icon: <Zap className="size-5" />,
   },
   {
     step: 3,
-    title: 'Choose how to pay',
-    description: 'Pay now with a card or mobile banking, or pay in cash on delivery.',
-    icon: <Shield className="size-5" />,
+    title: 'We install it',
+    description: 'Delivery, mounting, wiring and grid connection by our certified team.',
+    icon: <Wrench className="size-5" />,
   },
   {
     step: 4,
-    title: 'Track the delivery',
-    description: 'Follow the order status from My orders until it reaches your door.',
-    icon: <Truck className="size-5" />,
+    title: 'Watch it work',
+    description: 'Follow generation, savings and battery level in the GoodWe app.',
+    icon: <Smartphone className="size-5" />,
   },
 ];

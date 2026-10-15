@@ -28,6 +28,9 @@ const ToReview = () => {
       orders
         .filter((order) => order.status === 'delivered')
         .flatMap((order) => order.items.map((item) => ({ ...item, deliveredOn: order.date })))
+        .filter(
+          (item, index, all) => all.findIndex((o) => o.productId === item.productId) === index,
+        )
         .filter((item) => !reviewedIds.includes(item.productId)),
     [orders, reviewedIds],
   );
@@ -83,7 +86,13 @@ const ToReview = () => {
             <li key={item.productId} className="rounded-xl glass p-5">
               <div className="flex gap-4">
                 <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-gray-50">
-                  <Image src={item.image} alt="" fill sizes="80px" className="object-contain p-1.5" />
+                  <Image
+                    src={item.image}
+                    alt=""
+                    fill
+                    sizes="80px"
+                    className="object-contain p-1.5"
+                  />
                 </div>
                 <div className="min-w-0">
                   <Link
@@ -92,13 +101,21 @@ const ToReview = () => {
                   >
                     {item.title}
                   </Link>
-                  <p className="mt-1 text-sm tabular-nums text-gray-700">{formatPrice(item.price)}</p>
-                  <p className="text-xs text-gray-500">Delivered {formatOrderDate(item.deliveredOn)}</p>
+                  <p className="mt-1 text-sm tabular-nums text-gray-700">
+                    {formatPrice(item.price)}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Delivered {formatOrderDate(item.deliveredOn)}
+                  </p>
                 </div>
               </div>
 
               {reviewingId === item.productId ? (
-                <form onSubmit={handleSubmitReview} noValidate className="mt-5 space-y-4 border-t border-gray-100 pt-5">
+                <form
+                  onSubmit={handleSubmitReview}
+                  noValidate
+                  className="mt-5 space-y-4 border-t border-gray-100 pt-5"
+                >
                   <fieldset>
                     <legend className="text-sm font-medium text-gray-900">Your rating</legend>
                     <div className="mt-2 flex gap-1" role="radiogroup" aria-label="Rating">
@@ -126,7 +143,10 @@ const ToReview = () => {
                     </div>
                   </fieldset>
                   <div>
-                    <Label htmlFor={`title-${item.productId}`} className="text-sm font-medium text-gray-900">
+                    <Label
+                      htmlFor={`title-${item.productId}`}
+                      className="text-sm font-medium text-gray-900"
+                    >
                       Headline <span className="font-normal text-gray-500">(optional)</span>
                     </Label>
                     <Input
@@ -138,7 +158,10 @@ const ToReview = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`content-${item.productId}`} className="text-sm font-medium text-gray-900">
+                    <Label
+                      htmlFor={`content-${item.productId}`}
+                      className="text-sm font-medium text-gray-900"
+                    >
                       Review
                     </Label>
                     <Textarea

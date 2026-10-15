@@ -4,8 +4,8 @@ import { Heart } from 'lucide-react';
 const EmptyWhislist = () => {
   return (
     <div className="container py-12 md:py-20">
-      <div className="mx-auto flex max-w-md flex-col items-center text-center">
-        <span className="flex size-16 items-center justify-center rounded-2xl bg-red/10 text-red">
+      <div className="mx-auto flex max-w-md flex-col items-center rounded-3xl glass px-6 py-10 text-center md:px-10">
+        <span className="flex size-16 items-center justify-center rounded-2xl bg-sun-soft text-sun-ink">
           <Heart className="size-7" aria-hidden="true" />
         </span>
         <h1 className="mt-6 text-2xl text-gray-900 md:text-3xl">Your wishlist is empty</h1>

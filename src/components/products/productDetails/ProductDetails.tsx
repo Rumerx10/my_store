@@ -6,6 +6,7 @@ import { notFound, useParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { defaultSelection, isDraft, variantImage, type OptionSelection } from '@/lib/products';
 import { categoryLabel } from '@/docs/navLinks';
 import ProductImgCarousel from '@/components/ProductImgCarousel';
 import { ProductDetailsTab } from './ProductDetailsTab';
@@ -17,6 +18,7 @@ import SellerInfo from './SellerInfo';
 export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [chosen, setChosen] = useState<OptionSelection>({});
 
   const productId = Number(useParams().id);
   const product = useSelector((state: RootState) =>
@@ -25,8 +27,10 @@ export default function ProductDetails() {
 
   if (!product) notFound();
 
-  const showReviews = () => {
-    setActiveTab('reviews');
+  const selection = { ...defaultSelection(product), ...chosen };
+
+  const showTab = (tab: string) => {
+    setActiveTab(tab);
     document.getElementById('product-tabs')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -57,9 +61,19 @@ export default function ProductDetails() {
         </ol>
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+      {isDraft(product) && (
+        <p className="mb-4 rounded-xl border border-sun/60 bg-sun-soft/80 px-4 py-3 text-sm text-sun-ink">
+          This product is a draft. It&apos;s hidden from the store until it&apos;s made active.
+        </p>
+      )}
+
+      <div className="grid gap-8 rounded-3xl glass p-4 md:p-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12 lg:p-8">
         <div className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
-          <ProductImgCarousel images={product.images} title={product.title} />
+          <ProductImgCarousel
+            images={product.images}
+            title={product.title}
+            activeImage={variantImage(product, selection)}
+          />
         </div>
 
         <div className="flex flex-col gap-6">
@@ -67,7 +81,10 @@ export default function ProductDetails() {
             product={product}
             quantity={quantity}
             setQuantity={setQuantity}
-            onShowReviews={showReviews}
+            selection={selection}
+            onSelect={(name, label) => setChosen((current) => ({ ...current, [name]: label }))}
+            onShowReviews={() => showTab('reviews')}
+            onShowDescription={() => showTab('description')}
           />
           <ProductDetailFeatures product={product} />
           <SellerInfo />
@@ -78,7 +95,7 @@ export default function ProductDetails() {
         <ProductDetailsTab product={product} activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
-      <div className="mt-14 md:mt-20">
+      <div className="mt-8 rounded-3xl glass p-4 md:mt-12 md:p-8">
         <RelatedProducts product={product} />
       </div>
     </div>

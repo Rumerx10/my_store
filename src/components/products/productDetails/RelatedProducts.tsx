@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { selectStoreProducts } from '@/redux/selectors';
 import { IProduct } from '@/types/api_types';
 import { categoryLabel } from '@/docs/navLinks';
 import ProductCardGrid from '../ProductCardGrid';
@@ -7,7 +7,7 @@ import SectionHeader from '@/components/SectionHeader';
 
 // Other products from the same category, topped up with the best-rated items if it's small.
 export function RelatedProducts({ product }: { product: IProduct }) {
-  const products = useSelector((state: RootState) => state.products);
+  const products = useSelector(selectStoreProducts);
   const sameCategory = products.filter(
     (p) => p.category === product.category && p.id !== product.id,
   );

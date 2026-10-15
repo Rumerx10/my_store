@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
-import { ArrowLeft, CreditCard, MapPin, Phone, Printer, Truck, User, X } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
+import { CreditCard, MapPin, Phone, Printer, Truck, User, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import CancelOrderModal from '@/components/CancelOrderModal';
 import Panel from '@/components/dashboard/Panel';
@@ -46,20 +46,17 @@ const OrderDetails = () => {
 
   return (
     <div>
-      <Link
-        href="/admin/orders"
-        className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 print:hidden"
-      >
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        All orders
-      </Link>
-
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl tabular-nums text-gray-900 md:text-3xl">Order {order.id}</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl tabular-nums text-gray-900 md:text-3xl">Order {order.id}</h1>
+            <OrderStatusBadge status={status} className="text-sm" />
+          </div>
           <p className="mt-1 text-sm text-gray-600">Placed {formatOrderDate(order.date)}</p>
         </div>
-        <OrderStatusBadge status={status} className="text-sm" />
+        <BackButton href="/admin/orders" className="print:hidden">
+          All orders
+        </BackButton>
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2 print:hidden">

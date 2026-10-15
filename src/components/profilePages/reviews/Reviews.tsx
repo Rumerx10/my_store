@@ -22,39 +22,28 @@ interface MyReview {
 const INITIAL_REVIEWS: MyReview[] = [
   {
     id: 1,
-    productId: 6,
-    productName: 'Calvin Klein CK One',
-    productImage:
-      'https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/thumbnail.webp',
+    productId: 4,
+    productName: 'GoodWe XS G3 Single-phase Inverter 3.3kW',
+    productImage: 'https://en.goodwe.com/Public/Uploads/uploadfile/images/20240201/XS-G3-1.png',
     rating: 5,
-    title: 'Fresh and lasts all day',
+    title: 'Silent and easy to monitor',
     content:
-      'Light citrus opening that settles into something clean. Still noticeable after a full day at the office.',
+      'No fan noise at all, so it sits fine next to the stairs. The app shows generation every few minutes and the installers set it up in one afternoon.',
     date: '2 Oct 2026',
     helpful: 14,
   },
   {
     id: 2,
-    productId: 4,
-    productName: 'Red Lipstick',
-    productImage: 'https://cdn.dummyjson.com/product-images/beauty/red-lipstick/thumbnail.webp',
+    productId: 1,
+    productName: 'GoodWe Galaxy 570W Ultra-lightweight Solar Panel',
+    productImage:
+      'https://en.pvbm.com/Public/Uploads/uploadfile/images/20260327/Galaxy570FrontBack.png',
     rating: 4,
-    title: 'Great colour, slightly drying',
+    title: 'Light enough for our tin roof',
     content:
-      'The shade is exactly as pictured. It needs a balm underneath, otherwise it dries out by the afternoon.',
+      'Our roof could not take framed panels, these went on without extra steel. Output dips on hazy winter days, as expected.',
     date: '1 Oct 2026',
     helpful: 6,
-  },
-  {
-    id: 3,
-    productId: 29,
-    productName: 'Juice',
-    productImage: 'https://cdn.dummyjson.com/product-images/groceries/juice/thumbnail.webp',
-    rating: 3,
-    title: 'Fine, but sweeter than expected',
-    content: 'Arrived cold and well packed. Tastes more like a fruit drink than fresh juice.',
-    date: '6 Sep 2026',
-    helpful: 2,
   },
 ];
 
@@ -90,7 +79,13 @@ const Reviews = () => {
             <li key={review.id} className="rounded-xl glass p-5 md:p-6">
               <div className="flex items-center gap-4">
                 <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50">
-                  <Image src={review.productImage} alt="" fill sizes="56px" className="object-contain p-1" />
+                  <Image
+                    src={review.productImage}
+                    alt=""
+                    fill
+                    sizes="56px"
+                    className="object-contain p-1"
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <Link

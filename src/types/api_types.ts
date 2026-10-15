@@ -48,10 +48,39 @@ export interface IProduct {
   images: string[];
   thumbnail: string;
   createdAt?: string;
+  // Short selling points and model-specific specs, shown on the product page.
+  highlights?: string[];
+  specs?: [string, string][];
+  // What one unit costs the store; only shown in the admin (profit and margin).
+  costPerItem?: number;
+  // Drafts are hidden from the storefront. Missing means active.
+  status?: ProductStatus;
+  // Shopify-style options, e.g. Capacity or Color, each value adding to the price.
+  options?: IProductOption[];
+}
+
+export type ProductStatus = 'active' | 'draft';
+
+export interface IProductOptionValue {
+  label: string;
+  // Added to the product price when this value is chosen.
+  priceDelta: number;
+  // Colour options only: swatch colour and the product image to show when chosen.
+  swatch?: string;
+  image?: string;
+}
+
+export interface IProductOption {
+  name: string;
+  values: IProductOptionValue[];
 }
 
 export interface ICartItem {
+  // Product id, or `${productId}:${variant}` when the product has options.
   id: string | number;
+  productId?: number;
+  // Chosen options, e.g. "Capacity: 9.6 kWh / Color: Black".
+  variant?: string;
   title: string;
   price: number;
   rating: number;

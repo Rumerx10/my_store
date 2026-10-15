@@ -4,7 +4,7 @@ import { ShoppingBag } from 'lucide-react';
 const EmptyCart = () => {
   return (
     <div className="container py-12 md:py-20">
-      <div className="mx-auto flex max-w-md flex-col items-center text-center">
+      <div className="mx-auto flex max-w-md flex-col items-center rounded-3xl glass px-6 py-10 text-center md:px-10">
         <span className="flex size-16 items-center justify-center rounded-2xl bg-brand-soft text-brand">
           <ShoppingBag className="size-7" aria-hidden="true" />
         </span>

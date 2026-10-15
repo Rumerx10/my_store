@@ -1,318 +1,243 @@
 'use client';
-import { useState } from 'react';
-import Image from 'next/image';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm, type FieldErrors } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Upload } from 'lucide-react';
+import { Copy, Eye } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
 import { useDispatch, useSelector } from 'react-redux';
 import Panel from '@/components/dashboard/Panel';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { categoryLabel } from '@/docs/navLinks';
-import { CATEGORIES } from '@/docs/products';
+import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
 import { addProduct, updateProduct } from '@/redux/features/product/productSlice';
 import { RootState } from '@/redux/store';
 import { IProduct } from '@/types/api_types';
+import { cn } from '@/lib/utils';
+import {
+  buildSchema,
+  emptyFormValues,
+  fromFormValues,
+  toDuplicateFormValues,
+  toFormValues,
+  type ProductFormValues,
+} from './productForm/formModel';
+import Field, { fieldAria, inputClass } from './productForm/Field';
+import MediaCard from './productForm/MediaCard';
+import PricingCard from './productForm/PricingCard';
+import InventoryCard from './productForm/InventoryCard';
+import VariantsCard from './productForm/VariantsCard';
+import SpecsCard from './productForm/SpecsCard';
+import OrganizationCard from './productForm/OrganizationCard';
+import ErrorSummary, { listProblems, type FormProblem } from './productForm/ErrorSummary';
+import SaveBar, { type SaveIntent } from './productForm/SaveBar';
 
-const productSchema = yup.object({
-  title: yup.string().trim().required('Enter a product name'),
-  description: yup.string().trim().required('Describe the product'),
-  category: yup.string().required('Choose a category'),
-  brand: yup.string().trim().defined(),
-  sku: yup.string().trim().required('Enter a SKU'),
-  price: yup
-    .number()
-    .typeError('Enter a price')
-    .positive('Price must be more than 0')
-    .required('Enter a price'),
-  discountPercentage: yup
-    .number()
-    .typeError('Enter a discount, or 0 for none')
-    .min(0, 'Discount can’t be negative')
-    .max(90, 'Discount can’t be more than 90%')
-    .required('Enter a discount, or 0 for none'),
-  stock: yup
-    .number()
-    .typeError('Enter the stock quantity')
-    .integer('Stock must be a whole number')
-    .min(0, 'Stock can’t be negative')
-    .required('Enter the stock quantity'),
-  tags: yup.string().defined(),
-});
-
-type ProductFormData = yup.InferType<typeof productSchema>;
-
-const availability = (stock: number) =>
-  stock === 0 ? 'Out of Stock' : stock <= 5 ? 'Low Stock' : 'In Stock';
-
-const Field = ({
-  id,
-  label,
-  error,
-  hint,
-  children,
-}: {
-  id: string;
-  label: string;
-  error?: string;
-  hint?: string;
-  children: React.ReactNode;
-}) => (
-  <div className="space-y-1.5">
-    <Label htmlFor={id}>{label}</Label>
-    {children}
-    {hint && !error && <p className="text-xs text-gray-500">{hint}</p>}
-    {error && (
-      <p id={`${id}-error`} className="text-sm text-red">
-        {error}
-      </p>
-    )}
-  </div>
-);
-
-// One form for both adding and editing; pass `product` to edit it.
-const ProductForm = ({ product }: { product?: IProduct }) => {
+// Shopify-style product form. Pass `product` to edit it, or `duplicateOf` to start from a copy.
+const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf?: IProduct }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const nextId = useSelector(
-    (state: RootState) => Math.max(0, ...state.products.map((p) => p.id)) + 1,
+  const products = useSelector((state: RootState) => state.products);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const [problems, setProblems] = useState<FormProblem[]>([]);
+  const isNew = !product;
+
+  const takenSkus = useMemo(
+    () =>
+      new Set(products.filter((p) => p.id !== product?.id).map((p) => p.sku.trim().toLowerCase())),
+    [products, product?.id],
   );
-  const [image, setImage] = useState(product?.thumbnail ?? '');
 
+  // Starting values are fixed for the life of the form; the page remounts it for a new product.
+  const [defaultValues] = useState(() =>
+    product
+      ? toFormValues(product)
+      : duplicateOf
+        ? toDuplicateFormValues(duplicateOf)
+        : emptyFormValues(),
+  );
+
+  const methods = useForm<ProductFormValues>({
+    resolver: yupResolver(buildSchema(takenSkus)),
+    defaultValues,
+    mode: 'onTouched',
+  });
   const {
-    register,
     control,
+    register,
     handleSubmit,
-    formState: { errors, isDirty },
-  } = useForm<ProductFormData>({
-    resolver: yupResolver(productSchema),
-    defaultValues: {
-      title: product?.title ?? '',
-      description: product?.description ?? '',
-      category: product?.category ?? '',
-      brand: product?.brand ?? '',
-      sku: product?.sku ?? '',
-      price: product?.price,
-      discountPercentage: product?.discountPercentage ?? 0,
-      stock: product?.stock,
-      tags: product?.tags.join(', ') ?? '',
-    },
-  });
+    reset,
+    formState: { errors, isDirty, isSubmitting, submitCount },
+  } = methods;
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => setImage(event.target?.result as string);
-    reader.readAsDataURL(file);
-  };
+  // Keep the error summary in step with the inline errors once a save has failed.
+  useEffect(() => {
+    if (submitCount > 0) setProblems(listProblems(errors));
+  }, [errors, submitCount]);
 
-  const onSubmit = (data: ProductFormData) => {
-    const now = new Date().toISOString();
-    const thumbnail = image || '/placeholder.svg';
-    const fields = {
-      ...data,
-      brand: data.brand || undefined,
-      tags: data.tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-      availabilityStatus: availability(data.stock),
-      thumbnail,
+  const save = useCallback(
+    (intent: SaveIntent) =>
+      handleSubmit(
+        (values) => {
+          const newId = Math.max(0, ...products.map((p) => p.id)) + 1;
+          // A copy starts without the original's reviews or rating.
+          const base =
+            product ??
+            (duplicateOf ? { ...duplicateOf, id: newId, reviews: [], rating: 0 } : undefined);
+          const saved = fromFormValues(values, base, newId);
+
+          dispatch(product ? updateProduct(saved) : addProduct(saved));
+          reset(values);
+          setProblems([]);
+
+          if (intent === 'add-new') {
+            toast.success(`${isNew ? 'Product added' : 'Product saved'}. Add the next one.`);
+            router.push(`/admin/products/add-product?n=${Date.now()}`);
+          } else if (intent === 'duplicate') {
+            toast.success(`${isNew ? 'Product added' : 'Product saved'}. Now editing a copy.`);
+            router.push(`/admin/products/add-product?duplicate=${saved.id}&n=${Date.now()}`);
+          } else {
+            toast.success(isNew ? 'Product added' : 'Product saved');
+            if (isNew) router.replace(`/admin/products/edit-product/${saved.id}`);
+          }
+        },
+        (formErrors: FieldErrors<ProductFormValues>) => {
+          setProblems(listProblems(formErrors));
+          requestAnimationFrame(() => summaryRef.current?.focus());
+        },
+      )(),
+    [handleSubmit, products, product, duplicateOf, dispatch, reset, isNew, router],
+  );
+
+  // Ctrl+S / Cmd+S saves, like most editors.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        void save('save');
+      }
     };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [save]);
 
-    if (product) {
-      const images = image === product.thumbnail ? product.images : [thumbnail];
-      dispatch(
-        updateProduct({ ...product, ...fields, images, meta: { ...product.meta, updatedAt: now } }),
-      );
-      toast.success('Product saved');
-    } else {
-      dispatch(
-        addProduct({
-          ...fields,
-          id: nextId,
-          popular: false,
-          trending: false,
-          latest: true,
-          rating: 0,
-          weight: 0,
-          dimensions: { width: 0, height: 0, depth: 0 },
-          warrantyInformation: '',
-          shippingInformation: '',
-          reviews: [],
-          returnPolicy: '',
-          minimumOrderQuantity: 1,
-          meta: { createdAt: now, updatedAt: now, barcode: '', qrCode: '' },
-          images: [thumbnail],
-        }),
-      );
-      toast.success('Product added');
-    }
-    router.push('/admin/products');
+  // Warn before closing or reloading the tab with unsaved changes.
+  useEffect(() => {
+    if (!isDirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [isDirty]);
+
+  const discard = () => {
+    reset();
+    setProblems([]);
   };
-
-  const fieldProps = (name: keyof ProductFormData) => ({
-    id: name,
-    'aria-invalid': errors[name] ? true : undefined,
-    'aria-describedby': errors[name] ? `${name}-error` : undefined,
-  });
 
   return (
-    <div>
-      <Link
-        href="/admin/products"
-        className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-      >
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        All products
-      </Link>
-      <h1 className="mb-6 mt-3 text-2xl text-gray-900 md:text-3xl">
-        {product ? 'Edit product' : 'Add product'}
-      </h1>
-
+    <FormProvider {...methods}>
       <form
-        onSubmit={handleSubmit(onSubmit)}
         noValidate
-        className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save('save');
+        }}
+        // Enter in a text field shouldn't save the whole product.
+        onKeyDown={(event) => {
+          const target = event.target as HTMLElement;
+          if (event.key === 'Enter' && target.tagName === 'INPUT') event.preventDefault();
+        }}
       >
-        <div className="space-y-4">
-          <Panel title="Details">
-            <div className="space-y-4">
-              <Field id="title" label="Product name" error={errors.title?.message}>
-                <Input {...register('title')} {...fieldProps('title')} />
-              </Field>
-              <Field id="description" label="Description" error={errors.description?.message}>
-                <Textarea rows={5} {...register('description')} {...fieldProps('description')} />
-              </Field>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field id="category" label="Category" error={errors.category?.message}>
-                  <Controller
-                    control={control}
-                    name="category"
-                    render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="w-full" {...fieldProps('category')}>
-                          <SelectValue placeholder="Choose a category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CATEGORIES.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {categoryLabel(category)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </Field>
-                <Field id="brand" label="Brand (optional)" error={errors.brand?.message}>
-                  <Input {...register('brand')} {...fieldProps('brand')} />
-                </Field>
-              </div>
-              <Field
-                id="tags"
-                label="Tags (optional)"
-                hint="Separate tags with commas, for example: beauty, mascara"
-                error={errors.tags?.message}
-              >
-                <Input {...register('tags')} {...fieldProps('tags')} />
-              </Field>
-            </div>
-          </Panel>
-
-          <Panel title="Pricing and stock">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field id="price" label="Price (৳)" error={errors.price?.message}>
-                <Input
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  min="0"
-                  {...register('price', { valueAsNumber: true })}
-                  {...fieldProps('price')}
-                />
-              </Field>
-              <Field
-                id="discountPercentage"
-                label="Discount (%)"
-                error={errors.discountPercentage?.message}
-              >
-                <Input
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  min="0"
-                  max="90"
-                  {...register('discountPercentage', { valueAsNumber: true })}
-                  {...fieldProps('discountPercentage')}
-                />
-              </Field>
-              <Field id="sku" label="SKU" error={errors.sku?.message}>
-                <Input {...register('sku')} {...fieldProps('sku')} />
-              </Field>
-              <Field id="stock" label="Stock quantity" error={errors.stock?.message}>
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  step="1"
-                  min="0"
-                  {...register('stock', { valueAsNumber: true })}
-                  {...fieldProps('stock')}
-                />
-              </Field>
-            </div>
-          </Panel>
-        </div>
-
-        <div className="space-y-4 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
-          <Panel title="Image">
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-50">
-              {image ? (
-                <Image src={image} alt="" fill sizes="280px" className="object-contain p-3" />
-              ) : (
-                <p className="flex h-full items-center justify-center px-4 text-center text-sm text-gray-500">
-                  No image yet
-                </p>
-              )}
-            </div>
-            <label className="mt-3 flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
-              <Upload className="size-4" aria-hidden="true" />
-              {image ? 'Replace image' : 'Upload image'}
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="sr-only" />
-            </label>
-          </Panel>
-
-          <div className="flex flex-col gap-2">
-            <button
-              type="submit"
-              disabled={Boolean(product) && !isDirty && image === product?.thumbnail}
-              className="h-11 rounded-lg bg-brand text-sm font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
-            >
-              {product ? 'Save changes' : 'Add product'}
-            </button>
-            <Link
-              href="/admin/products"
-              className="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Cancel
-            </Link>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl text-gray-900 md:text-3xl">
+            {product ? product.title : 'Add product'}
+          </h1>
+          <div className="flex flex-wrap gap-2">
+            {product && (
+              <>
+                <Link
+                  href={`/admin/products/add-product?duplicate=${product.id}`}
+                  className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white"
+                >
+                  <Copy className="size-4" aria-hidden="true" />
+                  Duplicate
+                </Link>
+                <Link
+                  href={`/products/${product.id}`}
+                  className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white"
+                >
+                  <Eye className="size-4" aria-hidden="true" />
+                  View in store
+                </Link>
+              </>
+            )}
+            <BackButton href="/admin/products">Back to products</BackButton>
           </div>
         </div>
+
+        {duplicateOf && (
+          <p className="mb-4 rounded-xl border border-brand/20 bg-brand-soft/70 px-4 py-3 text-sm text-brand-ink">
+            This is a copy of <span className="font-semibold">{duplicateOf.title}</span>. Change
+            what’s different, give it its own SKU, then save.
+          </p>
+        )}
+
+        {problems.length > 0 && <ErrorSummary ref={summaryRef} problems={problems} />}
+
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <div className="min-w-0 space-y-4">
+            <Panel>
+              <div className="space-y-4">
+                <Field id="title" label="Title" error={errors.title?.message}>
+                  <input
+                    className={cn(inputClass, 'h-11 text-base')}
+                    placeholder="e.g. GoodWe ET G2 Three-phase Hybrid Inverter 10kW"
+                    autoComplete="off"
+                    {...register('title')}
+                    {...fieldAria('title', errors.title?.message)}
+                  />
+                </Field>
+                <div className="space-y-1.5">
+                  <p id="description-label" className="text-sm font-medium text-gray-900">
+                    Description
+                  </p>
+                  <Controller
+                    control={control}
+                    name="description"
+                    render={({ field }) => (
+                      <RichTextEditor
+                        id="description"
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        labelledBy="description-label"
+                        placeholder="Describe the product: what it does, who it’s for, what’s in the box."
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            </Panel>
+            <MediaCard />
+            <PricingCard />
+            <InventoryCard />
+            <VariantsCard />
+            <SpecsCard />
+          </div>
+
+          <div className="space-y-4">
+            <OrganizationCard />
+          </div>
+        </div>
+
+        <SaveBar
+          isNew={isNew}
+          isDirty={isDirty}
+          isSubmitting={isSubmitting}
+          onSave={(intent) => void save(intent)}
+          onDiscard={discard}
+        />
       </form>
-    </div>
+    </FormProvider>
   );
 };
 

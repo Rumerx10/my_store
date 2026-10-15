@@ -12,6 +12,7 @@ import {
 import { IProduct } from '@/types/api_types';
 import { categoryLabel } from '@/docs/navLinks';
 import Rating from '@/components/shared/Rating';
+import { descriptionToHtml } from '@/lib/richText';
 
 interface ProductDetailsTabProps {
   product: IProduct;
@@ -46,22 +47,29 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
     ? filteredReviews
     : filteredReviews.slice(0, INITIAL_REVIEWS);
 
+  const { width, height, depth } = product.dimensions;
   const specifications: [string, string][] = [
     ['Brand', product.brand ?? 'Unbranded'],
+    ['Model', product.sku],
+    ...(product.specs ?? []),
     ['Category', categoryLabel(product.category)],
-    ['SKU', product.sku],
-    ['Weight', `${product.weight} kg`],
-    [
-      'Dimensions',
-      `${product.dimensions.width} × ${product.dimensions.height} × ${product.dimensions.depth} cm`,
-    ],
-    ['Minimum order', `${product.minimumOrderQuantity} units`],
+    ...(product.weight > 0 ? [['Weight', `${product.weight} kg`] as [string, string]] : []),
+    ...(width > 0
+      ? [['Dimensions', `${width} × ${height} × ${depth} cm`] as [string, string]]
+      : []),
+    ...(product.minimumOrderQuantity > 1
+      ? [['Minimum order', `${product.minimumOrderQuantity} units`] as [string, string]]
+      : []),
     ['Warranty', product.warrantyInformation],
     ['Availability', product.availabilityStatus],
   ];
 
   return (
-    <section id="product-tabs" aria-label="Product information" className="scroll-mt-[calc(var(--header-h)+1rem)]">
+    <section
+      id="product-tabs"
+      aria-label="Product information"
+      className="scroll-mt-[calc(var(--header-h)+1rem)]"
+    >
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="w-full justify-start sm:w-auto">
           <TabsTrigger value="description">Description</TabsTrigger>
@@ -73,7 +81,21 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
         <div className="mt-4 rounded-xl glass p-5 md:p-8">
           <TabsContent value="description" className="mt-0">
             <h2 className="text-lg text-gray-900">About this product</h2>
-            <p className="mt-3 max-w-[70ch] leading-relaxed text-gray-700">{product.description}</p>
+            <div
+              className="rich-text mt-3 max-w-[70ch]"
+              // Sanitised to the editor's own tags and attributes in descriptionToHtml.
+              dangerouslySetInnerHTML={{ __html: descriptionToHtml(product.description) }}
+            />
+            {product.highlights && product.highlights.length > 0 && (
+              <ul className="mt-5 grid gap-2 sm:grid-cols-2" aria-label="Highlights">
+                {product.highlights.map((point) => (
+                  <li key={point} className="flex items-start gap-2 text-sm text-gray-700">
+                    <BadgeCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            )}
             {product.tags.length > 0 && (
               <ul className="mt-5 flex flex-wrap gap-2" aria-label="Tags">
                 {product.tags.map((tag) => (
@@ -105,7 +127,9 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
 
           <TabsContent value="reviews" className="mt-0">
             {reviews.length === 0 ? (
-              <p className="text-gray-600">No reviews yet. Bought this product? Share what you think from My orders.</p>
+              <p className="text-gray-600">
+                No reviews yet. Bought this product? Share what you think from My orders.
+              </p>
             ) : (
               <>
                 <div className="grid gap-8 md:grid-cols-[auto_1fr] md:gap-14">
@@ -129,7 +153,9 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                             style={{ width: `${row.percentage}%` }}
                           />
                         </span>
-                        <span className="w-6 text-right tabular-nums text-gray-500">{row.count}</span>
+                        <span className="w-6 text-right tabular-nums text-gray-500">
+                          {row.count}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -200,7 +226,9 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                 {filteredReviews.length > INITIAL_REVIEWS && (
                   <div className="mt-2 text-center">
                     <Button variant="outline" onClick={() => setShowAllReviews(!showAllReviews)}>
-                      {showAllReviews ? 'Show fewer reviews' : `Show all ${filteredReviews.length} reviews`}
+                      {showAllReviews
+                        ? 'Show fewer reviews'
+                        : `Show all ${filteredReviews.length} reviews`}
                     </Button>
                   </div>
                 )}

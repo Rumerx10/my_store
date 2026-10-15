@@ -16,9 +16,9 @@ const Logo = ({ className }: { className?: string }) => {
       <svg viewBox="0 0 32 32" className="size-8 shrink-0 drop-shadow-sm" aria-hidden="true">
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#e11d48" />
-            <stop offset="55%" stopColor="#c026d3" />
-            <stop offset="100%" stopColor="#7c3aed" />
+            <stop offset="0%" stopColor="#1e40af" />
+            <stop offset="50%" stopColor="#1d4ed8" />
+            <stop offset="100%" stopColor="#0e7490" />
           </linearGradient>
         </defs>
         <rect width="32" height="32" rx="10" fill={`url(#${gradientId})`} />
@@ -32,7 +32,7 @@ const Logo = ({ className }: { className?: string }) => {
         />
       </svg>
       <span className="text-xl font-semibold tracking-tight text-gray-900">
-        Next<span className="text-gradient">Mart</span>
+        Next<span className="text-gradient">Power</span>
       </span>
     </Link>
   );

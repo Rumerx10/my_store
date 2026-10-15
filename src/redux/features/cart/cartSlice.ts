@@ -6,7 +6,7 @@ interface ICart {
   // Checkout choices made in the cart, carried through to the order summary.
   shippingId: string;
   couponCode: string | null;
-  giftWrap: boolean;
+  installation: boolean;
 }
 
 // Matches the "Max 10 per order" limit shown on product pages.
@@ -16,17 +16,17 @@ const initialState: ICart = {
   items: [
     {
       id: 5,
-      title: 'Red Nail Polish',
-      price: 8.99,
+      title: 'GoodWe DNS G4 Single-phase Inverter 5kW',
+      price: 105000,
       quantity: 1,
-      image: 'https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/1.webp',
-      rating: 4.32,
+      image: 'https://en.goodwe.com/Public/Uploads/uploadfile/images/20250523/DNSG4-1.png',
+      rating: 4.8,
       sold: 0,
     },
   ],
   shippingId: 'standard',
   couponCode: null,
-  giftWrap: false,
+  installation: false,
 };
 
 const cartSlice = createSlice({
@@ -39,7 +39,10 @@ const cartSlice = createSlice({
       if (existing) {
         existing.quantity = Math.min(existing.quantity + quantity, MAX_QUANTITY_PER_ITEM);
       } else {
-        state.items.push({ ...action.payload, quantity: Math.min(quantity, MAX_QUANTITY_PER_ITEM) });
+        state.items.push({
+          ...action.payload,
+          quantity: Math.min(quantity, MAX_QUANTITY_PER_ITEM),
+        });
       }
     },
     removeFromCart(state, action: PayloadAction<string | number>) {
@@ -67,13 +70,13 @@ const cartSlice = createSlice({
     removeCoupon(state) {
       state.couponCode = null;
     },
-    setGiftWrap(state, action: PayloadAction<boolean>) {
-      state.giftWrap = action.payload;
+    setInstallation(state, action: PayloadAction<boolean>) {
+      state.installation = action.payload;
     },
     clearCart(state) {
       state.items = [];
       state.couponCode = null;
-      state.giftWrap = false;
+      state.installation = false;
     },
   },
 });
@@ -86,7 +89,7 @@ export const {
   setShipping,
   applyCoupon,
   removeCoupon,
-  setGiftWrap,
+  setInstallation,
   clearCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;

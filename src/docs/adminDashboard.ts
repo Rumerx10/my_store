@@ -48,9 +48,19 @@ export const WEEKLY_REVENUE = [
 ];
 
 export const TOP_PRODUCTS = [
-  { name: 'Essence Mascara Lash Princess', sales: 298, revenue: 2977.02, growth: 15.7 },
-  { name: 'Chanel Coco Noir Eau De', sales: 245, revenue: 31847.55, growth: 12.5 },
-  { name: 'Annibale Colombo Sofa', sales: 31, revenue: 77499.69, growth: 8.3 },
-  { name: 'Gucci Bloom Eau de', sales: 167, revenue: 13358.33, growth: 5.2 },
-  { name: 'Cooking Oil', sales: 156, revenue: 778.44, growth: -2.1 },
+  {
+    name: 'GoodWe Galaxy 570W Ultra-lightweight Solar Panel',
+    sales: 642,
+    revenue: 12519000,
+    growth: 12.5,
+  },
+  { name: 'GoodWe DNS G4 Single-phase Inverter 5kW', sales: 86, revenue: 9030000, growth: 15.7 },
+  { name: 'GoodWe Lynx U G3 Battery 5kWh', sales: 58, revenue: 8410000, growth: 8.3 },
+  {
+    name: 'GoodWe ESA All-in-One Home Energy Storage 10kW',
+    sales: 11,
+    revenue: 7920000,
+    growth: 5.2,
+  },
+  { name: 'GoodWe HCA G2 Smart EV Charger 7kW', sales: 23, revenue: 1955000, growth: -2.1 },
 ];

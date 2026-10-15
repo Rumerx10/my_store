@@ -5,6 +5,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import SortHeader from '@/components/dashboard/SortHeader';
 import { categoryLabel } from '@/docs/navLinks';
 import { cn, formatPrice, getProductStatus, getStatusBadge } from '@/lib/utils';
+import { isDraft } from '@/lib/products';
 import { IProduct } from '@/types/api_types';
 
 const ProductColumns = (onDelete: (product: IProduct) => void) => {
@@ -27,14 +28,23 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
           </div>
           <div className="min-w-0">
             <p className="max-w-56 truncate font-medium text-gray-900">{row.original.title}</p>
-            <p className="text-xs text-gray-500">{categoryLabel(row.original.category)}</p>
+            <p className="flex items-center gap-1.5 text-xs text-gray-500">
+              {categoryLabel(row.original.category)}
+              {isDraft(row.original) && (
+                <span className="rounded bg-gray-200 px-1.5 py-px font-medium text-gray-700">
+                  Draft
+                </span>
+              )}
+            </p>
           </div>
         </div>
       ),
     }),
     columnHelper.accessor('sku', {
       header: ({ column }) => <SortHeader column={column} label="SKU" />,
-      cell: ({ getValue }) => <span className="text-xs tabular-nums text-gray-600">{getValue()}</span>,
+      cell: ({ getValue }) => (
+        <span className="text-xs tabular-nums text-gray-600">{getValue()}</span>
+      ),
     }),
     columnHelper.accessor('price', {
       header: ({ column }) => <SortHeader column={column} label="Price" />,

@@ -1,20 +1,15 @@
-import {
-  MapPin,
-  Package,
-  Star,
-  MessageSquare,
-  ClipboardList,
-  User,
-  Settings,
-} from 'lucide-react';
+import { MapPin, Package, Star, MessageSquare, ClipboardList, User, Settings } from 'lucide-react';
 import { CATEGORIES } from './products';
 
 // Display copy for the catalog categories (keys match product.category).
 export const CATEGORY_INFO: Record<string, { label: string; blurb: string }> = {
-  beauty: { label: 'Beauty', blurb: 'Makeup, nail care and everyday skincare' },
-  fragrances: { label: 'Fragrances', blurb: 'Designer perfumes for him and her' },
-  furniture: { label: 'Furniture', blurb: 'Beds, sofas and tables for every room' },
-  groceries: { label: 'Groceries', blurb: 'Fresh produce, pantry staples and drinks' },
+  'solar-panels': { label: 'Solar panels', blurb: 'Lightweight, bifacial and balcony panels' },
+  inverters: { label: 'Inverters', blurb: 'Grid-tied and micro inverters for every roof' },
+  'hybrid-inverters': { label: 'Hybrid inverters', blurb: 'Solar plus battery, with backup power' },
+  batteries: { label: 'Batteries', blurb: 'Home storage from 5 kWh to all-in-one' },
+  commercial: { label: 'Business', blurb: 'Commercial inverters and storage systems' },
+  'ev-chargers': { label: 'EV chargers', blurb: 'Charge your car on solar power' },
+  accessories: { label: 'Accessories', blurb: 'Meters, controllers and monitoring' },
 };
 
 export const categoryLabel = (category: string) =>

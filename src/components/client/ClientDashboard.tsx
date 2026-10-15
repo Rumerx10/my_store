@@ -79,7 +79,10 @@ const ClientDashboard = () => {
         ) : (
           <p className="text-sm text-gray-600">
             You haven&apos;t placed an order yet.{' '}
-            <Link href="/products" className="rounded font-medium text-brand hover:text-brand-hover">
+            <Link
+              href="/products"
+              className="rounded font-medium text-brand hover:text-brand-hover"
+            >
               Start shopping
             </Link>
           </p>

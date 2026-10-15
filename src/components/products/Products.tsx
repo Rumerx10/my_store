@@ -22,7 +22,7 @@ import {
 import ProductCardGrid from './ProductCardGrid';
 import FilterContent from '../FilterContent';
 import { IProduct } from '@/types/api_types';
-import { RootState } from '@/redux/store';
+import { selectStoreProducts } from '@/redux/selectors';
 import { PRICE_CEILING } from '@/docs/products';
 import { categoryLabel } from '@/docs/navLinks';
 import { formatPrice } from '@/lib/utils';
@@ -32,6 +32,8 @@ const COLLECTIONS: Record<string, { title: string; match: (p: IProduct) => boole
   popular: { title: 'Popular right now', match: (p) => p.popular },
   latest: { title: 'New arrivals', match: (p) => p.latest },
   trending: { title: 'Trending this week', match: (p) => p.trending },
+  home: { title: 'Solar for your home', match: (p) => p.tags.includes('home') },
+  business: { title: 'Solar for your business', match: (p) => p.tags.includes('business') },
 };
 
 const SORT_OPTIONS = [
@@ -67,7 +69,7 @@ const Products = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [showInStockOnly, setShowInStockOnly] = useState(false);
 
-  const productsData = useSelector((state: RootState) => state.products);
+  const productsData = useSelector(selectStoreProducts);
 
   // Keep the filters in sync with ?searchTerm= and ?category= from the header and links.
   useEffect(() => {
@@ -203,7 +205,10 @@ const Products = () => {
           </Sheet>
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="h-10 w-full min-w-48 bg-white md:w-56" aria-label="Sort products">
+            <SelectTrigger
+              className="h-10 w-full min-w-48 bg-white md:w-56"
+              aria-label="Sort products"
+            >
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -241,9 +246,7 @@ const Products = () => {
               onRemove={() => setPriceRange([0, PRICE_CEILING])}
             />
           )}
-          {showInStockOnly && (
-            <Chip label="In stock" onRemove={() => setShowInStockOnly(false)} />
-          )}
+          {showInStockOnly && <Chip label="In stock" onRemove={() => setShowInStockOnly(false)} />}
           <button
             type="button"
             onClick={clearAllFilters}
@@ -263,7 +266,7 @@ const Products = () => {
 
         <section aria-label="Products" className="min-w-0 flex-1">
           {count === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sky-300 bg-white/55 backdrop-blur-xl px-6 py-16 text-center">
               <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-gray-100">
                 <Search className="size-6 text-gray-400" />
               </div>

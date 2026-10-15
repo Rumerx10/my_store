@@ -18,11 +18,11 @@ Prettier style: single quotes, semicolons, trailing commas, 100-col width, LF li
 
 ## Architecture
 
-This repo is **frontend only**: a Next.js 15 (App Router, React 19, TypeScript, Tailwind v4) storefront branded "TechGen". The README describes a multi-tenant SaaS with a Django/DRF backend, Stripe/PayPal and JWT auth. None of that exists here. There are no API calls, no auth and no backend integration yet.
+This repo is **frontend only**: a Next.js 15 (App Router, React 19, TypeScript, Tailwind v4) storefront branded "NextPower". The README describes a multi-tenant SaaS with a Django/DRF backend, Stripe/PayPal and JWT auth. None of that exists here. There are no API calls, no auth and no backend integration yet.
 
 ### Data is mocked and static
-- All data lives in `src/docs/` as TypeScript constants (not documentation). `src/docs/api_products.ts` is a snapshot of the dummyjson.com products API, extended with `popular` / `trending` / `latest` flags that the home-page sections filter on. Other files there hold mock orders, reviews, checkout data, nav links and dashboard sidebar config (`dashboard.tsx` → `SidebarItems`).
-- Product images come from `cdn.dummyjson.com`. That is the only remote host allowed in `next.config.ts` `images.remotePatterns`, so add any new image host there.
+- All data lives in `src/docs/` as TypeScript constants (not documentation). The store sells solar equipment: `src/docs/products.ts` holds the GoodWe catalog (names, model numbers, specs and photos from en.goodwe.com / en.pvbm.com; prices, stock and ratings are placeholders). Products carry `popular` / `trending` / `latest` flags, `home` / `business` tags, and optional `highlights` / `specs` shown on the product page. Other files there hold mock orders, checkout data, nav links and category labels (`navLinks.ts` → `CATEGORY_INFO`), home-page media (`homeMedia.ts`) and dashboard sidebar config (`dashboard.tsx` → `SidebarItems`).
+- Remote images are allowed from `en.goodwe.com`, `en.pvbm.com` and `images.unsplash.com` in `next.config.ts` `images.remotePatterns`; add any new image host there.
 
 ### State: Redux Toolkit
 - `src/redux/store.ts` combines the slices `cart`, `products`, `wishlist` and `orderlist` (from `orderSlice`). `RootState` is exported. There are no typed hooks, so components use plain `useSelector((state: RootState) => ...)` / `useDispatch`.
@@ -34,7 +34,14 @@ This repo is **frontend only**: a Next.js 15 (App Router, React 19, TypeScript, 
 - Public storefront routes sit at the top level of `src/app/`: `products`, `products/[id]`, `cart`, `checkout`, `order-summary`, `orders`, `wish-list`, `chat`, `profile/*`.
 - Static information pages (`/about`, `/shipping`, `/returns`, `/faq`, `/privacy`, `/terms`, `/cookies`) are one route, `src/app/(info)/[slug]/page.tsx`, with copy in `src/docs/infoPages.ts`. Add a page by adding an entry there.
 - The route groups `(admin)` → `/admin/*` and `(client)` → `/client/*` both use `src/components/DashboardLayout.tsx`, which picks the navigation from the first path segment via `SidebarItems(role)`. It and the account pages (`profilePages/AccountShell.tsx`) share `components/shared/SideNavShell.tsx`: a sidebar on desktop, a scrolling tab row on mobile.
-- Dashboard pages are built from `components/dashboard/Panel.tsx`, `components/DashboardCard.tsx` (stat tile) and `profilePages/PageHeading.tsx`. Admin add and edit product share `components/admin/Products/ProductForm.tsx`.
+- Dashboard pages are built from `components/dashboard/Panel.tsx`, `components/DashboardCard.tsx` (stat tile) and `profilePages/PageHeading.tsx`.
+- Admin add and edit product share the Shopify-style `components/admin/Products/ProductForm.tsx`; its cards, yup schema and form↔product mapping live in `components/admin/Products/productForm/` (`formModel.ts`). The add page (`AddProduct.tsx`) reads `?duplicate=<id>` and an `n` nonce, and keys the form on them so "Save and add another" / "Save and duplicate" get a fresh form.
+
+### Products: rich text, variants, drafts
+- Descriptions are HTML from the Tiptap editor in `components/RichTextEditor/` (custom image node view for resize and alignment). Render them only through `descriptionToHtml()` in `lib/richText.ts`, which sanitises with `xss`; use `excerpt()` / `htmlToText()` for plain text. Shared typography is the `.rich-text` class in `globals.css`.
+- Variants are `product.options` (`{ name, values: { label, priceDelta, swatch?, image? }[] }`). An option named Color/Colour shows swatches, and a value's `image` makes the product gallery jump to that photo. Price and cart helpers (`variantPrice`, `toCartItem` with a selection, `priceRange`) are in `lib/products.ts`; cart line ids are `${productId}:${variant}`.
+- `status: 'draft'` hides a product from the storefront: storefront lists read `selectStoreProducts` from `redux/selectors.ts`, not `state.products`.
+- Uploaded images are stored as downscaled data URLs (`lib/imageFile.ts`); there is no upload backend.
 - Pages in `src/app` are thin wrappers. The real UI lives in `src/components/<feature>/` (e.g. `components/admin/Products/`, `components/products/productDetails/`). Most feature components are client components.
 
 ### UI conventions

@@ -22,7 +22,10 @@ const ChatLayout = () => {
   };
 
   const sendMessage = (text: string) => {
-    const timestamp = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const timestamp = new Date().toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
     setMessages((prev) => {
       const thread = prev[selectedChatId] ?? [];
       return {
@@ -39,7 +42,7 @@ const ChatLayout = () => {
 
   return (
     <div className="md:container md:py-6">
-      <div className="flex h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h))] overflow-hidden bg-white md:h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h)-3rem)] md:rounded-xl md:border md:border-gray-200/80">
+      <div className="flex h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h))] overflow-hidden bg-white/60 backdrop-blur-xl md:h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h)-3rem)] md:rounded-xl md:border md:border-gray-200/80">
         <ChatSidebar
           chats={chats}
           selectedChatId={selectedChatId}

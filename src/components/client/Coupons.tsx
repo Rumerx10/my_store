@@ -23,7 +23,7 @@ const Coupons = () => {
         {COUPONS.map((coupon) => (
           <li
             key={coupon.code}
-            className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 bg-white p-5"
+            className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-sky-300 bg-white/55 backdrop-blur-xl p-5"
           >
             <div>
               <p className="text-lg font-semibold text-gray-900">{coupon.discount}% off</p>

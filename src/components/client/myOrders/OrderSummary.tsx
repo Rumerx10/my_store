@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, CreditCard, Home, Building2, Truck } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
+import { CreditCard, Home, Building2, Truck } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -27,12 +28,14 @@ const newOrderId = () => {
 
 const OrderSummary = () => {
   const dispatch = useDispatch();
-  const { items, shippingId, couponCode, giftWrap } = useSelector((state: RootState) => state.cart);
+  const { items, shippingId, couponCode, installation } = useSelector(
+    (state: RootState) => state.cart,
+  );
   const [step, setStep] = useState<Step>('review');
   const [addressId, setAddressId] = useState(DELIVERY_ADDRESSES[0].id);
   const [placed, setPlaced] = useState<{ id: string; method: PaymentMethodId } | null>(null);
 
-  const totals = calculateTotals(items, { shippingId, couponCode, giftWrap });
+  const totals = calculateTotals(items, { shippingId, couponCode, installation });
   const address = DELIVERY_ADDRESSES.find((a) => a.id === addressId) ?? DELIVERY_ADDRESSES[0];
 
   const placeOrder = (method: PaymentMethodId) => {
@@ -42,7 +45,8 @@ const OrderSummary = () => {
         id,
         date: new Date().toISOString().slice(0, 10),
         items: items.map((item) => ({
-          productId: item.id,
+          productId: item.productId ?? item.id,
+          variant: item.variant,
           title: item.title,
           price: item.price,
           quantity: item.quantity,
@@ -52,7 +56,12 @@ const OrderSummary = () => {
         status: 'pending',
         paymentMethod: method,
         paymentStatus: method === 'cod' ? 'unpaid' : 'paid',
-        address: { label: address.label, name: address.name, line: address.line, phone: address.phone },
+        address: {
+          label: address.label,
+          name: address.name,
+          line: address.line,
+          phone: address.phone,
+        },
       }),
     );
     dispatch(clearCart());
@@ -81,14 +90,10 @@ const OrderSummary = () => {
 
   return (
     <div className="container py-6 md:py-10">
-      <Link
-        href="/cart"
-        className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-      >
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        Back to cart
-      </Link>
-      <h1 className="mt-3 text-2xl text-gray-900 md:text-3xl">Checkout</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl text-gray-900 md:text-3xl">Checkout</h1>
+        <BackButton href="/cart">Back to cart</BackButton>
+      </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
         <div className="min-w-0 space-y-6">
@@ -100,14 +105,15 @@ const OrderSummary = () => {
             />
           ) : (
             <>
-              <section
-                aria-labelledby="delivery-heading"
-                className="rounded-xl glass p-5 md:p-6"
-              >
+              <section aria-labelledby="delivery-heading" className="rounded-xl glass p-5 md:p-6">
                 <h2 id="delivery-heading" className="text-lg text-gray-900">
                   Delivery address
                 </h2>
-                <RadioGroup value={addressId} onValueChange={setAddressId} className="mt-4 gap-3 md:grid-cols-2">
+                <RadioGroup
+                  value={addressId}
+                  onValueChange={setAddressId}
+                  className="mt-4 gap-3 md:grid-cols-2"
+                >
                   {DELIVERY_ADDRESSES.map((addr) => {
                     const Icon = addr.id === 'home' ? Home : Building2;
                     return (
@@ -123,8 +129,12 @@ const OrderSummary = () => {
                             {addr.label}
                           </span>
                           <span className="block text-sm text-gray-700">{addr.name}</span>
-                          <span className="block text-sm leading-snug text-gray-600">{addr.line}</span>
-                          <span className="block text-sm tabular-nums text-gray-500">{addr.phone}</span>
+                          <span className="block text-sm leading-snug text-gray-600">
+                            {addr.line}
+                          </span>
+                          <span className="block text-sm tabular-nums text-gray-500">
+                            {addr.phone}
+                          </span>
                         </span>
                       </Label>
                     );
@@ -138,10 +148,7 @@ const OrderSummary = () => {
                 </Link>
               </section>
 
-              <section
-                aria-labelledby="items-heading"
-                className="rounded-xl glass p-5 md:p-6"
-              >
+              <section aria-labelledby="items-heading" className="rounded-xl glass p-5 md:p-6">
                 <h2 id="items-heading" className="text-lg text-gray-900">
                   Items ({totals.itemCount})
                 </h2>
@@ -159,6 +166,9 @@ const OrderSummary = () => {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium text-gray-900">{item.title}</p>
+                        {item.variant && (
+                          <p className="truncate text-xs text-gray-500">{item.variant}</p>
+                        )}
                         <p className="text-sm tabular-nums text-gray-500">
                           {item.quantity} × {formatPrice(item.price)}
                         </p>

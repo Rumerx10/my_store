@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper/types';
 import 'swiper/css';
@@ -10,16 +10,32 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
-const ProductImgCarousel = ({ images = [], title }: { images?: string[]; title: string }) => {
+// `activeImage` jumps the gallery to that image, e.g. when a colour is chosen.
+const ProductImgCarousel = ({
+  images = [],
+  title,
+  activeImage,
+}: {
+  images?: string[];
+  title: string;
+  activeImage?: string;
+}) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const slides = images.length > 0 ? images : ['/placeholder.svg'];
   const hasMany = slides.length > 1;
 
+  useEffect(() => {
+    if (!activeImage || !mainSwiper || mainSwiper.destroyed) return;
+    const index = slides.indexOf(activeImage);
+    if (index >= 0 && index !== mainSwiper.activeIndex) mainSwiper.slideTo(index);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeImage, mainSwiper]);
+
   return (
     <div className="w-full min-w-0">
-      <div className="relative overflow-hidden rounded-xl border border-gray-200/80 bg-gray-50">
+      <div className="relative overflow-hidden rounded-2xl glass-card">
         <Swiper
           spaceBetween={0}
           thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
@@ -85,7 +101,9 @@ const ProductImgCarousel = ({ images = [], title }: { images?: string[]; title: 
                 aria-current={activeIndex === index}
                 className={cn(
                   'relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-gray-50 transition-colors',
-                  activeIndex === index ? 'border-brand' : 'border-transparent hover:border-gray-300',
+                  activeIndex === index
+                    ? 'border-brand'
+                    : 'border-transparent hover:border-gray-300',
                 )}
               >
                 <Image fill src={src} sizes="96px" className="object-contain p-1.5" alt="" />

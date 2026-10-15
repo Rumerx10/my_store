@@ -17,7 +17,7 @@ export const INFO_PAGES: Record<string, InfoPage> = {
       {
         heading: 'What we do',
         body: [
-          `${SITE.name} is an online store for everyday essentials: beauty, fragrances, furniture and groceries. We work with brands and suppliers directly, so what you see on the site is what arrives at your door.`,
+          `${SITE.name} sells GoodWe solar panels, inverters, batteries and EV chargers for homes and businesses. We size the system for your electricity bill, deliver it, and our certified team installs it.`,
         ],
       },
       {
@@ -41,7 +41,7 @@ export const INFO_PAGES: Record<string, InfoPage> = {
         heading: 'Delivery times',
         body: [
           'Orders inside Dhaka usually arrive in 1 to 2 working days. Orders to the rest of Bangladesh usually take 3 to 5 working days.',
-          'Furniture and other large items are delivered by a separate carrier and can take a few days longer. We call you to agree a delivery slot.',
+          'Batteries, commercial inverters and storage cabinets are heavy and travel by a separate carrier, which can take a few days longer. We call you to agree a delivery and installation slot.',
         ],
       },
       {
@@ -66,7 +66,7 @@ export const INFO_PAGES: Record<string, InfoPage> = {
         heading: 'When you can return an item',
         body: [
           'Each product page lists its return window. Within that window you can return the item if it is unused and in its original packaging.',
-          'Groceries, opened beauty products and opened fragrances can only be returned if they arrived damaged or are not what you ordered.',
+          'Equipment that has already been installed or powered on can only be returned under the GoodWe manufacturer warranty, not as a change-of-mind return.',
         ],
       },
       {
@@ -99,7 +99,9 @@ export const INFO_PAGES: Record<string, InfoPage> = {
       },
       {
         heading: 'How do I use a coupon?',
-        body: ['Enter the code in your cart before checkout. The discount shows in the order total.'],
+        body: [
+          'Enter the code in your cart before checkout. The discount shows in the order total.',
+        ],
       },
       {
         heading: 'How long does delivery take?',

@@ -6,6 +6,8 @@ import Footer from '@/components/shared/Footer/Footer';
 import ReduxProvider from '@/redux/provider';
 import { Toaster } from 'react-hot-toast';
 import { SITE } from '@/docs/site';
+import GridPulses from '@/components/shared/GridPulses';
+import SunLight from '@/components/shared/SunLight';
 
 const geist = Geist({
   variable: '--font-geist',
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#e11d48',
+  themeColor: '#1d4ed8',
 };
 
 export default function RootLayout({
@@ -45,6 +47,8 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <SunLight />
+        <GridPulses />
         <Toaster position="top-center" reverseOrder={false} />
         <ReduxProvider>
           <Navbar />

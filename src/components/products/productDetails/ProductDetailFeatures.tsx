@@ -12,7 +12,13 @@ const ProductDetailFeatures = ({ product }: { product: IProduct }) => {
     },
     {
       icon: (
-        <Image src="/cashondelivery.png" alt="" width={20} height={20} className="size-5 object-contain" />
+        <Image
+          src="/cashondelivery.png"
+          alt=""
+          width={20}
+          height={20}
+          className="size-5 object-contain"
+        />
       ),
       title: 'Cash on delivery',
       text: 'Pay in cash when the order arrives',
@@ -30,9 +36,9 @@ const ProductDetailFeatures = ({ product }: { product: IProduct }) => {
   ];
 
   return (
-    <ul className="grid gap-px overflow-hidden rounded-xl border border-gray-200/80 bg-gray-200/80 sm:grid-cols-2">
+    <ul className="grid gap-3 sm:grid-cols-2">
       {items.map((item) => (
-        <li key={item.title} className="flex items-start gap-3 bg-white p-4">
+        <li key={item.title} className="flex items-start gap-3 rounded-xl glass-card p-4">
           <span className="mt-0.5 shrink-0">{item.icon}</span>
           <div>
             <p className="text-sm font-semibold text-gray-900">{item.title}</p>

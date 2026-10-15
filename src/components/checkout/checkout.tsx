@@ -86,7 +86,7 @@ export default function Checkout() {
       cvv: "",
       cardholderName: "",
     },
-    giftWrap: false,
+    installation: false,
     specialInstructions: "",
     marketingOptIn: false,
     email: "john.doe@example.com", // This could come from user session
@@ -99,21 +99,21 @@ export default function Checkout() {
     const savings = CART_ITEMS.reduce((sum, item) => sum + (item.originalPrice - item.price) * item.quantity, 0)
     const couponDiscount = 0 // Could be passed from cart
     const shipping = SHIPPING_OPTIONS.find((option) => option.id === checkoutState.selectedShipping)?.price || 0
-    const giftWrapFee = checkoutState.giftWrap ? 4.99 : 0
-    const tax = (subtotal - couponDiscount + shipping + giftWrapFee) * 0.08
-    const total = subtotal - couponDiscount + shipping + giftWrapFee + tax
+    const installationFee = checkoutState.installation ? 4.99 : 0
+    const tax = (subtotal - couponDiscount + shipping + installationFee) * 0.08
+    const total = subtotal - couponDiscount + shipping + installationFee + tax
 
     return {
       subtotal,
       savings,
       couponDiscount,
       shipping,
-      giftWrapFee,
+      installationFee,
       tax,
       total,
       itemCount: CART_ITEMS.reduce((sum, item) => sum + item.quantity, 0),
     }
-  }, [checkoutState.selectedShipping, checkoutState.giftWrap])
+  }, [checkoutState.selectedShipping, checkoutState.installation])
 
   const steps: { title: string; description: string; icon: React.ReactNode }[] = [
     {
@@ -733,14 +733,14 @@ export default function Checkout() {
       <div className="border rounded-lg p-4">
         <div className="flex items-center space-x-3">
           <Checkbox
-            id="giftWrap"
-            checked={checkoutState.giftWrap}
-            onCheckedChange={(checked) => setCheckoutState((prev:CheckoutState) => ({ ...prev, giftWrap: checked as boolean }))}
+            id="installation"
+            checked={checkoutState.installation}
+            onCheckedChange={(checked) => setCheckoutState((prev:CheckoutState) => ({ ...prev, installation: checked as boolean }))}
           />
-          <Label htmlFor="giftWrap" className="flex-1 cursor-pointer">
+          <Label htmlFor="installation" className="flex-1 cursor-pointer">
             <div className="flex justify-between items-center">
               <div>
-                <p className="font-medium">Gift wrap this order</p>
+                <p className="font-medium">Installation this order</p>
                 <p className="text-sm text-muted-foreground">Beautiful gift wrapping with ribbon</p>
               </div>
               <span className="font-semibold">{formatPrice(4.99)}</span>
@@ -1134,10 +1134,10 @@ export default function Checkout() {
                       <span>{formatPrice(orderSummary.shipping)}</span>
                     </div>
 
-                    {checkoutState.giftWrap && (
+                    {checkoutState.installation && (
                       <div className="flex justify-between">
-                        <span>Gift wrap</span>
-                        <span>{formatPrice(orderSummary.giftWrapFee)}</span>
+                        <span>Installation</span>
+                        <span>{formatPrice(orderSummary.installationFee)}</span>
                       </div>
                     )}
 

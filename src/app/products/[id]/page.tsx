@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import ProductDetails from '@/components/products/productDetails/ProductDetails';
-import { Products } from '@/docs/api_products';
+import { Products } from '@/docs/products';
+import { excerpt } from '@/lib/richText';
 
 export async function generateMetadata({
   params,
@@ -12,7 +13,7 @@ export async function generateMetadata({
   if (!product) return { title: 'Product not found' };
   return {
     title: product.title,
-    description: product.description,
+    description: excerpt(product.description, 160),
     openGraph: { images: product.thumbnail ? [product.thumbnail] : [] },
   };
 }

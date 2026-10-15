@@ -63,11 +63,13 @@ const STOCK_BADGES: Record<string, { label: string; className: string }> = {
 };
 
 export const getStatusBadge = (status: string) => {
-  const badge = STOCK_BADGES[status] ?? { label: 'Unknown', className: 'bg-gray-100 text-gray-800' };
+  const badge = STOCK_BADGES[status] ?? {
+    label: 'Unknown',
+    className: 'bg-gray-100 text-gray-800',
+  };
   return (
     <span className={cn('inline-flex rounded-md px-2 py-1 text-xs font-medium', badge.className)}>
       {badge.label}
     </span>
   );
 };
-

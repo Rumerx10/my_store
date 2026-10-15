@@ -1,7 +1,8 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Minus, Plus, Trash2, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import {
@@ -32,23 +33,18 @@ const Cart = () => {
             {itemCount} {itemCount === 1 ? 'item' : 'items'}
           </p>
         </div>
-        <Link
-          href="/products"
-          className="inline-flex items-center gap-2 rounded text-sm font-medium text-brand transition-colors hover:text-brand-hover"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          Continue shopping
-        </Link>
+        <BackButton href="/products">Continue shopping</BackButton>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
         <ul className="divide-y divide-gray-100 self-start rounded-xl glass">
           {cartItems.map((item) => {
-            const brand = products.find((p) => p.id === item.id)?.brand;
+            const productId = item.productId ?? item.id;
+            const brand = products.find((p) => p.id === productId)?.brand;
             return (
               <li key={item.id} className="flex gap-4 p-4 md:gap-5 md:p-5">
                 <Link
-                  href={`/products/${item.id}`}
+                  href={`/products/${productId}`}
                   className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-gray-50 md:size-24"
                   tabIndex={-1}
                   aria-hidden="true"
@@ -66,10 +62,11 @@ const Cart = () => {
                   <div className="min-w-0">
                     {brand && <p className="text-xs font-medium text-gray-500">{brand}</p>}
                     <h2 className="text-[15px] font-medium leading-snug text-gray-900">
-                      <Link href={`/products/${item.id}`} className="rounded hover:underline">
+                      <Link href={`/products/${productId}`} className="rounded hover:underline">
                         {item.title}
                       </Link>
                     </h2>
+                    {item.variant && <p className="mt-0.5 text-sm text-gray-600">{item.variant}</p>}
                     <p className="mt-1 text-sm tabular-nums text-gray-600">
                       {formatPrice(item.price)} each
                     </p>
