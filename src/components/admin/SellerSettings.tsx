@@ -97,7 +97,10 @@ const SellerSettings = () => {
         <Panel title="Alerts">
           <ul className="divide-y divide-gray-100">
             {ALERTS.map(({ key, label, hint }) => (
-              <li key={key} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+              <li
+                key={key}
+                className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+              >
                 <div>
                   <Label htmlFor={`alert-${key}`} className="font-medium text-gray-900">
                     {label}

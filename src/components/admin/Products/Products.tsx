@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import { Plus, Sheet } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -105,7 +105,18 @@ const Products = () => {
       <PageHeading
         title="Products"
         desc="Manage the catalog and stock levels."
-        action={<AddProductLink />}
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/admin/products/bulk-edit"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white"
+            >
+              <Sheet className="size-4" aria-hidden="true" />
+              Bulk edit
+            </Link>
+            <AddProductLink />
+          </div>
+        }
       />
       <div className="space-y-4">
         <ProductStatisticsCards products={products} />

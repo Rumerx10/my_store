@@ -28,8 +28,9 @@ const SideNavShell = ({
 
   return (
     <div className="container py-6 md:py-10">
-      <div className="grid gap-6 lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-10">
-        <aside className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start lg:rounded-2xl lg:p-3 lg:glass">
+      {/* minmax(0, 1fr) on mobile too: an auto column would grow to fit the scrolling tab row and widen the page. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-10">
+        <aside className="min-w-0 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start lg:rounded-2xl lg:p-3 lg:glass">
           {header && <div className="hidden px-2 pb-5 lg:block">{header}</div>}
           <nav aria-label={label}>
             <ul className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto px-4 lg:mx-0 lg:flex-col lg:px-0">

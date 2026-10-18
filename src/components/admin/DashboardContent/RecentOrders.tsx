@@ -1,11 +1,15 @@
+'use client';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import Panel from '@/components/dashboard/Panel';
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
-import { MockOrders } from '@/docs/Orders';
 import { formatPrice } from '@/lib/utils';
+import { RootState } from '@/redux/store';
 
 const RecentOrders = () => {
-  const orders = [...MockOrders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const orders = [...useSelector((state: RootState) => state.adminOrders)]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 5);
 
   return (
     <Panel

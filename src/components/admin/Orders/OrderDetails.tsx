@@ -3,14 +3,16 @@
 import { useState } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import BackButton from '@/components/shared/BackButton';
-import { CreditCard, MapPin, Phone, Printer, Truck, User, X } from 'lucide-react';
+import { Banknote, CreditCard, MapPin, Phone, Printer, Truck, User, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
 import CancelOrderModal from '@/components/CancelOrderModal';
 import Panel from '@/components/dashboard/Panel';
 import OrderProgress from '@/components/orders/OrderProgress';
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
-import { MockOrders } from '@/docs/Orders';
 import { capitalize, formatOrderDate, formatPrice } from '@/lib/utils';
+import { setPaymentStatus } from '@/redux/features/adminOrder/adminOrderSlice';
+import { RootState } from '@/redux/store';
 import type { Order } from '@/types/order';
 
 const PAYMENT_LABELS: Record<Order['paymentType'], string> = {
@@ -26,7 +28,10 @@ const actionClass =
 // Seller view of one order: progress, items, buyer details and fulfilment actions.
 const OrderDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const found = MockOrders.find((o) => o.id === decodeURIComponent(id));
+  const dispatch = useDispatch();
+  const found = useSelector((state: RootState) =>
+    state.adminOrders.find((o) => o.id === decodeURIComponent(id)),
+  );
   const [status, setStatus] = useState(found?.status);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
@@ -36,6 +41,12 @@ const OrderDetails = () => {
   const handleShip = () => {
     setStatus('shipped');
     toast.success(`Order ${order.id} marked as shipped`);
+  };
+
+  // Cash on delivery: the courier has handed over the cash.
+  const handleCashReceived = () => {
+    dispatch(setPaymentStatus({ id: order.id, status: 'paid' }));
+    toast.success(`Cash received for ${order.id}`);
   };
 
   const handleCancel = () => {
@@ -129,7 +140,24 @@ const OrderDetails = () => {
               Payment
             </h2>
             <p className="mt-2 text-sm text-gray-700">{PAYMENT_LABELS[order.paymentType]}</p>
-            <p className="text-sm text-gray-500">{capitalize(order.paymentStatus)}</p>
+            <p className="text-sm text-gray-500">
+              {order.paymentStatus === 'pending'
+                ? 'Awaiting payment'
+                : capitalize(order.paymentStatus)}
+              {order.paymentStatus === 'paid' &&
+                order.paidAt &&
+                ` · ${formatOrderDate(order.paidAt)}`}
+            </p>
+            {order.paymentType === 'cod' && order.paymentStatus === 'pending' && (
+              <button
+                type="button"
+                onClick={handleCashReceived}
+                className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-brand px-4 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.97] print:hidden"
+              >
+                <Banknote className="size-4" aria-hidden="true" />
+                Cash received
+              </button>
+            )}
           </Panel>
 
           {status === 'pending' && (

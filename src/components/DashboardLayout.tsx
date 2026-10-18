@@ -8,10 +8,17 @@ const TITLES = {
   client: { name: 'My dashboard', hint: 'Orders, reviews and coupons' },
 };
 
+const FULL_WIDTH_PAGES = ['/admin/products/bulk-edit'];
+
 // Frame for /admin/* and /client/*; the first path segment picks the navigation.
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const role = pathname.split('/').filter(Boolean)[0] === 'client' ? 'client' : 'admin';
+
+  // Spreadsheet-style pages need the whole screen, so they skip the sidebar and container.
+  if (FULL_WIDTH_PAGES.some((page) => pathname.startsWith(page))) {
+    return <div className="px-4 py-6 md:px-6 md:py-8 lg:px-8">{children}</div>;
+  }
 
   return (
     <SideNavShell

@@ -8,6 +8,7 @@ export interface Order {
   status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
   paymentType: 'cod' | 'card' | 'paypal' | 'bank_transfer';
   paymentStatus: 'pending' | 'paid' | 'failed';
+  paidAt?: string; // ISO time the payment was marked paid
   shippingAddress: {
     street: string;
     city: string;

@@ -14,6 +14,12 @@ export const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.
 export const formatPrice = (amount: number) =>
   `৳${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+
+// Short figures for charts and stat tiles: 1,284 / 12.9K / 4.2M.
+export const formatCompact = (value: number) => compact.format(value);
+export const formatCompactPrice = (amount: number) => `৳${compact.format(amount)}`;
+
 // Mock data spells it both ways; treat them as the same status.
 const normalizeStatus = (status: string) => (status === 'canceled' ? 'cancelled' : status);
 

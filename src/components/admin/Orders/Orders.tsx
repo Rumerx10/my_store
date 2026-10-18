@@ -9,17 +9,18 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { MockOrders } from '@/docs/Orders';
+import { useSelector } from 'react-redux';
 import DataTable from '@/components/DataTable';
 import PageHeading from '@/components/profilePages/PageHeading';
 import { capitalize } from '@/lib/utils';
 import OrderStatisticsCards from './OrderStatisticsCards';
 import OrdersColumns from './OrdersColumns';
+import { RootState } from '@/redux/store';
 
 const STATUSES = ['pending', 'shipped', 'delivered', 'cancelled'] as const;
 
 export default function OrdersPage() {
-  const orders = MockOrders;
+  const orders = useSelector((state: RootState) => state.adminOrders);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = useState('');

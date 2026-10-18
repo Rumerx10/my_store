@@ -4,7 +4,7 @@ import { cn, formatPrice } from '@/lib/utils';
 
 const TopProducts = () => {
   return (
-    <Panel title="Top products">
+    <Panel title="Top products, last 12 months">
       <ol className="divide-y divide-gray-100">
         {TOP_PRODUCTS.map((product, index) => (
           <li key={product.name} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
