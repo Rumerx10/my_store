@@ -9,12 +9,15 @@ const SearchForm = ({
   setSearchTerm,
   onSubmit,
   autoFocus = false,
+  compact = false,
   className,
 }: {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   onSubmit: () => void;
   autoFocus?: boolean;
+  // Slim version for the desktop bar: no Search button, Enter submits.
+  compact?: boolean;
   className?: string;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +46,12 @@ const SearchForm = ({
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search products and brands"
-        className="h-11 w-full rounded-full border border-white/80 bg-white/70 pl-10 pr-24 shadow-card text-sm text-gray-900 placeholder:text-gray-500 transition-colors focus:border-brand focus:bg-white focus:outline-none focus:ring-3 focus:ring-brand/15 [&::-webkit-search-cancel-button]:hidden"
+        className={cn(
+          'w-full rounded-full border text-sm text-gray-900 placeholder:text-gray-500 transition-colors focus:border-brand focus:bg-white focus:outline-none focus:ring-3 focus:ring-brand/15 [&::-webkit-search-cancel-button]:hidden',
+          compact
+            ? 'h-10 border-slate-200/80 bg-slate-100/70 pl-10 pr-10 hover:bg-slate-100'
+            : 'h-11 border-white/80 bg-white/70 pl-10 pr-24 shadow-card',
+        )}
       />
       {searchTerm && (
         <button
@@ -52,7 +60,10 @@ const SearchForm = ({
             setSearchTerm('');
             inputRef.current?.focus();
           }}
-          className="absolute right-[5.25rem] flex size-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          className={cn(
+            'absolute flex size-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700',
+            compact ? 'right-1' : 'right-[5.25rem]',
+          )}
           aria-label="Clear search"
         >
           <X className="size-4" />
@@ -60,6 +71,7 @@ const SearchForm = ({
       )}
       <button
         type="submit"
+        hidden={compact}
         className="absolute right-1.5 h-8 rounded-full bg-brand px-4 text-sm font-medium text-white transition-colors hover:bg-brand-hover active:scale-[0.98]"
       >
         Search

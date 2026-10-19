@@ -1,59 +1,112 @@
-// Glowing pulses that run along the background grid lines, like trains on a track.
-// Each pulse sits exactly on a grid line (lines are 56px apart, see `.grid-pulses` in globals.css).
+'use client';
+import { useEffect, useRef, useState } from 'react';
 
-type Pulse = {
+// Sparks of light that strike along the background grid lines at random.
+// Each spark sits exactly on a grid line (lines are 56px apart, see `.grid-pulses` in
+// globals.css); when it finishes its run it picks a new line, direction and speed.
+
+const CELL = 56;
+
+type Spark = {
+  key: number;
   axis: 'x' | 'y';
   line: number;
-  delay: number;
+  reverse: boolean;
+  sun: boolean;
   duration: number;
-  reverse?: boolean;
-  sun?: boolean;
+  delay: number;
+  length: number;
 };
 
-const PAGE_PULSES: Pulse[] = [
-  { axis: 'x', line: 2, delay: 0, duration: 9 },
-  { axis: 'x', line: 6, delay: 3.2, duration: 11, reverse: true, sun: true },
-  { axis: 'x', line: 10, delay: 6.5, duration: 10 },
-  { axis: 'x', line: 14, delay: 1.8, duration: 12, reverse: true },
-  { axis: 'y', line: 3, delay: 1.2, duration: 10 },
-  { axis: 'y', line: 8, delay: 4.6, duration: 9, reverse: true },
-  { axis: 'y', line: 14, delay: 7.4, duration: 11, sun: true },
-  { axis: 'y', line: 20, delay: 2.6, duration: 10, reverse: true },
-  { axis: 'y', line: 26, delay: 5.8, duration: 9 },
-];
+const SETTINGS = {
+  page: { count: 7, speed: [3.2, 6.5], gap: [0.5, 5], length: [140, 260] },
+  hero: { count: 8, speed: [2, 4.2], gap: [0.2, 3], length: [120, 240] },
+} as const;
 
-const HERO_PULSES: Pulse[] = [
-  { axis: 'x', line: 3, delay: 0.4, duration: 7 },
-  { axis: 'x', line: 7, delay: 3, duration: 8, reverse: true, sun: true },
-  { axis: 'x', line: 10, delay: 5.2, duration: 7.5 },
-  { axis: 'y', line: 6, delay: 1.5, duration: 6.5 },
-  { axis: 'y', line: 13, delay: 4.2, duration: 7, reverse: true, sun: true },
-  { axis: 'y', line: 19, delay: 0.9, duration: 6 },
-  { axis: 'y', line: 25, delay: 3.6, duration: 7.5, reverse: true },
-];
+const between = (min: number, max: number) => min + Math.random() * (max - min);
+
+let nextKey = 0;
+
+const makeSpark = (
+  variant: keyof typeof SETTINGS,
+  size: { width: number; height: number },
+  first = false,
+): Spark => {
+  const settings = SETTINGS[variant];
+  // Horizontal lines are fewer on wide screens, so weight the axis by how many lines there are.
+  const rows = Math.max(1, Math.floor(size.height / CELL) - 1);
+  const cols = Math.max(1, Math.floor(size.width / CELL) - 1);
+  const axis = Math.random() < rows / (rows + cols) + 0.15 ? 'x' : 'y';
+  return {
+    key: nextKey++,
+    axis,
+    line: 1 + Math.floor(Math.random() * (axis === 'x' ? rows : cols)),
+    reverse: Math.random() < 0.5,
+    sun: Math.random() < 0.3,
+    duration: between(settings.speed[0], settings.speed[1]),
+    // The first wave is spread out so the sparks don't all start together.
+    delay: first ? between(0, settings.gap[1] * 1.5) : between(settings.gap[0], settings.gap[1]),
+    length: between(settings.length[0], settings.length[1]),
+  };
+};
 
 const GridPulses = ({ variant = 'page' }: { variant?: 'page' | 'hero' }) => {
-  const pulses = variant === 'hero' ? HERO_PULSES : PAGE_PULSES;
+  const ref = useRef<HTMLDivElement>(null);
+  const size = useRef({ width: 0, height: 0 });
+  const [sparks, setSparks] = useState<Spark[]>([]);
+
+  // Sparks are random, so they are only created in the browser (no hydration mismatch).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      size.current = { width: rect.width, height: rect.height };
+      el.style.setProperty('--travel-x', `${rect.width + 20}px`);
+      el.style.setProperty('--travel-y', `${rect.height + 20}px`);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+
+    setSparks(
+      Array.from({ length: SETTINGS[variant].count }, () => makeSpark(variant, size.current, true)),
+    );
+    return () => observer.disconnect();
+  }, [variant]);
+
+  const reroll = (key: number) =>
+    setSparks((current) =>
+      current.map((spark) => (spark.key === key ? makeSpark(variant, size.current) : spark)),
+    );
+
   return (
     <div
+      ref={ref}
       aria-hidden="true"
       className={variant === 'hero' ? 'grid-pulses grid-pulses-hero' : 'grid-pulses'}
     >
-      {pulses.map((pulse, index) => (
+      {sparks.map((spark) => (
         <span
-          key={index}
+          key={spark.key}
           className={[
-            pulse.axis === 'x' ? 'pulse-x' : 'pulse-y',
-            pulse.reverse ? 'pulse-reverse' : '',
-            pulse.sun ? 'pulse-sun' : '',
+            spark.axis === 'x' ? 'pulse-x' : 'pulse-y',
+            spark.reverse ? 'pulse-reverse' : '',
+            spark.sun ? 'pulse-sun' : '',
           ].join(' ')}
           style={
             {
-              '--line': pulse.line,
-              '--delay': `${pulse.delay}s`,
-              '--duration': `${pulse.duration}s`,
+              '--line': spark.line,
+              '--delay': `${spark.delay.toFixed(2)}s`,
+              '--duration': `${spark.duration.toFixed(2)}s`,
+              '--len': `${Math.round(spark.length)}px`,
             } as React.CSSProperties
           }
+          // Two animations run per spark; re-roll once the movement finishes.
+          onAnimationEnd={(event) => {
+            if (event.animationName.startsWith('pulse-move')) reroll(spark.key);
+          }}
         />
       ))}
     </div>

@@ -18,7 +18,11 @@ const Rating = ({
 
   return (
     <div className={cn('flex items-center gap-1.5', className)}>
-      <div className="flex items-center gap-0.5" role="img" aria-label={`Rated ${value.toFixed(1)} out of 5`}>
+      <div
+        className="flex items-center gap-0.5"
+        role="img"
+        aria-label={`Rated ${value.toFixed(1)} out of 5`}
+      >
         {Array.from({ length: 5 }, (_, i) => (
           <Star
             key={i}
