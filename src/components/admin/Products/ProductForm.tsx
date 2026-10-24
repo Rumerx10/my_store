@@ -148,7 +148,7 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
         }}
       >
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl text-gray-900 md:text-3xl">
+          <h1 className="text-2xl text-gray-900 dark:text-slate-100 md:text-3xl">
             {product ? product.title : 'Add product'}
           </h1>
           <div className="flex flex-wrap gap-2">
@@ -156,14 +156,14 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
               <>
                 <Link
                   href={`/admin/products/add-product?duplicate=${product.id}`}
-                  className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white"
+                  className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900"
                 >
                   <Copy className="size-4" aria-hidden="true" />
                   Duplicate
                 </Link>
                 <Link
                   href={`/products/${product.id}`}
-                  className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white"
+                  className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900"
                 >
                   <Eye className="size-4" aria-hidden="true" />
                   View in store
@@ -197,7 +197,10 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
                   />
                 </Field>
                 <div className="space-y-1.5">
-                  <p id="description-label" className="text-sm font-medium text-gray-900">
+                  <p
+                    id="description-label"
+                    className="text-sm font-medium text-gray-900 dark:text-slate-100"
+                  >
                     Description
                   </p>
                   <Controller

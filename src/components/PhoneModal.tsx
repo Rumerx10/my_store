@@ -24,12 +24,17 @@ const PhoneModal = ({
         handlePhoneSubmit();
       }}
     >
-      <h3 className="text-lg font-semibold text-gray-900">Pay with {selectedProvider}</h3>
-      <p className="mt-1 text-sm text-gray-600">
-        Enter the mobile number registered with your {selectedProvider} account. We&apos;ll send
-        you a verification code.
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+        Pay with {selectedProvider}
+      </h3>
+      <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+        Enter the mobile number registered with your {selectedProvider} account. We&apos;ll send you
+        a verification code.
       </p>
-      <Label htmlFor="wallet-phone" className="mt-5 block text-sm font-medium text-gray-900">
+      <Label
+        htmlFor="wallet-phone"
+        className="mt-5 block text-sm font-medium text-gray-900 dark:text-slate-100"
+      >
         Mobile number
       </Label>
       <Input
@@ -54,7 +59,7 @@ const PhoneModal = ({
         <button
           type="button"
           onClick={onCancel}
-          className="h-11 flex-1 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+          className="h-11 flex-1 rounded-lg border border-gray-300 dark:border-white/15 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
         >
           Back
         </button>

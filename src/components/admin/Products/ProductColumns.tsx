@@ -17,7 +17,7 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
       enableHiding: false,
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+          <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-gray-50 dark:bg-white/5">
             <Image
               src={row.original.thumbnail || '/placeholder.svg'}
               alt=""
@@ -27,11 +27,13 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
             />
           </div>
           <div className="min-w-0">
-            <p className="max-w-56 truncate font-medium text-gray-900">{row.original.title}</p>
-            <p className="flex items-center gap-1.5 text-xs text-gray-500">
+            <p className="max-w-56 truncate font-medium text-gray-900 dark:text-slate-100">
+              {row.original.title}
+            </p>
+            <p className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
               {categoryLabel(row.original.category)}
               {isDraft(row.original) && (
-                <span className="rounded bg-gray-200 px-1.5 py-px font-medium text-gray-700">
+                <span className="rounded bg-gray-200 dark:bg-white/15 px-1.5 py-px font-medium text-gray-700 dark:text-slate-300">
                   Draft
                 </span>
               )}
@@ -43,13 +45,15 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
     columnHelper.accessor('sku', {
       header: ({ column }) => <SortHeader column={column} label="SKU" />,
       cell: ({ getValue }) => (
-        <span className="text-xs tabular-nums text-gray-600">{getValue()}</span>
+        <span className="text-xs tabular-nums text-gray-600 dark:text-slate-400">{getValue()}</span>
       ),
     }),
     columnHelper.accessor('price', {
       header: ({ column }) => <SortHeader column={column} label="Price" />,
       cell: ({ getValue }) => (
-        <span className="font-medium tabular-nums text-gray-900">{formatPrice(getValue())}</span>
+        <span className="font-medium tabular-nums text-gray-900 dark:text-slate-100">
+          {formatPrice(getValue())}
+        </span>
       ),
     }),
     columnHelper.accessor('stock', {
@@ -60,7 +64,11 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
           <span
             className={cn(
               'tabular-nums',
-              stock === 0 ? 'text-red' : stock <= 5 ? 'text-yellow-700' : 'text-gray-900',
+              stock === 0
+                ? 'text-red'
+                : stock <= 5
+                  ? 'text-yellow-700 dark:text-yellow-300'
+                  : 'text-gray-900 dark:text-slate-100',
             )}
           >
             {stock}
@@ -82,7 +90,7 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
           <Link
             href={`/admin/products/edit-product/${row.original.id}`}
             aria-label={`Edit ${row.original.title}`}
-            className="flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            className="flex size-9 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-slate-100"
           >
             <Pencil className="size-4" aria-hidden="true" />
           </Link>
@@ -90,7 +98,7 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
             type="button"
             onClick={() => onDelete(row.original)}
             aria-label={`Delete ${row.original.title}`}
-            className="flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-red/5 hover:text-red"
+            className="flex size-9 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 transition-colors hover:bg-red/5 hover:text-red"
           >
             <Trash2 className="size-4" aria-hidden="true" />
           </button>

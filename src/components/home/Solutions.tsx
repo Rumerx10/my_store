@@ -41,7 +41,7 @@ const Solutions = () => {
                     </li>
                   ))}
                 </ul>
-                <span className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-brand-ink">
+                <span className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-white dark:bg-slate-900 px-5 text-sm font-semibold text-brand-ink">
                   {solution.cta}
                   <ArrowRight
                     className="size-4 transition-transform group-hover:translate-x-1"

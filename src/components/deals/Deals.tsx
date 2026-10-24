@@ -12,8 +12,8 @@ const Deals = () => {
 
   return (
     <div className="container py-8 md:py-12">
-      <h1 className="text-3xl text-gray-900 md:text-4xl">Deals</h1>
-      <p className="mt-2 max-w-xl text-gray-600">
+      <h1 className="text-3xl text-gray-900 dark:text-slate-100 md:text-4xl">Deals</h1>
+      <p className="mt-2 max-w-xl text-gray-600 dark:text-slate-400">
         {deals.length > 0
           ? `${deals.length} products marked down by 10% or more, while stock lasts.`
           : 'Nothing is on sale right now. New deals are added every week.'}

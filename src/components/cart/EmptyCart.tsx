@@ -8,8 +8,10 @@ const EmptyCart = () => {
         <span className="flex size-16 items-center justify-center rounded-2xl bg-brand-soft text-brand">
           <ShoppingBag className="size-7" aria-hidden="true" />
         </span>
-        <h1 className="mt-6 text-2xl text-gray-900 md:text-3xl">Your cart is empty</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="mt-6 text-2xl text-gray-900 dark:text-slate-100 md:text-3xl">
+          Your cart is empty
+        </h1>
+        <p className="mt-2 text-gray-600 dark:text-slate-400">
           Add products to your cart and they&apos;ll show up here, ready for checkout.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -21,7 +23,7 @@ const EmptyCart = () => {
           </Link>
           <Link
             href="/wish-list"
-            className="inline-flex h-12 items-center justify-center rounded-lg border border-gray-300 bg-white px-6 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+            className="inline-flex h-12 items-center justify-center rounded-lg border border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 px-6 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
           >
             View wishlist
           </Link>

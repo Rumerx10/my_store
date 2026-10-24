@@ -11,22 +11,30 @@ const OrdersColumns = () => {
     columnHelper.accessor('id', {
       header: ({ column }) => <SortHeader column={column} label="Order" />,
       cell: ({ getValue }) => (
-        <span className="font-medium tabular-nums text-gray-900">{getValue()}</span>
+        <span className="font-medium tabular-nums text-gray-900 dark:text-slate-100">
+          {getValue()}
+        </span>
       ),
     }),
     columnHelper.accessor('date', {
       header: ({ column }) => <SortHeader column={column} label="Date" />,
-      cell: ({ getValue }) => <span className="text-gray-600">{formatOrderDate(getValue())}</span>,
+      cell: ({ getValue }) => (
+        <span className="text-gray-600 dark:text-slate-400">{formatOrderDate(getValue())}</span>
+      ),
     }),
     columnHelper.accessor('buyerName', {
       id: 'customer',
       header: ({ column }) => <SortHeader column={column} label="Customer" />,
-      cell: ({ getValue }) => <span className="text-gray-900">{getValue()}</span>,
+      cell: ({ getValue }) => (
+        <span className="text-gray-900 dark:text-slate-100">{getValue()}</span>
+      ),
     }),
     columnHelper.accessor('amount', {
       header: ({ column }) => <SortHeader column={column} label="Amount" />,
       cell: ({ getValue }) => (
-        <span className="font-medium tabular-nums text-gray-900">{formatPrice(getValue())}</span>
+        <span className="font-medium tabular-nums text-gray-900 dark:text-slate-100">
+          {formatPrice(getValue())}
+        </span>
       ),
     }),
     columnHelper.accessor('status', {

@@ -103,7 +103,10 @@ const MediaCard = () => {
       </PopoverTrigger>
       <PopoverContent className="w-80" align="start">
         <form onSubmit={addUrl}>
-          <label htmlFor="media-url" className="text-sm font-medium text-gray-900">
+          <label
+            htmlFor="media-url"
+            className="text-sm font-medium text-gray-900 dark:text-slate-100"
+          >
             Image address
           </label>
           <input
@@ -127,7 +130,7 @@ const MediaCard = () => {
           <button
             type="submit"
             disabled={!url.trim()}
-            className="mt-3 h-9 w-full rounded-lg bg-brand text-sm font-medium text-white disabled:bg-gray-200 disabled:text-gray-500"
+            className="mt-3 h-9 w-full rounded-lg bg-brand text-sm font-medium text-white disabled:bg-gray-200 dark:disabled:bg-white/15 disabled:text-gray-500 dark:disabled:text-slate-400"
           >
             Add image
           </button>
@@ -157,22 +160,26 @@ const MediaCard = () => {
           {...dropHandlers}
           className={cn(
             'flex flex-col items-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors',
-            dropActive ? 'border-brand bg-brand-soft/60' : 'border-gray-300 bg-white/50',
+            dropActive
+              ? 'border-brand bg-brand-soft/60'
+              : 'border-gray-300 dark:border-white/15 bg-white/50 dark:bg-slate-900/50',
           )}
         >
-          <ImagePlus className="size-8 text-gray-400" aria-hidden="true" />
+          <ImagePlus className="size-8 text-gray-400 dark:text-slate-500" aria-hidden="true" />
           <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 px-4 text-sm font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
             >
               <Upload className="size-4" aria-hidden="true" />
               Upload images
             </button>
             {urlForm}
           </div>
-          <p className="mt-2 text-xs text-gray-500">Or drop images here. JPG, PNG, WebP or GIF.</p>
+          <p className="mt-2 text-xs text-gray-500 dark:text-slate-400">
+            Or drop images here. JPG, PNG, WebP or GIF.
+          </p>
         </div>
       ) : (
         <>
@@ -204,7 +211,7 @@ const MediaCard = () => {
                 }}
                 onDragEnd={() => (dragIndex.current = null)}
                 className={cn(
-                  'group relative aspect-square cursor-grab overflow-hidden rounded-xl border border-gray-200 bg-white active:cursor-grabbing',
+                  'group relative aspect-square cursor-grab overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 active:cursor-grabbing',
                   index === 0 && 'col-span-2 row-span-2',
                 )}
               >
@@ -229,7 +236,7 @@ const MediaCard = () => {
                         onClick={() => move(index, 0)}
                         aria-label={`Make image ${index + 1} the cover`}
                         title="Make cover"
-                        className="flex size-8 items-center justify-center rounded-md bg-white/95 text-gray-700 shadow-card hover:text-brand"
+                        className="flex size-8 items-center justify-center rounded-md bg-white/95 dark:bg-slate-900/95 text-gray-700 dark:text-slate-300 shadow-card hover:text-brand"
                       >
                         <Star className="size-4" aria-hidden="true" />
                       </button>
@@ -238,7 +245,7 @@ const MediaCard = () => {
                         onClick={() => move(index, index - 1)}
                         aria-label={`Move image ${index + 1} earlier`}
                         title="Move earlier"
-                        className="flex size-8 items-center justify-center rounded-md bg-white/95 text-gray-700 shadow-card hover:text-brand"
+                        className="flex size-8 items-center justify-center rounded-md bg-white/95 dark:bg-slate-900/95 text-gray-700 dark:text-slate-300 shadow-card hover:text-brand"
                       >
                         <ChevronLeft className="size-4" aria-hidden="true" />
                       </button>
@@ -250,7 +257,7 @@ const MediaCard = () => {
                       onClick={() => move(index, index + 1)}
                       aria-label={`Move image ${index + 1} later`}
                       title="Move later"
-                      className="flex size-8 items-center justify-center rounded-md bg-white/95 text-gray-700 shadow-card hover:text-brand"
+                      className="flex size-8 items-center justify-center rounded-md bg-white/95 dark:bg-slate-900/95 text-gray-700 dark:text-slate-300 shadow-card hover:text-brand"
                     >
                       <ChevronRight className="size-4" aria-hidden="true" />
                     </button>
@@ -260,7 +267,7 @@ const MediaCard = () => {
                     onClick={() => removeAt(index)}
                     aria-label={`Remove image ${index + 1}`}
                     title="Remove"
-                    className="flex size-8 items-center justify-center rounded-md bg-white/95 text-gray-700 shadow-card hover:text-red"
+                    className="flex size-8 items-center justify-center rounded-md bg-white/95 dark:bg-slate-900/95 text-gray-700 dark:text-slate-300 shadow-card hover:text-red"
                   >
                     <Trash2 className="size-4" aria-hidden="true" />
                   </button>
@@ -270,7 +277,7 @@ const MediaCard = () => {
             {Array.from({ length: pending }, (_, i) => (
               <li
                 key={`pending-${i}`}
-                className="flex aspect-square animate-pulse items-center justify-center rounded-xl border border-gray-200 bg-gray-100 text-xs text-gray-500"
+                className="flex aspect-square animate-pulse items-center justify-center rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/10 text-xs text-gray-500 dark:text-slate-400"
               >
                 Adding…
               </li>
@@ -279,7 +286,7 @@ const MediaCard = () => {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex size-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-300 text-sm text-gray-600 transition-colors hover:border-brand hover:text-brand"
+                className="flex size-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/15 text-sm text-gray-600 dark:text-slate-400 transition-colors hover:border-brand hover:text-brand"
               >
                 <ImagePlus className="size-5" aria-hidden="true" />
                 Add
@@ -287,7 +294,7 @@ const MediaCard = () => {
             </li>
           </ul>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-slate-400">
               The first image is the cover in the store. Drag images to reorder them.
             </p>
             {urlForm}

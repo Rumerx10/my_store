@@ -2,25 +2,18 @@ import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Chart colours, checked with the dataviz palette validator against the light surface.
+// They are CSS variables (globals.css), so the charts switch with dark mode.
 export const CHART = {
-  current: '#1d4ed8', // brand: this period, single-series bars
-  previous: '#94a3b8', // de-emphasis grey: the period before
-  home: '#1d4ed8',
-  business: '#d97706',
-  grid: '#e5e7eb',
-  axis: '#5b6472',
+  current: 'var(--chart-current)', // brand: this period, single-series bars
+  previous: 'var(--chart-previous)', // de-emphasis grey: the period before
+  home: 'var(--chart-current)',
+  business: 'var(--chart-business)',
+  grid: 'var(--chart-grid)',
+  axis: 'var(--chart-axis)',
 };
 
-// Sequential blue ramp for magnitude (heatmap), light to dark.
-export const BLUE_RAMP = [
-  '#eff6ff',
-  '#dbeafe',
-  '#bfdbfe',
-  '#93c5fd',
-  '#60a5fa',
-  '#2563eb',
-  '#1d4ed8',
-];
+// Sequential blue ramp for magnitude (heatmap), faint to strong.
+export const BLUE_RAMP = Array.from({ length: 7 }, (_, i) => `var(--chart-heat-${i})`);
 
 export const axisTick = { fontSize: 12, fill: CHART.axis };
 
@@ -35,7 +28,11 @@ export const Delta = ({
   suffix?: string;
 }) => {
   if (value === undefined || Number.isNaN(value)) {
-    return <span className={cn('text-xs text-gray-500', className)}>No earlier data</span>;
+    return (
+      <span className={cn('text-xs text-gray-500 dark:text-slate-400', className)}>
+        No earlier data
+      </span>
+    );
   }
   const up = value >= 0;
   const Icon = up ? ArrowUpRight : ArrowDownRight;
@@ -64,8 +61,8 @@ export interface TooltipRow {
 }
 
 export const TooltipCard = ({ title, rows }: { title: string; rows: TooltipRow[] }) => (
-  <div className="min-w-44 rounded-xl border border-gray-200 bg-white/95 px-3 py-2.5 shadow-[0_12px_28px_-14px_rgb(30_58_138_/_0.45)] backdrop-blur">
-    <p className="text-xs text-gray-500">{title}</p>
+  <div className="min-w-44 rounded-xl border border-gray-200 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 px-3 py-2.5 shadow-[0_12px_28px_-14px_rgb(30_58_138_/_0.45)] backdrop-blur">
+    <p className="text-xs text-gray-500 dark:text-slate-400">{title}</p>
     <ul className="mt-1.5 space-y-1">
       {rows.map((row) => (
         <li key={row.key} className="flex items-center gap-2">
@@ -74,8 +71,10 @@ export const TooltipCard = ({ title, rows }: { title: string; rows: TooltipRow[]
             style={{ background: row.color }}
             aria-hidden="true"
           />
-          <span className="text-sm font-semibold tabular-nums text-gray-900">{row.value}</span>
-          <span className="text-xs text-gray-500">{row.label}</span>
+          <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
+            {row.value}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-slate-400">{row.label}</span>
         </li>
       ))}
     </ul>
@@ -97,10 +96,10 @@ export const DataTable = ({
       <span className="group-open:hidden">Show as table</span>
       <span className="hidden group-open:inline">Hide table</span>
     </summary>
-    <div className="mt-2 max-h-64 overflow-auto rounded-lg border border-gray-200 bg-white/80">
+    <div className="mt-2 max-h-64 overflow-auto rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/80">
       <table className="w-full text-sm">
         <caption className="sr-only">{caption}</caption>
-        <thead className="sticky top-0 bg-gray-50 text-xs text-gray-600">
+        <thead className="sticky top-0 bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-slate-400">
           <tr>
             {headers.map((header, i) => (
               <th
@@ -115,13 +114,15 @@ export const DataTable = ({
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={String(row[0])} className="border-t border-gray-100">
+            <tr key={String(row[0])} className="border-t border-gray-100 dark:border-white/5">
               {row.map((cell, i) => (
                 <td
                   key={i}
                   className={cn(
                     'px-3 py-1.5',
-                    i === 0 ? 'text-left text-gray-700' : 'text-right tabular-nums text-gray-900',
+                    i === 0
+                      ? 'text-left text-gray-700 dark:text-slate-300'
+                      : 'text-right tabular-nums text-gray-900 dark:text-slate-100',
                   )}
                 >
                   {cell}

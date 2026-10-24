@@ -58,23 +58,25 @@ export default function PaymentGateway({
 
   return (
     <div className="rounded-xl glass">
-      <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-5 py-4 md:px-6">
+      <div className="flex items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 px-5 py-4 md:px-6">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+          className="inline-flex items-center gap-2 rounded text-sm font-medium text-gray-600 dark:text-slate-400 transition-colors hover:text-gray-900 dark:hover:text-slate-100"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           Back to order
         </button>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-slate-400">
           Amount due{' '}
-          <span className="font-semibold tabular-nums text-gray-900">{formatPrice(payable)}</span>
+          <span className="font-semibold tabular-nums text-gray-900 dark:text-slate-100">
+            {formatPrice(payable)}
+          </span>
         </p>
       </div>
 
       <div className="p-5 md:p-6">
-        <h2 className="text-lg text-gray-900">Pay now</h2>
+        <h2 className="text-lg text-gray-900 dark:text-slate-100">Pay now</h2>
         <Tabs defaultValue="card" className="mt-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="card">

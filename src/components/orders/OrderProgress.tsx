@@ -20,13 +20,16 @@ const OrderProgress = ({ status }: { status: string }) => {
         return (
           <li key={step} className="flex flex-col gap-2">
             <span
-              className={cn('h-1.5 rounded-full', done ? 'bg-brand' : 'bg-gray-200')}
+              className={cn(
+                'h-1.5 rounded-full',
+                done ? 'bg-brand' : 'bg-gray-200 dark:bg-white/15',
+              )}
               aria-hidden="true"
             />
             <span
               className={cn(
                 'flex items-center gap-1 text-xs font-medium md:text-sm',
-                done ? 'text-gray-900' : 'text-gray-400',
+                done ? 'text-gray-900 dark:text-slate-100' : 'text-gray-400 dark:text-slate-500',
               )}
             >
               {done && <Check className="hidden size-3.5 text-brand sm:block" aria-hidden="true" />}

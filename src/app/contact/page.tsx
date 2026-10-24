@@ -18,8 +18,8 @@ const DETAILS = [
 const page = () => {
   return (
     <div className="container py-8 md:py-14">
-      <h1 className="text-3xl text-gray-900 md:text-4xl">Contact us</h1>
-      <p className="mt-2 max-w-xl text-gray-600">
+      <h1 className="text-3xl text-gray-900 dark:text-slate-100 md:text-4xl">Contact us</h1>
+      <p className="mt-2 max-w-xl text-gray-600 dark:text-slate-400">
         Send us a message and we reply within one working day. For an existing order, include the
         order number.
       </p>
@@ -32,12 +32,18 @@ const page = () => {
         <dl className="space-y-5">
           {DETAILS.map(({ icon: Icon, label, value, href }) => (
             <div key={label} className="flex gap-3">
-              <Icon className="mt-0.5 size-4 shrink-0 text-gray-400" aria-hidden="true" />
+              <Icon
+                className="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-slate-500"
+                aria-hidden="true"
+              />
               <div className="min-w-0">
-                <dt className="text-sm font-medium text-gray-900">{label}</dt>
-                <dd className="break-words text-sm text-gray-600">
+                <dt className="text-sm font-medium text-gray-900 dark:text-slate-100">{label}</dt>
+                <dd className="break-words text-sm text-gray-600 dark:text-slate-400">
                   {href ? (
-                    <a href={href} className="rounded transition-colors hover:text-gray-900">
+                    <a
+                      href={href}
+                      className="rounded transition-colors hover:text-gray-900 dark:hover:text-slate-100"
+                    >
                       {value}
                     </a>
                   ) : (

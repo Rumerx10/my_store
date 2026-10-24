@@ -41,8 +41,8 @@ const ProductDetailFeatures = ({ product }: { product: IProduct }) => {
         <li key={item.title} className="flex items-start gap-3 rounded-xl glass-card p-4">
           <span className="mt-0.5 shrink-0">{item.icon}</span>
           <div>
-            <p className="text-sm font-semibold text-gray-900">{item.title}</p>
-            <p className="text-sm text-gray-600">{item.text}</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-slate-100">{item.title}</p>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{item.text}</p>
           </div>
         </li>
       ))}

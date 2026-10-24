@@ -22,19 +22,23 @@ const ConversionFunnel = ({
 
   return (
     <Panel title="Conversion funnel" className={className}>
-      <p className="-mt-2 mb-4 text-sm text-gray-600">
-        <span className="font-semibold text-gray-900">{conversion.toFixed(1)}%</span> of visits end
-        in an order.
+      <p className="-mt-2 mb-4 text-sm text-gray-600 dark:text-slate-400">
+        <span className="font-semibold text-gray-900 dark:text-slate-100">
+          {conversion.toFixed(1)}%
+        </span>{' '}
+        of visits end in an order.
       </p>
       <ol className="space-y-3">
         {steps.map((step, i) => (
           <li key={step.key}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <span className="text-gray-700">{step.label}</span>
+              <span className="text-gray-700 dark:text-slate-300">{step.label}</span>
               <span className="tabular-nums">
-                <span className="font-semibold text-gray-900">{formatCompact(step.count)}</span>
+                <span className="font-semibold text-gray-900 dark:text-slate-100">
+                  {formatCompact(step.count)}
+                </span>
                 {i > 0 && (
-                  <span className="ml-1.5 text-xs text-gray-500">
+                  <span className="ml-1.5 text-xs text-gray-500 dark:text-slate-400">
                     {(kept[i] * 100).toFixed(0)}% of previous step
                   </span>
                 )}

@@ -46,15 +46,15 @@ export default function Wishlist() {
     <div className="container py-6 md:py-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-2xl text-gray-900 md:text-3xl">Wishlist</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl text-gray-900 dark:text-slate-100 md:text-3xl">Wishlist</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
             {savedProducts.length} saved {savedProducts.length === 1 ? 'item' : 'items'}
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <div className="relative sm:w-64">
             <Search
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-slate-500"
               aria-hidden="true"
             />
             <Input
@@ -63,7 +63,7 @@ export default function Wishlist() {
               aria-label="Search your wishlist"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 bg-white pl-9"
+              className="h-10 bg-white dark:bg-slate-900 pl-9"
             />
           </div>
           <button
@@ -85,8 +85,8 @@ export default function Wishlist() {
           ))}
         </div>
       ) : (
-        <div className="mt-6 rounded-xl border border-dashed border-sky-300 bg-white/55 backdrop-blur-xl px-6 py-14 text-center">
-          <h2 className="text-lg font-semibold text-gray-900">
+        <div className="mt-6 rounded-xl border border-dashed border-sky-300 dark:border-sky-500/40 bg-white/55 dark:bg-slate-900/55 backdrop-blur-xl px-6 py-14 text-center">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
             Nothing in your wishlist matches “{searchQuery}”
           </h2>
           <button

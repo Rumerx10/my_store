@@ -8,7 +8,7 @@ import { inputClass } from './Field';
 const MAX_FEATURES = 8;
 
 const removeButton =
-  'flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-red/10 hover:text-red';
+  'flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 transition-colors hover:bg-red/10 hover:text-red';
 const addButton =
   'mt-2 inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-brand transition-colors hover:bg-brand-soft';
 
@@ -20,12 +20,14 @@ const SpecsCard = () => {
 
   return (
     <Panel title="Specifications">
-      <p className="-mt-2 text-sm text-gray-600">
+      <p className="-mt-2 text-sm text-gray-600 dark:text-slate-400">
         Shown on the product page next to the description.
       </p>
 
       <fieldset className="mt-4">
-        <legend className="text-sm font-medium text-gray-900">Key features</legend>
+        <legend className="text-sm font-medium text-gray-900 dark:text-slate-100">
+          Key features
+        </legend>
         {features.fields.length > 0 && (
           <ul className="mt-2 space-y-2">
             {features.fields.map((field, index) => (
@@ -56,8 +58,10 @@ const SpecsCard = () => {
         )}
       </fieldset>
 
-      <fieldset className="mt-5 border-t border-gray-100 pt-4">
-        <legend className="text-sm font-medium text-gray-900">Technical specifications</legend>
+      <fieldset className="mt-5 border-t border-gray-100 dark:border-white/5 pt-4">
+        <legend className="text-sm font-medium text-gray-900 dark:text-slate-100">
+          Technical specifications
+        </legend>
         {specs.fields.length > 0 && (
           <ul className="mt-2 space-y-2">
             {specs.fields.map((field, index) => (
@@ -94,7 +98,9 @@ const SpecsCard = () => {
           <Plus className="size-4" aria-hidden="true" />
           Add specification
         </button>
-        <p className="mt-1 text-xs text-gray-500">Rows with an empty name or value are left out.</p>
+        <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+          Rows with an empty name or value are left out.
+        </p>
       </fieldset>
     </Panel>
   );

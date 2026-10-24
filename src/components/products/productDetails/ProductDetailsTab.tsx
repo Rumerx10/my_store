@@ -80,7 +80,7 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
 
         <div className="mt-4 rounded-xl glass p-5 md:p-8">
           <TabsContent value="description" className="mt-0">
-            <h2 className="text-lg text-gray-900">About this product</h2>
+            <h2 className="text-lg text-gray-900 dark:text-slate-100">About this product</h2>
             <div
               className="rich-text mt-3 max-w-[70ch]"
               // Sanitised to the editor's own tags and attributes in descriptionToHtml.
@@ -89,7 +89,10 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
             {product.highlights && product.highlights.length > 0 && (
               <ul className="mt-5 grid gap-2 sm:grid-cols-2" aria-label="Highlights">
                 {product.highlights.map((point) => (
-                  <li key={point} className="flex items-start gap-2 text-sm text-gray-700">
+                  <li
+                    key={point}
+                    className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300"
+                  >
                     <BadgeCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
                     {point}
                   </li>
@@ -101,7 +104,7 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                 {product.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-md bg-gray-100 px-2.5 py-1 text-sm capitalize text-gray-700"
+                    className="rounded-md bg-gray-100 dark:bg-white/10 px-2.5 py-1 text-sm capitalize text-gray-700 dark:text-slate-300"
                   >
                     {tag}
                   </li>
@@ -111,15 +114,17 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
           </TabsContent>
 
           <TabsContent value="specifications" className="mt-0">
-            <h2 className="text-lg text-gray-900">Specifications</h2>
+            <h2 className="text-lg text-gray-900 dark:text-slate-100">Specifications</h2>
             <dl className="mt-4 grid gap-x-10 md:grid-cols-2">
               {specifications.map(([key, value]) => (
                 <div
                   key={key}
-                  className="flex justify-between gap-6 border-b border-gray-100 py-3 text-sm"
+                  className="flex justify-between gap-6 border-b border-gray-100 dark:border-white/5 py-3 text-sm"
                 >
-                  <dt className="text-gray-500">{key}</dt>
-                  <dd className="text-right font-medium text-gray-900">{value}</dd>
+                  <dt className="text-gray-500 dark:text-slate-400">{key}</dt>
+                  <dd className="text-right font-medium text-gray-900 dark:text-slate-100">
+                    {value}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -127,33 +132,35 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
 
           <TabsContent value="reviews" className="mt-0">
             {reviews.length === 0 ? (
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-slate-400">
                 No reviews yet. Bought this product? Share what you think from My orders.
               </p>
             ) : (
               <>
                 <div className="grid gap-8 md:grid-cols-[auto_1fr] md:gap-14">
                   <div>
-                    <h2 className="text-lg text-gray-900">Customer reviews</h2>
-                    <p className="mt-3 text-5xl font-semibold tabular-nums text-gray-900">
+                    <h2 className="text-lg text-gray-900 dark:text-slate-100">Customer reviews</h2>
+                    <p className="mt-3 text-5xl font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                       {product.rating.toFixed(1)}
                     </p>
                     <Rating value={product.rating} className="mt-2" />
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                       Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
                     </p>
                   </div>
                   <ul className="space-y-2 self-center" aria-label="Rating distribution">
                     {distribution.map((row) => (
                       <li key={row.stars} className="flex items-center gap-3 text-sm">
-                        <span className="w-12 tabular-nums text-gray-700">{row.stars} star</span>
-                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-gray-100">
+                        <span className="w-12 tabular-nums text-gray-700 dark:text-slate-300">
+                          {row.stars} star
+                        </span>
+                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
                           <span
                             className="block h-full rounded-full bg-amber-400"
                             style={{ width: `${row.percentage}%` }}
                           />
                         </span>
-                        <span className="w-6 text-right tabular-nums text-gray-500">
+                        <span className="w-6 text-right tabular-nums text-gray-500 dark:text-slate-400">
                           {row.count}
                         </span>
                       </li>
@@ -161,8 +168,8 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                   </ul>
                 </div>
 
-                <div className="mt-8 flex items-center justify-between gap-4 border-t border-gray-100 pt-6">
-                  <p className="text-sm text-gray-600">
+                <div className="mt-8 flex items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5 pt-6">
+                  <p className="text-sm text-gray-600 dark:text-slate-400">
                     Showing {visibleReviews.length} of {filteredReviews.length}
                   </p>
                   <Select
@@ -187,11 +194,11 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                 </div>
 
                 {filteredReviews.length === 0 ? (
-                  <p className="py-8 text-center text-sm text-gray-600">
+                  <p className="py-8 text-center text-sm text-gray-600 dark:text-slate-400">
                     No reviews with this rating yet.
                   </p>
                 ) : (
-                  <ul className="mt-2 divide-y divide-gray-100">
+                  <ul className="mt-2 divide-y divide-gray-100 dark:divide-white/10">
                     {visibleReviews.map((review) => (
                       <li key={`${review.reviewerEmail}-${review.date}`} className="py-5">
                         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -203,7 +210,7 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                               {review.reviewerName.charAt(0)}
                             </span>
                             <div>
-                              <p className="text-sm font-semibold text-gray-900">
+                              <p className="text-sm font-semibold text-gray-900 dark:text-slate-100">
                                 {review.reviewerName}
                               </p>
                               <p className="flex items-center gap-1 text-xs text-green">
@@ -212,12 +219,17 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                               </p>
                             </div>
                           </div>
-                          <time dateTime={review.date} className="text-xs text-gray-500">
+                          <time
+                            dateTime={review.date}
+                            className="text-xs text-gray-500 dark:text-slate-400"
+                          >
                             {formatDate(review.date)}
                           </time>
                         </div>
                         <Rating value={review.rating} className="mt-3" />
-                        <p className="mt-2 text-[15px] text-gray-700">{review.comment}</p>
+                        <p className="mt-2 text-[15px] text-gray-700 dark:text-slate-300">
+                          {review.comment}
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -237,7 +249,7 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
           </TabsContent>
 
           <TabsContent value="shipping" className="mt-0">
-            <h2 className="text-lg text-gray-900">Shipping and returns</h2>
+            <h2 className="text-lg text-gray-900 dark:text-slate-100">Shipping and returns</h2>
             <ul className="mt-5 grid gap-5 md:grid-cols-2">
               {[
                 { icon: Truck, title: 'Delivery', text: product.shippingInformation },
@@ -252,8 +264,8 @@ export function ProductDetailsTab({ product, activeTab, setActiveTab }: ProductD
                 <li key={title} className="flex gap-3">
                   <Icon className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
                   <div>
-                    <p className="font-semibold text-gray-900">{title}</p>
-                    <p className="text-sm text-gray-600">{text}</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{title}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{text}</p>
                   </div>
                 </li>
               ))}

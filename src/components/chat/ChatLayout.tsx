@@ -42,7 +42,7 @@ const ChatLayout = () => {
 
   return (
     <div className="md:container md:py-6">
-      <div className="flex h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h))] overflow-hidden bg-white/60 backdrop-blur-xl md:h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h)-3rem)] md:rounded-xl md:border md:border-gray-200/80">
+      <div className="flex h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h))] overflow-hidden bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl md:h-[calc(100dvh-var(--header-h)-var(--bottom-nav-h)-3rem)] md:rounded-xl md:border md:border-gray-200/80 dark:md:border-white/10">
         <ChatSidebar
           chats={chats}
           selectedChatId={selectedChatId}

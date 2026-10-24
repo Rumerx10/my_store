@@ -18,10 +18,10 @@ const DashboardCard = ({
   return (
     <div className="h-full rounded-xl glass p-4 md:p-5">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-gray-600">{title}</p>
-        <Icon className="size-4 shrink-0 text-gray-400" aria-hidden="true" />
+        <p className="text-sm text-gray-600 dark:text-slate-400">{title}</p>
+        <Icon className="size-4 shrink-0 text-gray-400 dark:text-slate-500" aria-hidden="true" />
       </div>
-      <p className="mt-2 break-words text-xl font-semibold tabular-nums text-gray-900 md:text-2xl">
+      <p className="mt-2 break-words text-xl font-semibold tabular-nums text-gray-900 dark:text-slate-100 md:text-2xl">
         {value}
       </p>
       {subtitle && (
@@ -30,7 +30,7 @@ const DashboardCard = ({
             'mt-1 text-xs',
             trend === 'up' && 'text-hGreen',
             trend === 'down' && 'text-red',
-            !trend && 'text-gray-500',
+            !trend && 'text-gray-500 dark:text-slate-400',
           )}
         >
           {subtitle}

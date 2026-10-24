@@ -36,11 +36,13 @@ const UnitsSold = ({ timeRange, className }: { timeRange: TimeRange; className?:
   return (
     <Panel title="Units sold" className={className}>
       <div className="-mt-1 mb-5">
-        <p className="text-3xl font-semibold tracking-tight text-gray-900">
+        <p className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-slate-100">
           {total.toLocaleString('en-US')}
-          <span className="ml-1.5 text-base font-normal text-gray-500">units</span>
+          <span className="ml-1.5 text-base font-normal text-gray-500 dark:text-slate-400">
+            units
+          </span>
         </p>
-        <p className="mt-1 flex flex-wrap items-center gap-1.5 text-sm text-gray-600">
+        <p className="mt-1 flex flex-wrap items-center gap-1.5 text-sm text-gray-600 dark:text-slate-400">
           <Delta value={changeFrom(total, prevTotal)} />
           vs {range.previous} · across {rows.filter((row) => row.units > 0).length} products
         </p>
@@ -50,10 +52,16 @@ const UnitsSold = ({ timeRange, className }: { timeRange: TimeRange; className?:
         {bars.map((bar) => (
           <li key={bar.key}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <span className={bar.muted ? 'text-gray-500' : 'truncate text-gray-700'}>
+              <span
+                className={
+                  bar.muted
+                    ? 'text-gray-500 dark:text-slate-400'
+                    : 'truncate text-gray-700 dark:text-slate-300'
+                }
+              >
                 {bar.label}
               </span>
-              <span className="shrink-0 font-semibold tabular-nums text-gray-900">
+              <span className="shrink-0 font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                 {bar.units.toLocaleString('en-US')}
               </span>
             </div>

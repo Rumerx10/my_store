@@ -29,20 +29,22 @@ const Rating = ({
             aria-hidden="true"
             className={cn(
               starSize,
-              i < filled ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200',
+              i < filled
+                ? 'fill-amber-400 text-amber-400'
+                : 'fill-gray-200 dark:fill-slate-700 text-gray-200 dark:text-slate-700',
             )}
           />
         ))}
       </div>
       <span
         className={cn(
-          'tabular-nums text-gray-600',
-          size === 'sm' ? 'text-xs' : 'text-sm font-medium text-gray-900',
+          'tabular-nums text-gray-600 dark:text-slate-400',
+          size === 'sm' ? 'text-xs' : 'text-sm font-medium text-gray-900 dark:text-slate-100',
         )}
       >
         {value.toFixed(1)}
         {count !== undefined && (
-          <span className="font-normal text-gray-500">
+          <span className="font-normal text-gray-500 dark:text-slate-400">
             {' '}
             ({count.toLocaleString()} {count === 1 ? 'review' : 'reviews'})
           </span>

@@ -71,7 +71,7 @@ const HIGHLIGHTS = [
 ];
 
 const buttonClass =
-  'flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-700 transition-colors hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-40 sm:size-9';
+  'flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 disabled:pointer-events-none disabled:opacity-40 sm:size-9';
 const activeClass = 'bg-brand-soft text-brand-ink hover:bg-brand-soft';
 
 const ToolButton = ({
@@ -102,7 +102,9 @@ const ToolButton = ({
   </button>
 );
 
-const Divider = () => <span className="mx-1 h-6 w-px shrink-0 bg-gray-200" aria-hidden="true" />;
+const Divider = () => (
+  <span className="mx-1 h-6 w-px shrink-0 bg-gray-200 dark:bg-white/15" aria-hidden="true" />
+);
 
 const Swatches = ({
   colors,
@@ -128,7 +130,7 @@ const Swatches = ({
           title={color.label}
           aria-pressed={current === color.value}
           className={cn(
-            'size-9 rounded-lg border border-black/10 transition-transform hover:scale-105',
+            'size-9 rounded-lg border border-black/10 dark:border-white/10 transition-transform hover:scale-105',
             current === color.value && 'ring-2 ring-brand ring-offset-2',
           )}
           style={{ backgroundColor: color.value }}
@@ -138,7 +140,7 @@ const Swatches = ({
     <button
       type="button"
       onClick={onClear}
-      className="mt-3 h-9 w-full rounded-lg border border-gray-200 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+      className="mt-3 h-9 w-full rounded-lg border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
     >
       {clearLabel}
     </button>
@@ -230,7 +232,7 @@ export default function Toolbar({
     <div
       role="toolbar"
       aria-label="Formatting"
-      className="sticky top-[var(--header-h)] z-20 flex flex-wrap items-center gap-0.5 rounded-t-xl border-b border-gray-200 bg-white/95 p-1.5 backdrop-blur-md"
+      className="sticky top-[var(--header-h)] z-20 flex flex-wrap items-center gap-0.5 rounded-t-xl border-b border-gray-200 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-1.5 backdrop-blur-md"
     >
       <ToolButton
         label="Undo"
@@ -251,11 +253,11 @@ export default function Toolbar({
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           disabled={disabled}
-          className="flex h-10 min-w-32 items-center justify-between gap-2 rounded-lg px-2.5 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-100 disabled:opacity-40 sm:h-9"
+          className="flex h-10 min-w-32 items-center justify-between gap-2 rounded-lg px-2.5 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 sm:h-9"
           aria-label={`Text style: ${currentBlock.label}`}
         >
           {currentBlock.label}
-          <ChevronDown className="size-4 text-gray-500" aria-hidden="true" />
+          <ChevronDown className="size-4 text-gray-500 dark:text-slate-400" aria-hidden="true" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-44">
           {BLOCK_TYPES.map((block) => (
@@ -325,7 +327,7 @@ export default function Toolbar({
           />
         </PopoverTrigger>
         <PopoverContent className="w-56" onOpenAutoFocus={(event) => event.preventDefault()}>
-          <p className="mb-2 text-sm font-medium text-gray-900">Text colour</p>
+          <p className="mb-2 text-sm font-medium text-gray-900 dark:text-slate-100">Text colour</p>
           <Swatches
             colors={TEXT_COLORS}
             current={state?.color}
@@ -345,7 +347,7 @@ export default function Toolbar({
           <Highlighter className="size-4" aria-hidden="true" />
         </PopoverTrigger>
         <PopoverContent className="w-56" onOpenAutoFocus={(event) => event.preventDefault()}>
-          <p className="mb-2 text-sm font-medium text-gray-900">Highlight</p>
+          <p className="mb-2 text-sm font-medium text-gray-900 dark:text-slate-100">Highlight</p>
           <Swatches
             colors={HIGHLIGHTS}
             current={state?.highlight}
@@ -365,7 +367,7 @@ export default function Toolbar({
           title="Alignment"
         >
           <AlignIcon className="size-4" aria-hidden="true" />
-          <ChevronDown className="size-3 text-gray-500" aria-hidden="true" />
+          <ChevronDown className="size-3 text-gray-500 dark:text-slate-400" aria-hidden="true" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-40">
           {ALIGNMENTS.map(({ value, label, icon: Icon }) => (
@@ -430,7 +432,10 @@ export default function Toolbar({
         </PopoverTrigger>
         <PopoverContent className="w-80">
           <form onSubmit={applyLink}>
-            <label htmlFor="rte-link-url" className="text-sm font-medium text-gray-900">
+            <label
+              htmlFor="rte-link-url"
+              className="text-sm font-medium text-gray-900 dark:text-slate-100"
+            >
               Link address
             </label>
             <input
@@ -439,13 +444,13 @@ export default function Toolbar({
               onChange={(event) => setLinkUrl(event.target.value)}
               placeholder="https://example.com"
               inputMode="url"
-              className="mt-1.5 h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-brand focus:ring-3 focus:ring-brand/15"
+              className="mt-1.5 h-10 w-full rounded-lg border border-gray-300 dark:border-white/15 px-3 text-sm outline-none focus:border-brand focus:ring-3 focus:ring-brand/15"
             />
             <div className="mt-3 flex gap-2">
               <button
                 type="submit"
                 disabled={!linkUrl.trim()}
-                className="h-9 flex-1 rounded-lg bg-brand text-sm font-medium text-white disabled:bg-gray-200 disabled:text-gray-500"
+                className="h-9 flex-1 rounded-lg bg-brand text-sm font-medium text-white disabled:bg-gray-200 dark:disabled:bg-white/15 disabled:text-gray-500 dark:disabled:text-slate-400"
               >
                 {state?.link ? 'Update link' : 'Add link'}
               </button>
@@ -456,7 +461,7 @@ export default function Toolbar({
                     chain().extendMarkRange('link').unsetLink().run();
                     setLinkOpen(false);
                   }}
-                  className="flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 hover:bg-gray-50"
+                  className="flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 dark:border-white/10 px-3 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-white/5"
                 >
                   <Unlink className="size-4" aria-hidden="true" />
                   Remove
@@ -485,11 +490,17 @@ export default function Toolbar({
             <Upload className="size-4" aria-hidden="true" />
             Upload from device
           </button>
-          <p className="mt-2 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-gray-500 dark:text-slate-400">
             You can also paste or drop images into the text.
           </p>
-          <form onSubmit={insertImageUrl} className="mt-4 border-t border-gray-100 pt-3">
-            <label htmlFor="rte-image-url" className="text-sm font-medium text-gray-900">
+          <form
+            onSubmit={insertImageUrl}
+            className="mt-4 border-t border-gray-100 dark:border-white/5 pt-3"
+          >
+            <label
+              htmlFor="rte-image-url"
+              className="text-sm font-medium text-gray-900 dark:text-slate-100"
+            >
               Or use an image address
             </label>
             <div className="mt-1.5 flex gap-2">
@@ -499,12 +510,12 @@ export default function Toolbar({
                 onChange={(event) => setImageUrl(event.target.value)}
                 placeholder="https://…/photo.jpg"
                 inputMode="url"
-                className="h-9 min-w-0 flex-1 rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-brand focus:ring-3 focus:ring-brand/15"
+                className="h-9 min-w-0 flex-1 rounded-lg border border-gray-300 dark:border-white/15 px-3 text-sm outline-none focus:border-brand focus:ring-3 focus:ring-brand/15"
               />
               <button
                 type="submit"
                 disabled={!/^https?:\/\//i.test(imageUrl.trim())}
-                className="h-9 rounded-lg border border-gray-200 px-3 text-sm font-medium text-gray-800 hover:bg-gray-50 disabled:opacity-40"
+                className="h-9 rounded-lg border border-gray-200 dark:border-white/10 px-3 text-sm font-medium text-gray-800 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-40"
               >
                 Insert
               </button>
@@ -543,7 +554,7 @@ export default function Toolbar({
         aria-pressed={sourceMode}
         title={sourceMode ? 'Back to the editor' : 'Edit HTML'}
         className={cn(
-          'flex h-10 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:opacity-40 sm:h-9',
+          'flex h-10 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 sm:h-9',
           sourceMode && activeClass,
         )}
       >

@@ -27,7 +27,7 @@ const LoopVideo = ({ src, poster, label }: { src: string; poster: string; label:
       playsInline
       preload="metadata"
       aria-label={label}
-      className="aspect-[2060/1600] w-full rounded-2xl bg-white object-cover"
+      className="aspect-[2060/1600] w-full rounded-2xl bg-white object-cover dark:brightness-[0.85]"
     />
   );
 };
@@ -54,10 +54,13 @@ const SystemVideos = () => {
   return (
     <section aria-labelledby="how-systems-work" className="container mt-8 md:mt-12">
       <div className="rounded-3xl glass p-4 md:p-8">
-        <h2 id="how-systems-work" className="text-2xl text-gray-900 md:text-3xl">
+        <h2
+          id="how-systems-work"
+          className="text-2xl text-gray-900 dark:text-slate-100 md:text-3xl"
+        >
           How a solar system works
         </h2>
-        <p className="mt-2 max-w-2xl text-sm text-gray-600 md:text-base">
+        <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-slate-400 md:text-base">
           Everything in a GoodWe system talks to everything else, from the panels to the battery to
           the app on your phone.
         </p>
@@ -66,8 +69,12 @@ const SystemVideos = () => {
           {SYSTEM_VIDEOS.map((item) => (
             <li key={item.title} className="rounded-2xl glass-card p-3 md:p-4">
               <LoopVideo src={item.video} poster={item.poster} label={`Animation: ${item.title}`} />
-              <h3 className="mt-4 px-1 text-lg font-semibold text-gray-900">{item.title}</h3>
-              <p className="mt-1 px-1 pb-1 text-sm leading-relaxed text-gray-600">{item.text}</p>
+              <h3 className="mt-4 px-1 text-lg font-semibold text-gray-900 dark:text-slate-100">
+                {item.title}
+              </h3>
+              <p className="mt-1 px-1 pb-1 text-sm leading-relaxed text-gray-600 dark:text-slate-400">
+                {item.text}
+              </p>
             </li>
           ))}
         </ul>
@@ -89,8 +96,8 @@ const SystemVideos = () => {
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
                 <div>
-                  <p className="font-semibold text-gray-900">{title}</p>
-                  <p className="text-sm text-gray-600">{text}</p>
+                  <p className="font-semibold text-gray-900 dark:text-slate-100">{title}</p>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{text}</p>
                 </div>
               </li>
             ))}

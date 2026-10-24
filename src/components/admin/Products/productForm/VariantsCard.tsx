@@ -28,8 +28,10 @@ const ImagePicker = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          'relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white text-gray-500 transition-colors hover:border-brand hover:text-brand',
-          value ? 'border-gray-300' : 'border-dashed border-gray-300',
+          'relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 transition-colors hover:border-brand hover:text-brand',
+          value
+            ? 'border-gray-300 dark:border-white/15'
+            : 'border-dashed border-gray-300 dark:border-white/15',
         )}
         aria-label={value ? `Change the photo for ${label}` : `Link a photo to ${label}`}
         title={value ? 'Change photo' : 'Link photo'}
@@ -41,12 +43,14 @@ const ImagePicker = ({
         )}
       </PopoverTrigger>
       <PopoverContent className="w-72" align="end">
-        <p className="text-sm font-medium text-gray-900">Photo for {label || 'this colour'}</p>
-        <p className="mt-0.5 text-xs text-gray-500">
+        <p className="text-sm font-medium text-gray-900 dark:text-slate-100">
+          Photo for {label || 'this colour'}
+        </p>
+        <p className="mt-0.5 text-xs text-gray-500 dark:text-slate-400">
           Choosing this colour in the store shows the photo in the gallery.
         </p>
         {media.length === 0 ? (
-          <p className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-600">
+          <p className="mt-3 rounded-lg bg-gray-50 dark:bg-white/5 p-3 text-sm text-gray-600 dark:text-slate-400">
             Upload product images in Media first, then link one here.
           </p>
         ) : (
@@ -62,10 +66,10 @@ const ImagePicker = ({
                   aria-label={`Use image ${index + 1}`}
                   aria-pressed={value === item.src}
                   className={cn(
-                    'relative block aspect-square w-full overflow-hidden rounded-lg border bg-white',
+                    'relative block aspect-square w-full overflow-hidden rounded-lg border bg-white dark:bg-slate-900',
                     value === item.src
                       ? 'border-brand ring-2 ring-brand/30'
-                      : 'border-gray-200 hover:border-gray-400',
+                      : 'border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/25',
                   )}
                 >
                   <Image src={item.src} alt="" fill sizes="64px" className="object-contain p-1" />
@@ -81,7 +85,7 @@ const ImagePicker = ({
               onChange('');
               setOpen(false);
             }}
-            className="mt-3 h-9 w-full rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50"
+            className="mt-3 h-9 w-full rounded-lg border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-white/5"
           >
             Don’t link a photo
           </button>
@@ -121,9 +125,9 @@ const OptionEditor = ({
   };
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white/70 p-4">
+    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 p-4">
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={nameId} className="text-sm font-medium text-gray-900">
+        <label htmlFor={nameId} className="text-sm font-medium text-gray-900 dark:text-slate-100">
           Option name
         </label>
         <input
@@ -139,14 +143,16 @@ const OptionEditor = ({
           </p>
         )}
         {color && (
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-slate-400">
             Colour options show a swatch in the store. Link a photo so choosing the colour shows it.
           </p>
         )}
       </div>
 
       <fieldset className="mt-4">
-        <legend className="text-sm font-medium text-gray-900">Values and additional price</legend>
+        <legend className="text-sm font-medium text-gray-900 dark:text-slate-100">
+          Values and additional price
+        </legend>
         <ul className="mt-2 space-y-2">
           {fields.map((field, v) => {
             const valueErrors = optionErrors?.values?.[v];
@@ -158,7 +164,7 @@ const OptionEditor = ({
                 <div className="flex items-start gap-2">
                   {color && (
                     <label
-                      className="relative mt-1 size-8 shrink-0 cursor-pointer overflow-hidden rounded-full border border-black/10 shadow-inner"
+                      className="relative mt-1 size-8 shrink-0 cursor-pointer overflow-hidden rounded-full border border-black/10 dark:border-white/10 shadow-inner"
                       style={{ backgroundColor: values[v]?.swatch || '#e5e7eb' }}
                       title="Swatch colour"
                     >
@@ -227,7 +233,7 @@ const OptionEditor = ({
                     disabled={fields.length === 1}
                     aria-label={`Remove ${valueLabel || `value ${v + 1}`}`}
                     title="Remove value"
-                    className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-red/10 hover:text-red disabled:pointer-events-none disabled:opacity-30"
+                    className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 transition-colors hover:bg-red/10 hover:text-red disabled:pointer-events-none disabled:opacity-30"
                   >
                     <X className="size-4" aria-hidden="true" />
                   </button>
@@ -247,7 +253,7 @@ const OptionEditor = ({
         </button>
       </fieldset>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-gray-100 pt-3">
+      <div className="mt-4 flex items-center justify-between gap-3 border-t border-gray-100 dark:border-white/5 pt-3">
         <button
           type="button"
           onClick={onRemove}
@@ -259,7 +265,7 @@ const OptionEditor = ({
         <button
           type="button"
           onClick={finish}
-          className="h-9 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+          className="h-9 rounded-lg border border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 px-4 text-sm font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
         >
           Done
         </button>
@@ -273,25 +279,27 @@ const OptionSummary = ({ index, onEdit }: { index: number; onEdit: () => void })
   const color = isColorOption(option);
 
   return (
-    <div className="flex items-start justify-between gap-3 rounded-xl border border-gray-200 bg-white/70 p-4">
+    <div className="flex items-start justify-between gap-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 p-4">
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-gray-900">{option.name}</p>
+        <p className="text-sm font-semibold text-gray-900 dark:text-slate-100">{option.name}</p>
         <ul className="mt-2 flex flex-wrap gap-1.5">
           {option.values.map((value, v) => (
             <li
               key={`${value.label}-${v}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white py-1 pl-1.5 pr-2.5 text-xs text-gray-800"
+              className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 py-1 pl-1.5 pr-2.5 text-xs text-gray-800 dark:text-slate-200"
             >
               {color && (
                 <span
-                  className="size-4 rounded-full border border-black/10"
+                  className="size-4 rounded-full border border-black/10 dark:border-white/10"
                   style={{ backgroundColor: value.swatch || '#e5e7eb' }}
                   aria-hidden="true"
                 />
               )}
               {value.label}
               {value.priceDelta > 0 && (
-                <span className="tabular-nums text-gray-500">+{formatPrice(value.priceDelta)}</span>
+                <span className="tabular-nums text-gray-500 dark:text-slate-400">
+                  +{formatPrice(value.priceDelta)}
+                </span>
               )}
               {color && value.image && <span className="sr-only">(photo linked)</span>}
               {color && value.image && (
@@ -305,7 +313,7 @@ const OptionSummary = ({ index, onEdit }: { index: number; onEdit: () => void })
         type="button"
         onClick={onEdit}
         aria-label={`Edit ${option.name}`}
-        className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+        className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-100 dark:hover:bg-white/10"
       >
         <Pencil className="size-4" aria-hidden="true" />
         Edit
@@ -363,16 +371,16 @@ const VariantsCard = () => {
         <button
           type="button"
           onClick={addOption}
-          className="flex w-full items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-4 py-4 text-left transition-colors hover:border-brand hover:bg-brand-soft/40"
+          className="flex w-full items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/15 px-4 py-4 text-left transition-colors hover:border-brand hover:bg-brand-soft/40"
         >
           <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand text-white">
             <Plus className="size-4" aria-hidden="true" />
           </span>
           <span>
-            <span className="block text-sm font-medium text-gray-900">
+            <span className="block text-sm font-medium text-gray-900 dark:text-slate-100">
               Add options like capacity, power or color
             </span>
-            <span className="block text-xs text-gray-500">
+            <span className="block text-xs text-gray-500 dark:text-slate-400">
               Each value can add to the selling price.
             </span>
           </span>
@@ -405,7 +413,7 @@ const VariantsCard = () => {
             </button>
           )}
           {range && (
-            <p className="rounded-lg bg-gray-50/80 px-3 py-2 text-sm text-gray-700">
+            <p className="rounded-lg bg-gray-50/80 dark:bg-white/5 px-3 py-2 text-sm text-gray-700 dark:text-slate-300">
               {range.min === range.max ? (
                 <>
                   Every combination costs{' '}

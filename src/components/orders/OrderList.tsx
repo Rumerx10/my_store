@@ -17,12 +17,16 @@ const OrderCard = ({ order, href }: { order: IOrder; href: string }) => {
     <li>
       <Link
         href={href}
-        className="group block rounded-xl glass p-4 transition-[border-color,box-shadow] hover:border-gray-300 hover:shadow-lift md:p-5"
+        className="group block rounded-xl glass p-4 transition-[border-color,box-shadow] hover:border-gray-300 dark:hover:border-white/15 hover:shadow-lift md:p-5"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="font-semibold tabular-nums text-gray-900">{order.id}</p>
-            <p className="text-sm text-gray-500">Placed {formatOrderDate(order.date)}</p>
+            <p className="font-semibold tabular-nums text-gray-900 dark:text-slate-100">
+              {order.id}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">
+              Placed {formatOrderDate(order.date)}
+            </p>
           </div>
           <OrderStatusBadge status={order.status} />
         </div>
@@ -32,7 +36,7 @@ const OrderCard = ({ order, href }: { order: IOrder; href: string }) => {
             {order.items.slice(0, 4).map((item) => (
               <span
                 key={`${item.productId}-${item.variant ?? ''}`}
-                className="relative size-12 overflow-hidden rounded-lg border-2 border-white bg-gray-50"
+                className="relative size-12 overflow-hidden rounded-lg border-2 border-white dark:border-white/10 bg-gray-50 dark:bg-white/5"
               >
                 <Image src={item.image} alt="" fill sizes="48px" className="object-contain p-1" />
               </span>
@@ -40,16 +44,16 @@ const OrderCard = ({ order, href }: { order: IOrder; href: string }) => {
           </div>
           <div className="flex items-center gap-3 text-right">
             <div>
-              <p className="font-semibold tabular-nums text-gray-900">
+              <p className="font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                 {formatPrice(order.totalAmount)}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-slate-400">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'} ·{' '}
                 {PAYMENT_METHOD_LABELS[order.paymentMethod]}
               </p>
             </div>
             <ChevronRight
-              className="size-5 text-gray-400 transition-transform group-hover:translate-x-0.5"
+              className="size-5 text-gray-400 dark:text-slate-500 transition-transform group-hover:translate-x-0.5"
               aria-hidden="true"
             />
           </div>
@@ -72,7 +76,7 @@ const OrderList = ({ detailHref }: { detailHref: (id: string) => string }) => {
           return (
             <TabsTrigger key={status} value={status}>
               {status === 'all' ? 'All orders' : capitalize(status)}
-              <span className="tabular-nums text-gray-400">{count}</span>
+              <span className="tabular-nums text-gray-400 dark:text-slate-500">{count}</span>
             </TabsTrigger>
           );
         })}
@@ -89,9 +93,9 @@ const OrderList = ({ detailHref }: { detailHref: (id: string) => string }) => {
                 ))}
               </ul>
             ) : (
-              <div className="flex flex-col items-center rounded-xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
-                <Package className="size-10 text-gray-300" aria-hidden="true" />
-                <p className="mt-3 font-medium text-gray-900">
+              <div className="flex flex-col items-center rounded-xl border border-dashed border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 px-6 py-14 text-center">
+                <Package className="size-10 text-gray-300 dark:text-slate-600" aria-hidden="true" />
+                <p className="mt-3 font-medium text-gray-900 dark:text-slate-100">
                   {status === 'all' ? 'No orders yet' : `No ${status} orders`}
                 </p>
                 <Link

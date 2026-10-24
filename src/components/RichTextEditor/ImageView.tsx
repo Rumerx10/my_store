@@ -23,7 +23,7 @@ const JUSTIFY: Record<ImageAlign, string> = {
 };
 
 const toolButton =
-  'flex size-8 items-center justify-center rounded-md text-gray-700 transition-colors hover:bg-gray-100';
+  'flex size-8 items-center justify-center rounded-md text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-100 dark:hover:bg-white/10';
 
 // Editor view for an image: drag either edge to resize, and a small toolbar while selected.
 export default function ImageView({
@@ -95,7 +95,7 @@ export default function ImageView({
                 onPointerDown={startResize(side)}
                 aria-hidden="true"
                 className={cn(
-                  'absolute top-1/2 h-12 w-2.5 -translate-y-1/2 cursor-ew-resize rounded-full border-2 border-white bg-brand shadow-card touch-none',
+                  'absolute top-1/2 h-12 w-2.5 -translate-y-1/2 cursor-ew-resize rounded-full border-2 border-white dark:border-white/10 bg-brand shadow-card touch-none',
                   side === 'left' ? '-left-1.5' : '-right-1.5',
                 )}
               />
@@ -105,7 +105,7 @@ export default function ImageView({
               contentEditable={false}
               role="toolbar"
               aria-label="Image options"
-              className="absolute left-1/2 top-2 z-10 flex -translate-x-1/2 items-center gap-0.5 rounded-xl border border-gray-200 bg-white p-1 shadow-lift"
+              className="absolute left-1/2 top-2 z-10 flex -translate-x-1/2 items-center gap-0.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 p-1 shadow-lift"
             >
               {ALIGNMENTS.map(({ value, label, icon: Icon }) => (
                 <button
@@ -120,7 +120,7 @@ export default function ImageView({
                   <Icon className="size-4" aria-hidden="true" />
                 </button>
               ))}
-              <span className="mx-1 h-5 w-px bg-gray-200" aria-hidden="true" />
+              <span className="mx-1 h-5 w-px bg-gray-200 dark:bg-white/15" aria-hidden="true" />
               {SIZES.map((size) => (
                 <button
                   key={size}
@@ -129,20 +129,20 @@ export default function ImageView({
                   aria-label={`Width ${size}%`}
                   aria-pressed={shownWidth === size}
                   className={cn(
-                    'h-8 rounded-md px-1.5 text-xs font-medium tabular-nums text-gray-700 transition-colors hover:bg-gray-100',
-                    shownWidth === size && 'bg-brand-soft text-brand-ink',
+                    'h-8 rounded-md px-1.5 text-xs font-medium tabular-nums text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-100 dark:hover:bg-white/10',
+                    shownWidth === size && 'bg-brand-soft text-brand-ink dark:text-brand-ink',
                   )}
                 >
                   {size}%
                 </button>
               ))}
-              <span className="mx-1 h-5 w-px bg-gray-200" aria-hidden="true" />
+              <span className="mx-1 h-5 w-px bg-gray-200 dark:bg-white/15" aria-hidden="true" />
               <input
                 value={alt ?? ''}
                 onChange={(event) => updateAttributes({ alt: event.target.value })}
                 placeholder="Alt text"
                 aria-label="Alt text, describes the image for screen readers"
-                className="h-8 w-28 rounded-md border border-gray-200 px-2 text-xs outline-none focus:border-brand"
+                className="h-8 w-28 rounded-md border border-gray-200 dark:border-white/10 px-2 text-xs outline-none focus:border-brand"
               />
               <button
                 type="button"

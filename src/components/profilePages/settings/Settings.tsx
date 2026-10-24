@@ -78,7 +78,7 @@ const Settings = () => {
 
         {/* Notifications Tab */}
         <TabsContent value="notifications" className="mt-5 space-y-4">
-          <Card className="glass bg-white/60">
+          <Card className="glass bg-white/60 dark:bg-slate-900/60">
             <div className="border-b border-border px-6 py-4">
               <h2 className="font-semibold text-foreground">Email notifications</h2>
               <p className="text-sm text-muted-foreground mt-1">
@@ -153,7 +153,7 @@ const Settings = () => {
             </div>
           </Card>
 
-          <Card className="glass bg-white/60">
+          <Card className="glass bg-white/60 dark:bg-slate-900/60">
             <div className="border-b border-border px-6 py-4">
               <h2 className="font-semibold text-foreground">Push notifications</h2>
               <p className="text-sm text-muted-foreground mt-1">
@@ -204,7 +204,7 @@ const Settings = () => {
 
         {/* Security Tab */}
         <TabsContent value="security" className="mt-5 space-y-4">
-          <Card className="glass bg-white/60">
+          <Card className="glass bg-white/60 dark:bg-slate-900/60">
             <div className="border-b border-border px-6 py-4">
               <h2 className="font-semibold text-foreground">Two-factor authentication</h2>
               <p className="text-sm text-muted-foreground mt-1">
@@ -232,7 +232,7 @@ const Settings = () => {
             </div>
           </Card>
 
-          <Card className="glass bg-white/60">
+          <Card className="glass bg-white/60 dark:bg-slate-900/60">
             <div className="border-b border-border px-6 py-4">
               <h2 className="font-semibold text-foreground">Change password</h2>
               <p className="text-sm text-muted-foreground mt-1">
@@ -248,7 +248,7 @@ const Settings = () => {
             </div>
           </Card>
 
-          <Card className="glass bg-white/60">
+          <Card className="glass bg-white/60 dark:bg-slate-900/60">
             <div className="border-b border-border px-6 py-4">
               <h2 className="font-semibold text-foreground">Active sessions</h2>
               <p className="text-sm text-muted-foreground mt-1">
@@ -262,7 +262,7 @@ const Settings = () => {
                   <p className="font-medium text-foreground">Chrome on Windows</p>
                   <p className="text-sm text-muted-foreground">Current session</p>
                 </div>
-                <Badge className="bg-green-100 text-green-800 border border-green-200">
+                <Badge className="bg-green-100 dark:bg-green-500/15 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-500/30">
                   Active
                 </Badge>
               </div>
@@ -281,7 +281,7 @@ const Settings = () => {
 
         {/* Account Tab */}
         <TabsContent value="account" className="mt-5 space-y-4">
-          <Card className="glass bg-white/60">
+          <Card className="glass bg-white/60 dark:bg-slate-900/60">
             <div className="border-b border-border px-6 py-4">
               <h2 className="font-semibold text-foreground">Account information</h2>
               <p className="text-sm text-muted-foreground mt-1">
@@ -310,16 +310,16 @@ const Settings = () => {
             </div>
           </Card>
 
-          <Card className="border-red-200 bg-red-50/30 shadow-none">
-            <div className="border-b border-red-200 px-6 py-4">
-              <h2 className="font-semibold text-red-900">Danger zone</h2>
-              <p className="text-sm text-red-800 mt-1">Irreversible actions</p>
+          <Card className="border-red-200 dark:border-red-500/30 bg-red-50/30 dark:bg-red-500/10 shadow-none">
+            <div className="border-b border-red-200 dark:border-red-500/30 px-6 py-4">
+              <h2 className="font-semibold text-red-900 dark:text-red-200">Danger zone</h2>
+              <p className="text-sm text-red-800 dark:text-red-300 mt-1">Irreversible actions</p>
             </div>
 
             <div className="p-6 space-y-3">
               <Button
                 variant="outline"
-                className="w-full gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent"
+                className="w-full gap-2 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 bg-transparent"
                 onClick={() => setShowLogoutDialog(true)}
               >
                 <LogOut size={16} />
@@ -328,7 +328,7 @@ const Settings = () => {
 
               <Button
                 variant="outline"
-                className="w-full gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent"
+                className="w-full gap-2 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 bg-transparent"
                 onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash2 size={16} />

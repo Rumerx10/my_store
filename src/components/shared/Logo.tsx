@@ -51,7 +51,7 @@ const Logo = ({ className, tone = 'dark' }: { className?: string; tone?: 'dark' 
     <span
       className={cn(
         'text-[1.35rem] leading-none tracking-[-0.04em]',
-        tone === 'light' ? 'text-white' : 'text-slate-900',
+        tone === 'light' ? 'text-white' : 'text-slate-900 dark:text-slate-100',
       )}
     >
       <span className="font-normal">next</span>

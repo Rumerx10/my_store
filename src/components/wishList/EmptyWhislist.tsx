@@ -8,8 +8,10 @@ const EmptyWhislist = () => {
         <span className="flex size-16 items-center justify-center rounded-2xl bg-sun-soft text-sun-ink">
           <Heart className="size-7" aria-hidden="true" />
         </span>
-        <h1 className="mt-6 text-2xl text-gray-900 md:text-3xl">Your wishlist is empty</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="mt-6 text-2xl text-gray-900 dark:text-slate-100 md:text-3xl">
+          Your wishlist is empty
+        </h1>
+        <p className="mt-2 text-gray-600 dark:text-slate-400">
           Tap the heart on any product to save it here and come back to it later.
         </p>
         <Link

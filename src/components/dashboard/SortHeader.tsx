@@ -10,7 +10,7 @@ const SortHeader = <T,>({ column, label }: { column: Column<T, unknown>; label: 
     <button
       type="button"
       onClick={() => column.toggleSorting(sorted === 'asc')}
-      className="inline-flex items-center gap-1.5 rounded transition-colors hover:text-gray-900"
+      className="inline-flex items-center gap-1.5 rounded transition-colors hover:text-gray-900 dark:hover:text-slate-100"
     >
       {label}
       <Icon className="size-3.5" aria-hidden="true" />

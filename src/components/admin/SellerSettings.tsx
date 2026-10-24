@@ -87,7 +87,7 @@ const SellerSettings = () => {
             <button
               type="submit"
               disabled={!isDirty}
-              className="mt-5 h-10 w-full rounded-lg bg-brand px-5 text-sm font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 sm:w-auto"
+              className="mt-5 h-10 w-full rounded-lg bg-brand px-5 text-sm font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 dark:disabled:bg-white/15 disabled:text-gray-500 dark:disabled:text-slate-400 sm:w-auto"
             >
               Save details
             </button>
@@ -95,17 +95,20 @@ const SellerSettings = () => {
         </Panel>
 
         <Panel title="Alerts">
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-100 dark:divide-white/10">
             {ALERTS.map(({ key, label, hint }) => (
               <li
                 key={key}
                 className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
               >
                 <div>
-                  <Label htmlFor={`alert-${key}`} className="font-medium text-gray-900">
+                  <Label
+                    htmlFor={`alert-${key}`}
+                    className="font-medium text-gray-900 dark:text-slate-100"
+                  >
                     {label}
                   </Label>
-                  <p className="mt-0.5 text-sm text-gray-600">{hint}</p>
+                  <p className="mt-0.5 text-sm text-gray-600 dark:text-slate-400">{hint}</p>
                 </div>
                 <Switch
                   id={`alert-${key}`}

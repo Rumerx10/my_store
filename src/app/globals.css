@@ -1,5 +1,7 @@
 @import 'tailwindcss';
-@custom-variant dark (&:is(.dark *));
+/* Dark mode, Tailwind's class strategy: dark: utilities apply under html.dark, which the
+   script in app/layout.tsx sets from the saved choice or the system setting. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @utility container {
   width: 100%;
@@ -20,6 +22,14 @@
     0 14px 36px -18px rgb(30 58 138 / 0.3);
   -webkit-backdrop-filter: blur(18px) saturate(170%);
   backdrop-filter: blur(18px) saturate(170%);
+
+  @variant dark {
+    background-color: rgb(15 23 42 / 0.6);
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.05),
+      0 14px 36px -18px rgb(0 0 0 / 0.6);
+  }
 }
 
 /* Lighter frosted surface for cards in long grids: less blur keeps scrolling smooth. */
@@ -31,6 +41,14 @@
     0 12px 28px -18px rgb(30 58 138 / 0.35);
   -webkit-backdrop-filter: blur(10px) saturate(160%);
   backdrop-filter: blur(10px) saturate(160%);
+
+  @variant dark {
+    background-color: rgb(15 23 42 / 0.7);
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.05),
+      0 12px 28px -18px rgb(0 0 0 / 0.6);
+  }
 }
 
 @utility text-gradient {
@@ -163,6 +181,20 @@
   --chart-3: #f59e0b;
   --chart-4: #8a94a6;
   --chart-5: #e5484d;
+  /* Admin dashboard charts (components/admin/DashboardContent/chartKit.tsx). */
+  --chart-current: #1d4ed8;
+  --chart-previous: #94a3b8;
+  --chart-business: #d97706;
+  --chart-grid: #e5e7eb;
+  --chart-axis: #5b6472;
+  /* Heatmap ramp, faint to strong. */
+  --chart-heat-0: #eff6ff;
+  --chart-heat-1: #dbeafe;
+  --chart-heat-2: #bfdbfe;
+  --chart-heat-3: #93c5fd;
+  --chart-heat-4: #60a5fa;
+  --chart-heat-5: #2563eb;
+  --chart-heat-6: #1d4ed8;
 }
 
 @media (width >= 64rem) {
@@ -173,30 +205,58 @@
   }
 }
 
+/* Dark theme: deep navy surfaces, light slate text, and a lighter brand blue for text and icons
+   (filled brand buttons keep --gradient-brand). Components add their own dark: utilities. */
 .dark {
-  --background: oklch(0.13 0.028 261.692);
-  --foreground: oklch(0.985 0.002 247.839);
-  --card: oklch(0.21 0.034 264.665);
-  --card-foreground: oklch(0.985 0.002 247.839);
-  --popover: oklch(0.21 0.034 264.665);
-  --popover-foreground: oklch(0.985 0.002 247.839);
-  --primary: oklch(0.928 0.006 264.531);
-  --primary-foreground: oklch(0.21 0.034 264.665);
-  --secondary: oklch(0.278 0.033 256.848);
-  --secondary-foreground: oklch(0.985 0.002 247.839);
-  --muted: oklch(0.278 0.033 256.848);
-  --muted-foreground: oklch(0.707 0.022 261.325);
-  --accent: oklch(0.278 0.033 256.848);
-  --accent-foreground: oklch(0.985 0.002 247.839);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  color-scheme: dark;
+  --gradient-sun: linear-gradient(90deg, #fb923c 0%, #f59e0b 45%, #fbbf24 100%);
+  --background: #0a0f1c;
+  --foreground: #f1f5f9;
+  --card: #0f172a;
+  --card-foreground: #f1f5f9;
+  --popover: #111a2e;
+  --popover-foreground: #f1f5f9;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #172a4f;
+  --accent-foreground: #bfdbfe;
+  --destructive: #dc2626;
+  --border: rgb(255 255 255 / 0.1);
+  --input: rgb(255 255 255 / 0.15);
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #22d3ee;
+  --chart-3: #f59e0b;
+  --chart-4: #94a3b8;
+  --chart-5: #f87171;
+  --chart-current: #3b82f6;
+  --chart-previous: #64748b;
+  --chart-business: #f59e0b;
+  --chart-grid: rgb(255 255 255 / 0.08);
+  --chart-axis: #94a3b8;
+  --chart-heat-0: #131d33;
+  --chart-heat-1: #172a4f;
+  --chart-heat-2: #1c3a73;
+  --chart-heat-3: #1e4b9a;
+  --chart-heat-4: #2563eb;
+  --chart-heat-5: #3b82f6;
+  --chart-heat-6: #60a5fa;
+
+  /* Project colours from @theme */
+  --color-page: #0a0f1c;
+  --color-brand: #60a5fa;
+  --color-brand-hover: #93c5fd;
+  --color-brand-soft: #172a4f;
+  --color-brand-ink: #bfdbfe;
+  --color-sun-soft: #3a2c10;
+  --color-sun-ink: #fcd34d;
+  --color-hGreen: #34d399;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 1px rgb(0 0 0 / 0.2);
+  --shadow-lift: 0 20px 40px -20px rgb(0 0 0 / 0.7), 0 4px 10px -4px rgb(0 0 0 / 0.4);
 }
 
 @layer base {
@@ -247,6 +307,28 @@
     mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 85%);
   }
 
+  /* Dark mode: the same wash as night glows on deep navy, and a faint light grid. */
+  .dark body::before {
+    background:
+      radial-gradient(30rem 24rem at 92% -4%, rgb(251 191 36 / 0.14), transparent 62%),
+      radial-gradient(46rem 30rem at 78% 6%, rgb(249 115 22 / 0.07), transparent 65%),
+      radial-gradient(50rem 38rem at 2% 6%, rgb(79 70 229 / 0.22), transparent 62%),
+      radial-gradient(44rem 34rem at 12% 98%, rgb(16 185 129 / 0.1), transparent 62%),
+      radial-gradient(44rem 34rem at 98% 94%, rgb(139 92 246 / 0.14), transparent 62%),
+      linear-gradient(180deg, #0b1022 0%, #0a0f1c 45%, #08131a 100%);
+  }
+
+  .dark body::after {
+    background-image:
+      linear-gradient(rgb(148 163 184 / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(148 163 184 / 0.06) 1px, transparent 1px);
+  }
+
+  /* Focus and selection rings leave a gap in the surface colour, not white. */
+  .dark * {
+    --tw-ring-offset-color: var(--card);
+  }
+
   h1,
   h2,
   h3,
@@ -273,6 +355,10 @@
   }
 }
 
+/* Reduced motion (for example Windows "Animation effects" turned off) cuts every animation and
+   transition. A utility with the ! modifier sits in a layer, so it still wins over this
+   unlayered rule: the desktop header and the mobile menu drawer use duration-300! to keep
+   their slide. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -291,7 +377,7 @@
    so what the admin writes looks the same as what customers read. */
 @layer components {
   .rich-text {
-    @apply text-[15px] leading-relaxed text-gray-700;
+    @apply text-[15px] leading-relaxed text-gray-700 dark:text-slate-300;
     overflow-wrap: anywhere;
   }
 
@@ -300,15 +386,15 @@
   }
 
   .rich-text h2 {
-    @apply mt-7 text-xl font-semibold text-gray-900;
+    @apply mt-7 text-xl font-semibold text-gray-900 dark:text-slate-100;
   }
 
   .rich-text h3 {
-    @apply mt-6 text-lg font-semibold text-gray-900;
+    @apply mt-6 text-lg font-semibold text-gray-900 dark:text-slate-100;
   }
 
   .rich-text h4 {
-    @apply mt-5 text-base font-semibold text-gray-900;
+    @apply mt-5 text-base font-semibold text-gray-900 dark:text-slate-100;
   }
 
   .rich-text > :first-child {
@@ -336,19 +422,19 @@
   }
 
   .rich-text blockquote {
-    @apply border-l-4 border-sun pl-4 text-gray-600 italic;
+    @apply border-l-4 border-sun pl-4 text-gray-600 italic dark:text-slate-400;
   }
 
   .rich-text hr {
-    @apply my-6 border-gray-200;
+    @apply my-6 border-gray-200 dark:border-white/10;
   }
 
   .rich-text code {
-    @apply rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[0.9em] text-brand-ink;
+    @apply rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[0.9em] text-brand-ink dark:bg-brand-soft;
   }
 
   .rich-text pre {
-    @apply overflow-x-auto rounded-xl bg-slate-900 p-4 text-sm text-slate-100;
+    @apply overflow-x-auto rounded-xl bg-slate-900 p-4 text-sm text-slate-100 dark:bg-slate-950;
   }
 
   .rich-text pre code {
@@ -377,7 +463,7 @@
   }
 
   .rich-text-editor .ProseMirror p.is-editor-empty:first-child::before {
-    @apply pointer-events-none float-left h-0 text-gray-400;
+    @apply pointer-events-none float-left h-0 text-gray-400 dark:text-slate-500;
     content: attr(data-placeholder);
   }
 
@@ -583,6 +669,15 @@
   .sun-front {
     z-index: 35;
     mix-blend-mode: screen;
+  }
+
+  /* Dark mode: a softer, evening sun, so its glow and beams do not wash out dark panels. */
+  .dark .sun-back {
+    opacity: 0.6;
+  }
+
+  .dark .sun-front {
+    opacity: 0.3;
   }
 
   .sun-disc,

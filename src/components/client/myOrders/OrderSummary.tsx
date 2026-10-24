@@ -91,7 +91,7 @@ const OrderSummary = () => {
   return (
     <div className="container py-6 md:py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl text-gray-900 md:text-3xl">Checkout</h1>
+        <h1 className="text-2xl text-gray-900 dark:text-slate-100 md:text-3xl">Checkout</h1>
         <BackButton href="/cart">Back to cart</BackButton>
       </div>
 
@@ -106,7 +106,7 @@ const OrderSummary = () => {
           ) : (
             <>
               <section aria-labelledby="delivery-heading" className="rounded-xl glass p-5 md:p-6">
-                <h2 id="delivery-heading" className="text-lg text-gray-900">
+                <h2 id="delivery-heading" className="text-lg text-gray-900 dark:text-slate-100">
                   Delivery address
                 </h2>
                 <RadioGroup
@@ -120,19 +120,24 @@ const OrderSummary = () => {
                       <Label
                         key={addr.id}
                         htmlFor={`addr-${addr.id}`}
-                        className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-4 font-normal transition-colors hover:bg-gray-50 has-[[data-state=checked]]:border-brand has-[[data-state=checked]]:bg-brand-soft/60"
+                        className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 dark:border-white/10 p-4 font-normal transition-colors hover:bg-gray-50 dark:hover:bg-white/5 has-[[data-state=checked]]:border-brand has-[[data-state=checked]]:bg-brand-soft/60"
                       >
                         <RadioGroupItem value={addr.id} id={`addr-${addr.id}`} className="mt-0.5" />
                         <span className="min-w-0 flex-1 space-y-1">
-                          <span className="flex items-center gap-2 font-medium text-gray-900">
-                            <Icon className="size-4 text-gray-500" aria-hidden="true" />
+                          <span className="flex items-center gap-2 font-medium text-gray-900 dark:text-slate-100">
+                            <Icon
+                              className="size-4 text-gray-500 dark:text-slate-400"
+                              aria-hidden="true"
+                            />
                             {addr.label}
                           </span>
-                          <span className="block text-sm text-gray-700">{addr.name}</span>
-                          <span className="block text-sm leading-snug text-gray-600">
+                          <span className="block text-sm text-gray-700 dark:text-slate-300">
+                            {addr.name}
+                          </span>
+                          <span className="block text-sm leading-snug text-gray-600 dark:text-slate-400">
                             {addr.line}
                           </span>
-                          <span className="block text-sm tabular-nums text-gray-500">
+                          <span className="block text-sm tabular-nums text-gray-500 dark:text-slate-400">
                             {addr.phone}
                           </span>
                         </span>
@@ -149,13 +154,13 @@ const OrderSummary = () => {
               </section>
 
               <section aria-labelledby="items-heading" className="rounded-xl glass p-5 md:p-6">
-                <h2 id="items-heading" className="text-lg text-gray-900">
+                <h2 id="items-heading" className="text-lg text-gray-900 dark:text-slate-100">
                   Items ({totals.itemCount})
                 </h2>
-                <ul className="mt-4 divide-y divide-gray-100">
+                <ul className="mt-4 divide-y divide-gray-100 dark:divide-white/10">
                   {items.map((item) => (
                     <li key={item.id} className="flex items-center gap-4 py-3">
-                      <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                      <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-gray-50 dark:bg-white/5">
                         <Image
                           src={item.image || '/placeholder.svg'}
                           alt=""
@@ -165,15 +170,19 @@ const OrderSummary = () => {
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-gray-900">{item.title}</p>
+                        <p className="truncate text-sm font-medium text-gray-900 dark:text-slate-100">
+                          {item.title}
+                        </p>
                         {item.variant && (
-                          <p className="truncate text-xs text-gray-500">{item.variant}</p>
+                          <p className="truncate text-xs text-gray-500 dark:text-slate-400">
+                            {item.variant}
+                          </p>
                         )}
-                        <p className="text-sm tabular-nums text-gray-500">
+                        <p className="text-sm tabular-nums text-gray-500 dark:text-slate-400">
                           {item.quantity} × {formatPrice(item.price)}
                         </p>
                       </div>
-                      <p className="text-sm font-semibold tabular-nums text-gray-900">
+                      <p className="text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </li>
@@ -189,7 +198,7 @@ const OrderSummary = () => {
           className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start"
         >
           <div className="rounded-xl glass p-5 md:p-6">
-            <h2 className="text-lg text-gray-900">Order total</h2>
+            <h2 className="text-lg text-gray-900 dark:text-slate-100">Order total</h2>
             <div className="mt-4">
               <OrderTotals totals={totals} />
             </div>
@@ -209,12 +218,12 @@ const OrderSummary = () => {
                 <button
                   type="button"
                   onClick={() => placeOrder('cod')}
-                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-white/15 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                 >
                   <Truck className="size-4" aria-hidden="true" />
                   Cash on delivery
                 </button>
-                <p className="text-center text-xs text-gray-500">
+                <p className="text-center text-xs text-gray-500 dark:text-slate-400">
                   Delivering to {address.label.toLowerCase()} · {totals.shippingOption.days}
                 </p>
               </div>

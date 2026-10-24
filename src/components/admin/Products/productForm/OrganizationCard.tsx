@@ -48,18 +48,18 @@ const TagsInput = ({
 
   return (
     <div>
-      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-lg border border-gray-300 bg-white/90 px-2 py-1.5 focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/15">
+      <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-lg border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-2 py-1.5 focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/15">
         {value.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center gap-1 rounded-md bg-gray-100 py-0.5 pl-2 pr-1 text-sm text-gray-800"
+            className="inline-flex items-center gap-1 rounded-md bg-gray-100 dark:bg-white/10 py-0.5 pl-2 pr-1 text-sm text-gray-800 dark:text-slate-200"
           >
             {tag}
             <button
               type="button"
               onClick={() => onChange(value.filter((t) => t !== tag))}
               aria-label={`Remove tag ${tag}`}
-              className="flex size-5 items-center justify-center rounded text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+              className="flex size-5 items-center justify-center rounded text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-white/15 hover:text-gray-900 dark:hover:text-slate-100"
             >
               <X className="size-3" aria-hidden="true" />
             </button>
@@ -83,7 +83,7 @@ const TagsInput = ({
           }}
           placeholder={value.length ? '' : 'Type a tag and press Enter'}
           aria-describedby="tags-hint"
-          className="h-7 min-w-24 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-gray-400"
+          className="h-7 min-w-24 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-gray-400 dark:placeholder:text-slate-500"
         />
       </div>
     </div>
@@ -109,7 +109,7 @@ const OrganizationCard = () => {
                 ref={field.ref}
                 id="status"
                 aria-label="Status"
-                className="w-full bg-white/90"
+                className="w-full bg-white/90 dark:bg-slate-900/90"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -120,7 +120,7 @@ const OrganizationCard = () => {
             </Select>
           )}
         />
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-500 dark:text-slate-400">
           Drafts are hidden from the store until you make them active.
         </p>
       </Panel>
@@ -139,7 +139,10 @@ const OrganizationCard = () => {
                     onBlur={field.onBlur}
                     aria-invalid={errors.category ? true : undefined}
                     aria-describedby={errors.category ? 'category-error' : undefined}
-                    className={cn('w-full bg-white/90', errors.category && 'border-red')}
+                    className={cn(
+                      'w-full bg-white/90 dark:bg-slate-900/90',
+                      errors.category && 'border-red',
+                    )}
                   >
                     <SelectValue placeholder="Choose a category" />
                   </SelectTrigger>
@@ -164,13 +167,16 @@ const OrganizationCard = () => {
             name="tags"
             render={({ field }) => (
               <div className="space-y-1.5">
-                <label htmlFor="tags" className="block text-sm font-medium text-gray-900">
+                <label
+                  htmlFor="tags"
+                  className="block text-sm font-medium text-gray-900 dark:text-slate-100"
+                >
                   Tags
                 </label>
                 <TagsInput value={field.value} onChange={field.onChange} onBlur={field.onBlur} />
                 <div
                   id="tags-hint"
-                  className="flex flex-wrap items-center gap-1.5 text-xs text-gray-500"
+                  className="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400"
                 >
                   Sold for:
                   {SEGMENT_TAGS.map(({ tag, label }) => {
@@ -189,7 +195,7 @@ const OrganizationCard = () => {
                           'inline-flex h-7 items-center gap-1 rounded-full border px-2.5 font-medium transition-colors',
                           on
                             ? 'border-brand bg-brand-soft text-brand-ink'
-                            : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400',
+                            : 'border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:border-gray-400 dark:hover:border-white/25',
                         )}
                       >
                         {!on && <Plus className="size-3" aria-hidden="true" />}
@@ -212,12 +218,12 @@ const OrganizationCard = () => {
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-800">
+                  <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-800 dark:text-slate-200">
                     <Checkbox
                       ref={field.ref}
                       checked={field.value}
                       onCheckedChange={(checked) => field.onChange(checked === true)}
-                      className="size-5 rounded-md border-gray-300"
+                      className="size-5 rounded-md border-gray-300 dark:border-white/15"
                     />
                     {label}
                   </label>

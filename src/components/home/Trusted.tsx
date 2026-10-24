@@ -28,14 +28,14 @@ const Trusted = () => {
           <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
             <Link
               href="/chat"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 font-semibold text-brand-ink transition-transform hover:bg-white/90 active:scale-[0.98]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white dark:bg-slate-900 px-6 font-semibold text-brand-ink transition-transform hover:bg-white/90 dark:hover:bg-slate-900/90 active:scale-[0.98]"
             >
               <MessageCircle className="size-4" aria-hidden="true" />
               Chat with us
             </Link>
             <a
               href={`tel:${SITE.phoneHref}`}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 bg-white/15 px-6 font-semibold tabular-nums text-white backdrop-blur-md transition-colors hover:bg-white/25"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 dark:border-white/10 bg-white/15 px-6 font-semibold tabular-nums text-white backdrop-blur-md transition-colors hover:bg-white/25"
             >
               <Phone className="size-4" aria-hidden="true" />
               {SITE.phone}

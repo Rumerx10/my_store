@@ -45,7 +45,7 @@ const SideNavShell = ({
                         'flex items-center gap-2.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                         active
                           ? 'bg-brand text-white'
-                          : 'text-gray-700 hover:bg-white/70 hover:text-gray-900',
+                          : 'text-gray-700 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-900/70 hover:text-gray-900 dark:hover:text-slate-100',
                       )}
                     >
                       <Icon className="size-4" aria-hidden="true" />

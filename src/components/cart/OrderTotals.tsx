@@ -31,14 +31,16 @@ const OrderTotals = ({ totals }: { totals: Totals }) => {
       <dl className="space-y-2.5 text-sm">
         {rows.map((row) => (
           <div key={row.label} className="flex justify-between gap-4">
-            <dt className="text-gray-600">{row.label}</dt>
-            <dd className={`tabular-nums text-gray-900 ${row.className ?? ''}`}>{row.value}</dd>
+            <dt className="text-gray-600 dark:text-slate-400">{row.label}</dt>
+            <dd className={`tabular-nums text-gray-900 dark:text-slate-100 ${row.className ?? ''}`}>
+              {row.value}
+            </dd>
           </div>
         ))}
       </dl>
-      <div className="mt-4 flex items-baseline justify-between border-t border-gray-200 pt-4">
-        <span className="font-semibold text-gray-900">Total</span>
-        <span className="text-xl font-semibold tabular-nums text-gray-900">
+      <div className="mt-4 flex items-baseline justify-between border-t border-gray-200 dark:border-white/10 pt-4">
+        <span className="font-semibold text-gray-900 dark:text-slate-100">Total</span>
+        <span className="text-xl font-semibold tabular-nums text-gray-900 dark:text-slate-100">
           {formatPrice(totals.total)}
         </span>
       </div>

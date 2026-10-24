@@ -69,7 +69,7 @@ const DataTable = <T,>({
             {statusTabsData.map(({ value, label, count }) => (
               <TabsTrigger key={value} value={value}>
                 {label}
-                <span className="tabular-nums text-gray-400">{count}</span>
+                <span className="tabular-nums text-gray-400 dark:text-slate-500">{count}</span>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -78,7 +78,7 @@ const DataTable = <T,>({
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search
-              className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-slate-500"
               aria-hidden="true"
             />
             <Input
@@ -133,7 +133,7 @@ const DataTable = <T,>({
       </div>
 
       {/* The table keeps its columns and scrolls sideways on narrow screens. */}
-      <div className="border-t border-gray-200/80">
+      <div className="border-t border-gray-200/80 dark:border-white/10">
         <Table className="min-w-[640px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -141,7 +141,7 @@ const DataTable = <T,>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="h-11 bg-gray-50 px-4 text-xs font-medium text-gray-500"
+                    className="h-11 bg-gray-50 dark:bg-white/5 px-4 text-xs font-medium text-gray-500 dark:text-slate-400"
                   >
                     {header.isPlaceholder
                       ? null
@@ -166,8 +166,8 @@ const DataTable = <T,>({
             ) : (
               <TableRow className="hover:bg-transparent">
                 <TableCell colSpan={columnLength} className="px-4 py-14 text-center">
-                  <p className="font-medium text-gray-900">No {noun} found</p>
-                  <p className="mt-1 text-sm text-gray-600">
+                  <p className="font-medium text-gray-900 dark:text-slate-100">No {noun} found</p>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                     {filtered
                       ? 'Try a different search or filter.'
                       : `There are no ${noun} here yet.`}

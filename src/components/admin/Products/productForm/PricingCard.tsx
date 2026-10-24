@@ -79,24 +79,28 @@ const PricingCard = () => {
           />
         </Field>
 
-        <dl className="grid grid-cols-2 gap-3 self-start rounded-xl bg-gray-50/80 p-3 text-sm sm:mt-6">
+        <dl className="grid grid-cols-2 gap-3 self-start rounded-xl bg-gray-50/80 dark:bg-white/5 p-3 text-sm sm:mt-6">
           <div>
-            <dt className="text-gray-500">Profit</dt>
+            <dt className="text-gray-500 dark:text-slate-400">Profit</dt>
             <dd
               className={cn(
                 'mt-0.5 font-semibold tabular-nums',
-                profit !== undefined && profit < 0 ? 'text-red' : 'text-gray-900',
+                profit !== undefined && profit < 0
+                  ? 'text-red'
+                  : 'text-gray-900 dark:text-slate-100',
               )}
             >
               {profit !== undefined ? formatPrice(profit) : '–'}
             </dd>
           </div>
           <div>
-            <dt className="text-gray-500">Margin</dt>
+            <dt className="text-gray-500 dark:text-slate-400">Margin</dt>
             <dd
               className={cn(
                 'mt-0.5 font-semibold tabular-nums',
-                margin !== undefined && margin < 0 ? 'text-red' : 'text-gray-900',
+                margin !== undefined && margin < 0
+                  ? 'text-red'
+                  : 'text-gray-900 dark:text-slate-100',
               )}
             >
               {margin !== undefined ? `${margin.toFixed(1)}%` : '–'}

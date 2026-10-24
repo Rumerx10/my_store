@@ -5,16 +5,22 @@ import { cn, formatPrice } from '@/lib/utils';
 const TopProducts = () => {
   return (
     <Panel title="Top products, last 12 months">
-      <ol className="divide-y divide-gray-100">
+      <ol className="divide-y divide-gray-100 dark:divide-white/10">
         {TOP_PRODUCTS.map((product, index) => (
           <li key={product.name} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-            <span className="w-5 shrink-0 text-sm tabular-nums text-gray-400">{index + 1}</span>
+            <span className="w-5 shrink-0 text-sm tabular-nums text-gray-400 dark:text-slate-500">
+              {index + 1}
+            </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-gray-900">{product.name}</p>
-              <p className="text-xs tabular-nums text-gray-500">{product.sales} sold</p>
+              <p className="truncate text-sm font-medium text-gray-900 dark:text-slate-100">
+                {product.name}
+              </p>
+              <p className="text-xs tabular-nums text-gray-500 dark:text-slate-400">
+                {product.sales} sold
+              </p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="text-sm font-semibold tabular-nums text-gray-900">
+              <p className="text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                 {formatPrice(product.revenue)}
               </p>
               <p

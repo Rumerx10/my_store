@@ -106,20 +106,23 @@ const BULK_ACTIONS = [
 type BulkAction = (typeof BULK_ACTIONS)[number]['value'];
 
 const cellInput =
-  'h-12 w-full border-0 bg-transparent px-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 hover:bg-brand-soft/30 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-brand';
+  'h-12 w-full border-0 bg-transparent px-3 text-sm text-gray-900 dark:text-slate-100 outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-slate-500 hover:bg-brand-soft/30 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-inset focus:ring-brand';
 
 const cellSelect =
-  'h-12 w-full rounded-none border-0 bg-transparent px-3 text-sm text-gray-900 shadow-none transition-colors hover:bg-brand-soft/30 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-brand';
+  'h-12 w-full rounded-none border-0 bg-transparent px-3 text-sm text-gray-900 dark:text-slate-100 shadow-none transition-colors hover:bg-brand-soft/30 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-inset focus:ring-brand';
 
 const toolbarSelect =
-  'h-9 rounded-full border-gray-200 bg-white/90 shadow-none transition-colors hover:bg-white';
+  'h-9 rounded-full border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 shadow-none transition-colors hover:bg-white dark:hover:bg-slate-900';
 
 const toolbarInput =
-  'h-9 rounded-full border border-gray-200 bg-white/90 px-4 text-sm outline-none transition-colors placeholder:text-gray-400 hover:bg-white focus:border-brand focus:ring-2 focus:ring-brand/15';
+  'h-9 rounded-full border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 px-4 text-sm outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-slate-500 hover:bg-white dark:hover:bg-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/15';
 
 const pressable = 'transition-[background-color,transform] active:scale-[0.97]';
 
-const STATUS_DOT: Record<ProductStatus, string> = { active: 'bg-green', draft: 'bg-gray-400' };
+const STATUS_DOT: Record<ProductStatus, string> = {
+  active: 'bg-green',
+  draft: 'bg-gray-400 dark:bg-white/30',
+};
 
 const StatusLabel = ({ status }: { status: ProductStatus }) => (
   <span className="flex items-center gap-2">
@@ -450,10 +453,14 @@ const BulkEdit = () => {
           aria-label={`Profit, ${row.title}`}
           className={cn(
             'flex h-12 items-center justify-end gap-2 px-3 tabular-nums',
-            profit !== undefined && profit < 0 ? 'text-red' : 'text-gray-700',
+            profit !== undefined && profit < 0 ? 'text-red' : 'text-gray-700 dark:text-slate-300',
           )}
         >
-          {profit !== undefined ? formatPrice(profit) : <span className="text-gray-400">–</span>}
+          {profit !== undefined ? (
+            formatPrice(profit)
+          ) : (
+            <span className="text-gray-400 dark:text-slate-500">–</span>
+          )}
           {margin !== undefined && (
             <span
               className={cn(
@@ -478,7 +485,7 @@ const BulkEdit = () => {
           data-cell={`${id}-current`}
           aria-label={`Current price, ${row.title}`}
           className={cn(
-            'flex h-12 items-center justify-end px-3 font-semibold tabular-nums text-gray-900',
+            'flex h-12 items-center justify-end px-3 font-semibold tabular-nums text-gray-900 dark:text-slate-100',
             changed && 'bg-sun-soft/80',
           )}
         >
@@ -497,7 +504,7 @@ const BulkEdit = () => {
               className={cn(
                 'pointer-events-none absolute left-3 top-1/2 size-2 -translate-y-1/2 rounded-full',
                 !(stock >= 0)
-                  ? 'bg-gray-300'
+                  ? 'bg-gray-300 dark:bg-white/20'
                   : stock === 0
                     ? 'bg-red'
                     : stock <= 5
@@ -524,7 +531,7 @@ const BulkEdit = () => {
             )}
           />
           {field === 'discount' && (
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-slate-500">
               %
             </span>
           )}
@@ -549,16 +556,16 @@ const BulkEdit = () => {
     <div>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 md:text-3xl">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-slate-100 md:text-3xl">
             Bulk edit products
           </h1>
-          <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm text-gray-600">
+          <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm text-gray-600 dark:text-slate-400">
             Edit any cell, then save. Press
-            <kbd className="rounded-md border border-gray-200 bg-white/90 px-1.5 font-sans text-xs text-gray-700 shadow-[0_1px_0_rgb(15_23_42_/_0.08)]">
+            <kbd className="rounded-md border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 px-1.5 font-sans text-xs text-gray-700 dark:text-slate-300 shadow-[0_1px_0_rgb(15_23_42_/_0.08)]">
               Enter
             </kbd>
             or
-            <kbd className="rounded-md border border-gray-200 bg-white/90 px-1.5 font-sans text-xs text-gray-700 shadow-[0_1px_0_rgb(15_23_42_/_0.08)]">
+            <kbd className="rounded-md border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 px-1.5 font-sans text-xs text-gray-700 dark:text-slate-300 shadow-[0_1px_0_rgb(15_23_42_/_0.08)]">
               ↑ ↓
             </kbd>
             to move between rows.
@@ -569,7 +576,7 @@ const BulkEdit = () => {
             aria-live="polite"
             className={cn(
               'flex h-10 items-center gap-2 rounded-full px-3.5 text-sm font-medium',
-              dirty ? 'bg-sun-soft text-sun-ink' : 'text-gray-600',
+              dirty ? 'bg-sun-soft text-sun-ink' : 'text-gray-600 dark:text-slate-400',
             )}
           >
             <span className="relative flex size-2" aria-hidden="true">
@@ -618,10 +625,10 @@ const BulkEdit = () => {
 
       <section aria-label="Products" className="mt-6 overflow-hidden rounded-2xl glass-card">
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-gray-200/80 px-3 py-3 md:px-4">
+        <div className="flex flex-wrap items-center gap-2 border-b border-gray-200/80 dark:border-white/10 px-3 py-3 md:px-4">
           <div className="relative min-w-56 flex-1 sm:max-w-xs">
             <Search
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-slate-500"
               aria-hidden="true"
             />
             <input
@@ -652,7 +659,7 @@ const BulkEdit = () => {
           <div
             role="radiogroup"
             aria-label="Rows to show"
-            className="flex h-9 items-center rounded-full bg-gray-100/90 p-1"
+            className="flex h-9 items-center rounded-full bg-gray-100/90 dark:bg-white/10 p-1"
           >
             {[
               { value: false, label: 'All' },
@@ -667,8 +674,8 @@ const BulkEdit = () => {
                 className={cn(
                   'flex h-7 items-center gap-1.5 rounded-full px-3 text-sm font-medium transition-colors',
                   editedOnly === option.value
-                    ? 'bg-white text-gray-900 shadow-[0_1px_3px_rgb(15_23_42_/_0.12)]'
-                    : 'text-gray-600 hover:text-gray-900',
+                    ? 'bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 shadow-[0_1px_3px_rgb(15_23_42_/_0.12)]'
+                    : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100',
                 )}
               >
                 {option.label}
@@ -680,7 +687,7 @@ const BulkEdit = () => {
               </button>
             ))}
           </div>
-          <p className="ml-auto text-sm tabular-nums text-gray-500">
+          <p className="ml-auto text-sm tabular-nums text-gray-500 dark:text-slate-400">
             {visibleIds.length} of {ids.length} products
           </p>
         </div>
@@ -766,7 +773,7 @@ const BulkEdit = () => {
               type="button"
               onClick={() => setSelected(new Set())}
               className={cn(
-                'h-9 rounded-full px-3 text-sm font-medium text-brand-ink hover:bg-white/70',
+                'h-9 rounded-full px-3 text-sm font-medium text-brand-ink hover:bg-white/70 dark:hover:bg-slate-900/70',
                 pressable,
               )}
             >
@@ -776,13 +783,13 @@ const BulkEdit = () => {
         )}
 
         {/* The header rows and the product column stay pinned while scrolling. */}
-        <div className="max-h-[calc(100dvh-var(--header-h)-17rem)] min-h-96 overflow-auto bg-white/80">
+        <div className="max-h-[calc(100dvh-var(--header-h)-17rem)] min-h-96 overflow-auto bg-white/80 dark:bg-slate-900/80">
           <table className="w-max min-w-full border-separate border-spacing-0 text-sm">
             <thead>
               <tr>
                 <th
                   rowSpan={2}
-                  className="sticky left-0 top-0 z-30 border-b border-r border-gray-200 bg-gray-50 px-4 text-left align-bottom shadow-[8px_0_16px_-14px_rgb(30_58_138_/_0.45)]"
+                  className="sticky left-0 top-0 z-30 border-b border-r border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 text-left align-bottom shadow-[8px_0_16px_-14px_rgb(30_58_138_/_0.45)]"
                 >
                   <div className="flex h-10 items-center gap-3">
                     <input
@@ -800,7 +807,9 @@ const BulkEdit = () => {
                       aria-label="Select all shown products"
                       className="size-4 accent-brand"
                     />
-                    <span className="text-xs font-semibold text-gray-600">Product</span>
+                    <span className="text-xs font-semibold text-gray-600 dark:text-slate-400">
+                      Product
+                    </span>
                   </div>
                 </th>
                 {GROUPS.map((group) => (
@@ -809,10 +818,10 @@ const BulkEdit = () => {
                     scope="colgroup"
                     colSpan={COLUMNS.filter((c) => c.group === group.id).length}
                     className={cn(
-                      'sticky top-0 z-20 h-8 border-b border-r border-gray-200 px-3 text-left text-[11px] font-semibold tracking-wide',
+                      'sticky top-0 z-20 h-8 border-b border-r border-gray-200 dark:border-white/10 px-3 text-left text-[11px] font-semibold tracking-wide',
                       group.id === 'pricing'
                         ? 'bg-brand-soft text-brand-ink'
-                        : 'bg-gray-100 text-gray-500',
+                        : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-slate-400',
                     )}
                   >
                     {group.label}
@@ -825,14 +834,16 @@ const BulkEdit = () => {
                     key={column.field}
                     scope="col"
                     className={cn(
-                      'sticky top-8 z-20 h-10 whitespace-nowrap border-b border-r border-gray-200 bg-gray-50 px-3 text-xs font-semibold text-gray-600',
+                      'sticky top-8 z-20 h-10 whitespace-nowrap border-b border-r border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-3 text-xs font-semibold text-gray-600 dark:text-slate-400',
                       column.width,
                       column.numeric ? 'text-right' : 'text-left',
                     )}
                   >
                     {column.label}
                     {column.readOnly && (
-                      <span className="ml-1.5 font-normal text-gray-400">auto</span>
+                      <span className="ml-1.5 font-normal text-gray-400 dark:text-slate-500">
+                        auto
+                      </span>
                     )}
                   </th>
                 ))}
@@ -848,11 +859,12 @@ const BulkEdit = () => {
                   <tr key={id} className="group">
                     <td
                       className={cn(
-                        'sticky left-0 z-10 border-b border-r border-gray-200 bg-white px-4 shadow-[8px_0_16px_-14px_rgb(30_58_138_/_0.45)] transition-colors group-hover:bg-slate-50',
+                        'sticky left-0 z-10 border-b border-r border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 px-4 shadow-[8px_0_16px_-14px_rgb(30_58_138_/_0.45)] transition-colors group-hover:bg-slate-50 dark:group-hover:bg-white/5',
                         // A sun-coloured edge marks rows with unsaved edits.
                         edited &&
                           'before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-sun',
-                        isSelected && 'bg-brand-soft group-hover:bg-brand-soft',
+                        isSelected &&
+                          'bg-brand-soft group-hover:bg-brand-soft dark:bg-brand-soft dark:group-hover:bg-brand-soft',
                       )}
                     >
                       <div className="flex w-80 items-center gap-3">
@@ -872,7 +884,7 @@ const BulkEdit = () => {
                         />
                         <Link
                           href={`/admin/products/edit-product/${id}`}
-                          className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-gray-200 transition-shadow hover:ring-2 hover:ring-brand/40"
+                          className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white dark:bg-slate-900 ring-1 ring-gray-200 dark:ring-white/10 transition-shadow hover:ring-2 hover:ring-brand/40"
                           aria-label={`Open ${row.title} in the full editor`}
                         >
                           <Image
@@ -890,10 +902,11 @@ const BulkEdit = () => {
                       <td
                         key={column.field}
                         className={cn(
-                          'border-b border-r border-gray-100 p-0 transition-colors group-hover:bg-slate-50/70',
+                          'border-b border-r border-gray-100 dark:border-white/5 p-0 transition-colors group-hover:bg-slate-50/70 dark:group-hover:bg-white/5',
                           column.width,
-                          column.readOnly && 'bg-slate-50/60',
-                          isSelected && 'bg-brand-soft/40 group-hover:bg-brand-soft/50',
+                          column.readOnly && 'bg-slate-50/60 dark:bg-white/5',
+                          isSelected &&
+                            'bg-brand-soft/40 group-hover:bg-brand-soft/50 dark:bg-brand-soft/40 dark:group-hover:bg-brand-soft/50',
                         )}
                       >
                         {renderCell(id, column.field)}
@@ -909,15 +922,17 @@ const BulkEdit = () => {
               <span className="flex size-12 items-center justify-center rounded-2xl bg-brand-soft text-brand">
                 <SearchX className="size-5" aria-hidden="true" />
               </span>
-              <p className="mt-4 font-semibold text-gray-900">No products match these filters</p>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-4 font-semibold text-gray-900 dark:text-slate-100">
+                No products match these filters
+              </p>
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 Try another search or category, or show all products.
               </p>
               <button
                 type="button"
                 onClick={clearFilters}
                 className={cn(
-                  'mt-4 h-9 rounded-full border border-gray-200 bg-white px-4 text-sm font-medium text-gray-800 hover:bg-gray-50',
+                  'mt-4 h-9 rounded-full border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5',
                   pressable,
                 )}
               >
@@ -928,7 +943,7 @@ const BulkEdit = () => {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-gray-200/80 px-4 py-2.5 text-xs text-gray-500">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-gray-200/80 dark:border-white/10 px-4 py-2.5 text-xs text-gray-500 dark:text-slate-400">
           <span className="flex items-center gap-1.5">
             <span className="h-3 w-[3px] rounded-full bg-sun" aria-hidden="true" />
             Unsaved row
@@ -953,7 +968,7 @@ const BulkEdit = () => {
                 type="button"
                 onClick={discard}
                 className={cn(
-                  'h-9 rounded-full px-4 text-sm font-medium text-gray-700 hover:bg-gray-100',
+                  'h-9 rounded-full px-4 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/10',
                   pressable,
                 )}
               >

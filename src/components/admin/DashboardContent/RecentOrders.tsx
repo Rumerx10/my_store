@@ -23,7 +23,7 @@ const RecentOrders = () => {
         </Link>
       }
     >
-      <ul className="divide-y divide-gray-100">
+      <ul className="divide-y divide-gray-100 dark:divide-white/10">
         {orders.map((order) => (
           <li key={order.id} className="py-3 first:pt-0 last:pb-0">
             <Link
@@ -31,12 +31,16 @@ const RecentOrders = () => {
               className="flex items-center justify-between gap-3 rounded"
             >
               <div className="min-w-0">
-                <p className="text-sm font-medium tabular-nums text-gray-900">{order.id}</p>
-                <p className="truncate text-xs text-gray-500">{order.buyerName}</p>
+                <p className="text-sm font-medium tabular-nums text-gray-900 dark:text-slate-100">
+                  {order.id}
+                </p>
+                <p className="truncate text-xs text-gray-500 dark:text-slate-400">
+                  {order.buyerName}
+                </p>
               </div>
               <div className="flex shrink-0 items-center gap-3">
                 <OrderStatusBadge status={order.status} />
-                <p className="w-24 text-right text-sm font-semibold tabular-nums text-gray-900">
+                <p className="w-24 text-right text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                   {formatPrice(order.amount)}
                 </p>
               </div>

@@ -12,7 +12,7 @@ const CategorySales = ({ timeRange, className }: { timeRange: TimeRange; classNa
 
   return (
     <Panel title="Sales by category" className={className}>
-      <p className="-mt-2 mb-4 text-sm text-gray-600">
+      <p className="-mt-2 mb-4 text-sm text-gray-600 dark:text-slate-400">
         Where revenue came from, and which categories are growing.
       </p>
       <ul className="space-y-3.5">
@@ -21,7 +21,9 @@ const CategorySales = ({ timeRange, className }: { timeRange: TimeRange; classNa
             key={row.category}
             className="grid grid-cols-[minmax(6.5rem,8.5rem)_minmax(0,1fr)_auto] items-center gap-3"
           >
-            <span className="truncate text-sm text-gray-700">{categoryLabel(row.category)}</span>
+            <span className="truncate text-sm text-gray-700 dark:text-slate-300">
+              {categoryLabel(row.category)}
+            </span>
             <span className="flex min-w-0 items-center gap-2">
               <span
                 className="h-3 shrink-0 rounded-r-[4px] transition-[width] duration-500 ease-out motion-reduce:transition-none"
@@ -32,7 +34,7 @@ const CategorySales = ({ timeRange, className }: { timeRange: TimeRange; classNa
                 }}
                 aria-hidden="true"
               />
-              <span className="shrink-0 text-xs font-semibold tabular-nums text-gray-900">
+              <span className="shrink-0 text-xs font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                 {formatCompactPrice(row.revenue)}
               </span>
             </span>

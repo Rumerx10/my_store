@@ -22,16 +22,23 @@ const page = async ({ params }: Props) => {
   return (
     <article className="container py-8 md:py-14">
       <div className="mx-auto max-w-3xl rounded-3xl glass p-6 md:p-12">
-        <h1 className="text-3xl text-gray-900 md:text-4xl">{info.title}</h1>
-        <p className="mt-3 text-lg text-gray-600">{info.intro}</p>
-        {info.updated && <p className="mt-2 text-sm text-gray-500">Last updated {info.updated}</p>}
+        <h1 className="text-3xl text-gray-900 dark:text-slate-100 md:text-4xl">{info.title}</h1>
+        <p className="mt-3 text-lg text-gray-600 dark:text-slate-400">{info.intro}</p>
+        {info.updated && (
+          <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
+            Last updated {info.updated}
+          </p>
+        )}
 
-        <div className="mt-10 space-y-8 border-t border-gray-200 pt-8">
+        <div className="mt-10 space-y-8 border-t border-gray-200 dark:border-white/10 pt-8">
           {info.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="text-lg text-gray-900">{section.heading}</h2>
+              <h2 className="text-lg text-gray-900 dark:text-slate-100">{section.heading}</h2>
               {section.body.map((paragraph) => (
-                <p key={paragraph} className="mt-2 leading-relaxed text-gray-700">
+                <p
+                  key={paragraph}
+                  className="mt-2 leading-relaxed text-gray-700 dark:text-slate-300"
+                >
                   {paragraph}
                 </p>
               ))}
@@ -39,7 +46,7 @@ const page = async ({ params }: Props) => {
           ))}
         </div>
 
-        <p className="mt-10 border-t border-gray-200 pt-6 text-sm text-gray-600">
+        <p className="mt-10 border-t border-gray-200 dark:border-white/10 pt-6 text-sm text-gray-600 dark:text-slate-400">
           Still have a question?{' '}
           <Link href="/contact" className="rounded font-medium text-brand hover:text-brand-hover">
             Contact us

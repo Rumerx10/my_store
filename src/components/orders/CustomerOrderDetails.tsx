@@ -41,10 +41,14 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl tabular-nums text-gray-900 md:text-3xl">Order {order.id}</h1>
+            <h1 className="text-2xl tabular-nums text-gray-900 dark:text-slate-100 md:text-3xl">
+              Order {order.id}
+            </h1>
             <OrderStatusBadge status={order.status} className="text-sm" />
           </div>
-          <p className="mt-1 text-sm text-gray-600">Placed {formatOrderDate(order.date)}</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+            Placed {formatOrderDate(order.date)}
+          </p>
         </div>
         <BackButton href={backHref}>All orders</BackButton>
       </div>
@@ -63,48 +67,54 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
 
       <div className="mt-6 grid gap-6 md:grid-cols-[minmax(0,1fr)_280px]">
         <section aria-labelledby="order-items" className="rounded-xl glass p-5 md:p-6">
-          <h2 id="order-items" className="text-lg text-gray-900">
+          <h2 id="order-items" className="text-lg text-gray-900 dark:text-slate-100">
             Items
           </h2>
-          <ul className="mt-3 divide-y divide-gray-100">
+          <ul className="mt-3 divide-y divide-gray-100 dark:divide-white/10">
             {order.items.map((item) => (
               <li
                 key={`${item.productId}-${item.variant ?? ''}`}
                 className="flex items-center gap-4 py-3"
               >
-                <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50 dark:bg-white/5">
                   <Image src={item.image} alt="" fill sizes="56px" className="object-contain p-1" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/products/${item.productId}`}
-                    className="block truncate rounded text-sm font-medium text-gray-900 hover:underline"
+                    className="block truncate rounded text-sm font-medium text-gray-900 dark:text-slate-100 hover:underline"
                   >
                     {item.title}
                   </Link>
-                  {item.variant && <p className="truncate text-xs text-gray-500">{item.variant}</p>}
-                  <p className="text-sm tabular-nums text-gray-500">
+                  {item.variant && (
+                    <p className="truncate text-xs text-gray-500 dark:text-slate-400">
+                      {item.variant}
+                    </p>
+                  )}
+                  <p className="text-sm tabular-nums text-gray-500 dark:text-slate-400">
                     {item.quantity} × {formatPrice(item.price)}
                   </p>
                 </div>
-                <p className="text-sm font-semibold tabular-nums text-gray-900">
+                <p className="text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                   {formatPrice(item.price * item.quantity)}
                 </p>
               </li>
             ))}
           </ul>
-          <dl className="mt-3 space-y-2 border-t border-gray-100 pt-4 text-sm">
+          <dl className="mt-3 space-y-2 border-t border-gray-100 dark:border-white/5 pt-4 text-sm">
             <div className="flex justify-between">
-              <dt className="text-gray-600">Items</dt>
-              <dd className="tabular-nums text-gray-900">{formatPrice(subTotal)}</dd>
+              <dt className="text-gray-600 dark:text-slate-400">Items</dt>
+              <dd className="tabular-nums text-gray-900 dark:text-slate-100">
+                {formatPrice(subTotal)}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-gray-600">Delivery and VAT</dt>
-              <dd className="tabular-nums text-gray-900">
+              <dt className="text-gray-600 dark:text-slate-400">Delivery and VAT</dt>
+              <dd className="tabular-nums text-gray-900 dark:text-slate-100">
                 {formatPrice(Math.max(order.totalAmount - subTotal, 0))}
               </dd>
             </div>
-            <div className="flex justify-between border-t border-gray-100 pt-3 text-base font-semibold">
+            <div className="flex justify-between border-t border-gray-100 dark:border-white/5 pt-3 text-base font-semibold">
               <dt>Total</dt>
               <dd className="tabular-nums">{formatPrice(order.totalAmount)}</dd>
             </div>
@@ -115,32 +125,36 @@ const CustomerOrderDetails = ({ backHref }: { backHref: string }) => {
           <section aria-labelledby="order-address" className="rounded-xl glass p-5">
             <h2
               id="order-address"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-100"
             >
-              <MapPin className="size-4 text-gray-400" aria-hidden="true" />
+              <MapPin className="size-4 text-gray-400 dark:text-slate-500" aria-hidden="true" />
               Delivery to {order.address.label.toLowerCase()}
             </h2>
-            <p className="mt-2 text-sm text-gray-700">{order.address.name}</p>
-            <p className="text-sm text-gray-600">{order.address.line}</p>
-            <p className="text-sm tabular-nums text-gray-500">{order.address.phone}</p>
+            <p className="mt-2 text-sm text-gray-700 dark:text-slate-300">{order.address.name}</p>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{order.address.line}</p>
+            <p className="text-sm tabular-nums text-gray-500 dark:text-slate-400">
+              {order.address.phone}
+            </p>
           </section>
           <section aria-labelledby="order-payment" className="rounded-xl glass p-5">
             <h2
               id="order-payment"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-100"
             >
-              <CreditCard className="size-4 text-gray-400" aria-hidden="true" />
+              <CreditCard className="size-4 text-gray-400 dark:text-slate-500" aria-hidden="true" />
               Payment
             </h2>
-            <p className="mt-2 text-sm text-gray-700">
+            <p className="mt-2 text-sm text-gray-700 dark:text-slate-300">
               {PAYMENT_METHOD_LABELS[order.paymentMethod]}
             </p>
-            <p className="text-sm capitalize text-gray-500">{order.paymentStatus}</p>
+            <p className="text-sm capitalize text-gray-500 dark:text-slate-400">
+              {order.paymentStatus}
+            </p>
           </section>
 
           {canCancel && (
             <AlertDialog>
-              <AlertDialogTrigger className="h-11 w-full rounded-lg border border-red/30 bg-white text-sm font-medium text-red transition-colors hover:bg-red/5">
+              <AlertDialogTrigger className="h-11 w-full rounded-lg border border-red/30 bg-white dark:bg-slate-900 text-sm font-medium text-red transition-colors hover:bg-red/5">
                 Cancel order
               </AlertDialogTrigger>
               <AlertDialogContent>

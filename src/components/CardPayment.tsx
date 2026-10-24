@@ -74,7 +74,10 @@ const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       <div>
-        <Label htmlFor="cardNumber" className="text-sm font-medium text-gray-900">
+        <Label
+          htmlFor="cardNumber"
+          className="text-sm font-medium text-gray-900 dark:text-slate-100"
+        >
           Card number
         </Label>
         <Controller
@@ -99,7 +102,10 @@ const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void 
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="expiryDate" className="text-sm font-medium text-gray-900">
+          <Label
+            htmlFor="expiryDate"
+            className="text-sm font-medium text-gray-900 dark:text-slate-100"
+          >
             Expiry date
           </Label>
           <Controller
@@ -123,7 +129,7 @@ const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void 
         </div>
 
         <div>
-          <Label htmlFor="cvv" className="text-sm font-medium text-gray-900">
+          <Label htmlFor="cvv" className="text-sm font-medium text-gray-900 dark:text-slate-100">
             Security code
           </Label>
           <div className="relative mt-1.5">
@@ -149,7 +155,7 @@ const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void 
               type="button"
               onClick={() => setShowCVV(!showCVV)}
               aria-label={showCVV ? 'Hide security code' : 'Show security code'}
-              className="absolute right-1 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 hover:text-gray-900"
+              className="absolute right-1 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100"
             >
               {showCVV ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
@@ -159,7 +165,10 @@ const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void 
       </div>
 
       <div>
-        <Label htmlFor="cardholderName" className="text-sm font-medium text-gray-900">
+        <Label
+          htmlFor="cardholderName"
+          className="text-sm font-medium text-gray-900 dark:text-slate-100"
+        >
           Name on card
         </Label>
         <Controller
@@ -193,7 +202,10 @@ const CardPayment = ({ payable, onPaid }: { payable: number; onPaid: () => void 
             />
           )}
         />
-        <Label htmlFor="saveCard" className="cursor-pointer text-sm font-normal text-gray-700">
+        <Label
+          htmlFor="saveCard"
+          className="cursor-pointer text-sm font-normal text-gray-700 dark:text-slate-300"
+        >
           Save this card for next time
         </Label>
       </div>

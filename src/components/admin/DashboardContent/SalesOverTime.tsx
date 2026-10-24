@@ -49,7 +49,7 @@ const SalesOverTime = ({ timeRange, className }: { timeRange: TimeRange; classNa
         <div
           role="radiogroup"
           aria-label="Measure"
-          className="flex h-9 items-center rounded-full bg-gray-100/90 p-1"
+          className="flex h-9 items-center rounded-full bg-gray-100/90 dark:bg-white/10 p-1"
         >
           {METRICS.map((option) => (
             <button
@@ -61,8 +61,8 @@ const SalesOverTime = ({ timeRange, className }: { timeRange: TimeRange; classNa
               className={cn(
                 'h-7 rounded-full px-3 text-sm font-medium transition-colors',
                 metric === option.value
-                  ? 'bg-white text-gray-900 shadow-[0_1px_3px_rgb(15_23_42_/_0.12)]'
-                  : 'text-gray-600 hover:text-gray-900',
+                  ? 'bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 shadow-[0_1px_3px_rgb(15_23_42_/_0.12)]'
+                  : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100',
               )}
             >
               {option.label}
@@ -73,15 +73,18 @@ const SalesOverTime = ({ timeRange, className }: { timeRange: TimeRange; classNa
     >
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <p className="text-3xl font-semibold tracking-tight text-gray-900">
+          <p className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-slate-100">
             {metric === 'revenue' ? formatCompactPrice(total) : total.toLocaleString('en-US')}
           </p>
-          <p className="mt-1 flex flex-wrap items-center gap-1.5 text-sm text-gray-600">
+          <p className="mt-1 flex flex-wrap items-center gap-1.5 text-sm text-gray-600 dark:text-slate-400">
             <Delta value={changeFrom(total, totals[prevKey])} />
             vs {range.previous}
           </p>
         </div>
-        <ul className="flex flex-wrap gap-4 text-xs text-gray-600" aria-label="Legend">
+        <ul
+          className="flex flex-wrap gap-4 text-xs text-gray-600 dark:text-slate-400"
+          aria-label="Legend"
+        >
           <li className="flex items-center gap-1.5">
             <span className="size-2.5 rounded-[3px]" style={{ background: CHART.current }} />
             {range.label}
@@ -160,7 +163,7 @@ const SalesOverTime = ({ timeRange, className }: { timeRange: TimeRange; classNa
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={{ r: 4, fill: CHART.previous, stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: CHART.previous, stroke: 'var(--card)', strokeWidth: 2 }}
             />
           </ComposedChart>
         </ResponsiveContainer>

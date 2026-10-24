@@ -109,7 +109,7 @@ const Products = () => {
           <div className="flex flex-wrap gap-2">
             <Link
               href="/admin/products/bulk-edit"
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900"
             >
               <Sheet className="size-4" aria-hidden="true" />
               Bulk edit

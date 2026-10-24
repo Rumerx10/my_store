@@ -64,7 +64,7 @@ const ProductImgCarousel = ({
               type="button"
               onClick={() => mainSwiper?.slidePrev()}
               disabled={activeIndex === 0}
-              className="absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-card transition-opacity hover:bg-white disabled:opacity-0"
+              className="absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 dark:bg-slate-900/90 text-gray-700 dark:text-slate-300 shadow-card transition-opacity hover:bg-white dark:hover:bg-slate-900 disabled:opacity-0"
               aria-label="Previous image"
             >
               <ChevronLeft className="size-5" />
@@ -73,7 +73,7 @@ const ProductImgCarousel = ({
               type="button"
               onClick={() => mainSwiper?.slideNext()}
               disabled={activeIndex === slides.length - 1}
-              className="absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-card transition-opacity hover:bg-white disabled:opacity-0"
+              className="absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 dark:bg-slate-900/90 text-gray-700 dark:text-slate-300 shadow-card transition-opacity hover:bg-white dark:hover:bg-slate-900 disabled:opacity-0"
               aria-label="Next image"
             >
               <ChevronRight className="size-5" />
@@ -100,10 +100,10 @@ const ProductImgCarousel = ({
                 aria-label={`Show image ${index + 1}`}
                 aria-current={activeIndex === index}
                 className={cn(
-                  'relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-gray-50 transition-colors',
+                  'relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-gray-50 dark:bg-white/5 transition-colors',
                   activeIndex === index
                     ? 'border-brand'
-                    : 'border-transparent hover:border-gray-300',
+                    : 'border-transparent hover:border-gray-300 dark:hover:border-white/15',
                 )}
               >
                 <Image fill src={src} sizes="96px" className="object-contain p-1.5" alt="" />

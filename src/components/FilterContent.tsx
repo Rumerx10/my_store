@@ -9,8 +9,10 @@ import { formatPrice } from '@/lib/utils';
 const checkboxClass = 'data-[state=checked]:border-brand data-[state=checked]:bg-brand';
 
 const FilterGroup = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <fieldset className="border-t border-gray-100 pt-5 first:border-t-0 first:pt-0">
-    <legend className="mb-3 text-sm font-semibold text-gray-900">{title}</legend>
+  <fieldset className="border-t border-gray-100 dark:border-white/5 pt-5 first:border-t-0 first:pt-0">
+    <legend className="mb-3 text-sm font-semibold text-gray-900 dark:text-slate-100">
+      {title}
+    </legend>
     {children}
   </fieldset>
 );
@@ -29,7 +31,7 @@ const FilterContent = ({
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-gray-900">Filters</h2>
+        <h2 className="text-base font-semibold text-gray-900 dark:text-slate-100">Filters</h2>
         <button
           type="button"
           onClick={clearAllFilters}
@@ -51,7 +53,7 @@ const FilterContent = ({
               />
               <Label
                 htmlFor={`category-${category}`}
-                className="cursor-pointer text-sm font-normal text-gray-700"
+                className="cursor-pointer text-sm font-normal text-gray-700 dark:text-slate-300"
               >
                 {categoryLabel(category)}
               </Label>
@@ -72,7 +74,7 @@ const FilterContent = ({
               />
               <Label
                 htmlFor={`brand-${brand}`}
-                className="cursor-pointer text-sm font-normal text-gray-700"
+                className="cursor-pointer text-sm font-normal text-gray-700 dark:text-slate-300"
               >
                 {brand}
               </Label>
@@ -89,11 +91,11 @@ const FilterContent = ({
           min={0}
           step={10}
           aria-label="Price range"
-          className="my-2 [&_[role=slider]]:size-5 [&_[role=slider]]:border-brand [&_[role=slider]]:bg-white [&_[role=slider]]:shadow-card"
+          className="my-2 [&_[role=slider]]:size-5 [&_[role=slider]]:border-brand [&_[role=slider]]:bg-white dark:[&_[role=slider]]:bg-slate-900 [&_[role=slider]]:shadow-card"
         />
-        <div className="mt-3 flex items-center justify-between text-sm tabular-nums text-gray-700">
+        <div className="mt-3 flex items-center justify-between text-sm tabular-nums text-gray-700 dark:text-slate-300">
           <span>{formatPrice(priceRange[0])}</span>
-          <span className="text-gray-400">to</span>
+          <span className="text-gray-400 dark:text-slate-500">to</span>
           <span>{formatPrice(priceRange[1])}</span>
         </div>
       </FilterGroup>
@@ -106,7 +108,10 @@ const FilterContent = ({
             onCheckedChange={(checked) => setShowInStockOnly(checked === true)}
             className={checkboxClass}
           />
-          <Label htmlFor="in-stock" className="cursor-pointer text-sm font-normal text-gray-700">
+          <Label
+            htmlFor="in-stock"
+            className="cursor-pointer text-sm font-normal text-gray-700 dark:text-slate-300"
+          >
             In stock only
           </Label>
         </div>

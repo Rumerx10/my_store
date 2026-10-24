@@ -12,7 +12,7 @@ const FeaturedBanners = () => {
             <Link
               href={banner.href}
               aria-label={banner.label}
-              className="group block overflow-hidden rounded-3xl border border-white/70 shadow-lift"
+              className="group block overflow-hidden rounded-3xl border border-white/70 dark:border-white/10 shadow-lift"
             >
               <div className="relative aspect-[768/800] md:hidden">
                 <Image

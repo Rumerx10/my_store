@@ -15,14 +15,16 @@ const MobilePayment = ({
 }) => {
   return (
     <div>
-      <p className="text-sm text-gray-600">Choose your mobile banking provider.</p>
+      <p className="text-sm text-gray-600 dark:text-slate-400">
+        Choose your mobile banking provider.
+      </p>
       <div className="mt-4 grid grid-cols-3 gap-3">
         {MOBILE_PROVIDERS.map((provider) => (
           <button
             key={provider.id}
             type="button"
             onClick={() => handleMobileBankingClick(provider.id)}
-            className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 p-4 transition-colors hover:border-brand hover:bg-brand-soft/60"
+            className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 p-4 transition-colors hover:border-brand hover:bg-brand-soft/60"
           >
             <Image
               src={provider.logo}
@@ -31,7 +33,9 @@ const MobilePayment = ({
               height={48}
               className="h-10 w-auto object-contain"
             />
-            <span className="text-sm font-medium text-gray-900">{provider.name}</span>
+            <span className="text-sm font-medium text-gray-900 dark:text-slate-100">
+              {provider.name}
+            </span>
           </button>
         ))}
       </div>

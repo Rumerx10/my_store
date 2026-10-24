@@ -8,7 +8,7 @@ const CountBadge = ({ count, className }: { count: number; className?: string })
     <span
       aria-hidden="true"
       className={cn(
-        'absolute right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red px-1 text-[11px] font-semibold tabular-nums leading-none text-white ring-2 ring-white',
+        'absolute right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red px-1 text-[11px] font-semibold tabular-nums leading-none text-white ring-2 ring-white dark:ring-slate-900',
         className,
       )}
     >

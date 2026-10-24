@@ -56,13 +56,13 @@ const StatTile = ({
 }) => (
   <div className="flex h-full flex-col rounded-xl glass p-4 md:p-5">
     <div className="flex items-center justify-between gap-3">
-      <p className="text-sm text-gray-600">{title}</p>
-      <Icon className="size-4 shrink-0 text-gray-400" aria-hidden="true" />
+      <p className="text-sm text-gray-600 dark:text-slate-400">{title}</p>
+      <Icon className="size-4 shrink-0 text-gray-400 dark:text-slate-500" aria-hidden="true" />
     </div>
-    <p className="mt-2 break-words text-xl font-semibold tracking-tight text-gray-900 md:text-2xl">
+    <p className="mt-2 break-words text-xl font-semibold tracking-tight text-gray-900 dark:text-slate-100 md:text-2xl">
       {value}
     </p>
-    <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
+    <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
       <Delta value={change} suffix={changeSuffix} />
       <span>vs {previous}</span>
     </p>
@@ -70,7 +70,7 @@ const StatTile = ({
       {trend ? (
         <Sparkline values={trend} />
       ) : (
-        <p className="flex h-8 items-end text-xs text-gray-500">{note}</p>
+        <p className="flex h-8 items-end text-xs text-gray-500 dark:text-slate-400">{note}</p>
       )}
     </div>
   </div>

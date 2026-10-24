@@ -18,7 +18,7 @@ const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
   const last = Math.min((pageIndex + 1) * pageSize, total);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200/80 px-4 py-3 text-sm text-gray-600 md:px-5">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200/80 dark:border-white/10 px-4 py-3 text-sm text-gray-600 dark:text-slate-400 md:px-5">
       <div className="flex items-center gap-2">
         <span id="rows-per-page">Rows</span>
         <Select value={`${pageSize}`} onValueChange={(value) => table.setPageSize(Number(value))}>

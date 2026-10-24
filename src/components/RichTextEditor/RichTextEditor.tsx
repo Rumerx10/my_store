@@ -133,8 +133,8 @@ export default function RichTextEditor({
   return (
     <div
       className={cn(
-        'rich-text-editor rounded-xl border bg-white/90 transition-[border-color,box-shadow] focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/15',
-        invalid ? 'border-red' : 'border-gray-300',
+        'rich-text-editor rounded-xl border bg-white/90 dark:bg-slate-900/90 transition-[border-color,box-shadow] focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/15',
+        invalid ? 'border-red' : 'border-gray-300 dark:border-white/15',
       )}
     >
       <Toolbar
@@ -161,10 +161,12 @@ export default function RichTextEditor({
         <EditorContent editor={editor} />
       ) : (
         // Placeholder with the editor's height while it loads on the client.
-        <div className="min-h-56 px-4 py-4 text-gray-400 md:px-5">{placeholder}</div>
+        <div className="min-h-56 px-4 py-4 text-gray-400 dark:text-slate-500 md:px-5">
+          {placeholder}
+        </div>
       )}
 
-      <div className="flex items-center justify-between gap-3 rounded-b-xl border-t border-gray-100 px-4 py-2 text-xs text-gray-500">
+      <div className="flex items-center justify-between gap-3 rounded-b-xl border-t border-gray-100 dark:border-white/5 px-4 py-2 text-xs text-gray-500 dark:text-slate-400">
         <span>
           {sourceMode
             ? 'Editing HTML. Unsupported tags are removed when you switch back.'

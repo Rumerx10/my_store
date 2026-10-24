@@ -37,9 +37,12 @@ export default function ProductDetails() {
   return (
     <div className="container py-5 md:py-8">
       <nav aria-label="Breadcrumb" className="mb-5 text-sm">
-        <ol className="flex min-w-0 items-center gap-1.5 text-gray-500">
+        <ol className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-slate-400">
           <li>
-            <Link href="/" className="rounded transition-colors hover:text-gray-900">
+            <Link
+              href="/"
+              className="rounded transition-colors hover:text-gray-900 dark:hover:text-slate-100"
+            >
               Home
             </Link>
           </li>
@@ -47,14 +50,17 @@ export default function ProductDetails() {
             <ChevronRight className="size-3.5 shrink-0" aria-hidden="true" />
             <Link
               href={`/products?category=${product.category}`}
-              className="rounded transition-colors hover:text-gray-900"
+              className="rounded transition-colors hover:text-gray-900 dark:hover:text-slate-100"
             >
               {categoryLabel(product.category)}
             </Link>
           </li>
           <li className="flex min-w-0 items-center gap-1.5">
             <ChevronRight className="size-3.5 shrink-0" aria-hidden="true" />
-            <span aria-current="page" className="truncate font-medium text-gray-900">
+            <span
+              aria-current="page"
+              className="truncate font-medium text-gray-900 dark:text-slate-100"
+            >
               {product.title}
             </span>
           </li>

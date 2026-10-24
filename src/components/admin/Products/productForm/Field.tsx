@@ -18,12 +18,12 @@ const Field = ({
   children: React.ReactNode;
 }) => (
   <div className={cn('space-y-1.5', className)}>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-900">
+    <label htmlFor={id} className="block text-sm font-medium text-gray-900 dark:text-slate-100">
       {label}
     </label>
     {children}
     {hint && !error && (
-      <p id={`${id}-hint`} className="text-xs text-gray-500">
+      <p id={`${id}-hint`} className="text-xs text-gray-500 dark:text-slate-400">
         {hint}
       </p>
     )}
@@ -45,13 +45,13 @@ export const fieldAria = (id: string, error?: string, hasHint = false) => ({
 });
 
 export const inputClass =
-  'h-10 w-full rounded-lg border border-gray-300 bg-white/90 px-3 text-sm text-gray-900 outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 focus:border-brand focus:ring-3 focus:ring-brand/15 aria-invalid:border-red aria-invalid:focus:ring-red/15';
+  'h-10 w-full rounded-lg border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-3 text-sm text-gray-900 dark:text-slate-100 outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-brand focus:ring-3 focus:ring-brand/15 aria-invalid:border-red aria-invalid:focus:ring-red/15';
 
 // Number input with a currency prefix. React 19 passes `ref` through as a normal prop.
 export const MoneyInput = ({ className, ...props }: React.ComponentProps<'input'>) => (
   <div className="relative">
     <span
-      className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-gray-500"
+      className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-gray-500 dark:text-slate-400"
       aria-hidden="true"
     >
       ৳

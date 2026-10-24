@@ -46,12 +46,12 @@ const SORT_OPTIONS = [
 ];
 
 const Chip = ({ label, onRemove }: { label: string; onRemove: () => void }) => (
-  <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white py-1 pl-3 pr-1 text-sm text-gray-700">
+  <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 py-1 pl-3 pr-1 text-sm text-gray-700 dark:text-slate-300">
     {label}
     <button
       type="button"
       onClick={onRemove}
-      className="flex size-6 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+      className="flex size-6 items-center justify-center rounded-full text-gray-400 dark:text-slate-500 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-slate-300"
       aria-label={`Remove filter: ${label}`}
     >
       <X className="size-3.5" />
@@ -181,8 +181,8 @@ const Products = () => {
     <div className="container py-6 md:py-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-2xl text-gray-900 md:text-3xl">{title}</h1>
-          <p className="mt-1 text-sm text-gray-600" aria-live="polite">
+          <h1 className="text-2xl text-gray-900 dark:text-slate-100 md:text-3xl">{title}</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400" aria-live="polite">
             {count} {count === 1 ? 'product' : 'products'}
           </p>
         </div>
@@ -206,7 +206,7 @@ const Products = () => {
 
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger
-              className="h-10 w-full min-w-48 bg-white md:w-56"
+              className="h-10 w-full min-w-48 bg-white dark:bg-slate-900 md:w-56"
               aria-label="Sort products"
             >
               <SelectValue placeholder="Sort by" />
@@ -266,12 +266,14 @@ const Products = () => {
 
         <section aria-label="Products" className="min-w-0 flex-1">
           {count === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sky-300 bg-white/55 backdrop-blur-xl px-6 py-16 text-center">
-              <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-gray-100">
-                <Search className="size-6 text-gray-400" />
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sky-300 dark:border-sky-500/40 bg-white/55 dark:bg-slate-900/55 backdrop-blur-xl px-6 py-16 text-center">
+              <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10">
+                <Search className="size-6 text-gray-400 dark:text-slate-500" />
               </div>
-              <h2 className="text-lg font-semibold text-gray-900">No products match</h2>
-              <p className="mt-1 max-w-sm text-sm text-gray-600">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+                No products match
+              </h2>
+              <p className="mt-1 max-w-sm text-sm text-gray-600 dark:text-slate-400">
                 Try a different search term, or remove a filter to see more products.
               </p>
               <Button className="mt-5" variant="outline" onClick={clearAllFilters}>

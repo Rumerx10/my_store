@@ -63,9 +63,9 @@ const Reviews = () => {
       />
 
       {reviews.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
-          <Star className="mx-auto size-10 text-gray-300" aria-hidden="true" />
-          <p className="mt-3 font-medium text-gray-900">No reviews yet</p>
+        <div className="rounded-xl border border-dashed border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 px-6 py-14 text-center">
+          <Star className="mx-auto size-10 text-gray-300 dark:text-slate-600" aria-hidden="true" />
+          <p className="mt-3 font-medium text-gray-900 dark:text-slate-100">No reviews yet</p>
           <Link
             href="/profile/to-review"
             className="mt-1 inline-block rounded text-sm font-medium text-brand hover:text-brand-hover"
@@ -78,7 +78,7 @@ const Reviews = () => {
           {reviews.map((review) => (
             <li key={review.id} className="rounded-xl glass p-5 md:p-6">
               <div className="flex items-center gap-4">
-                <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-gray-50 dark:bg-white/5">
                   <Image
                     src={review.productImage}
                     alt=""
@@ -90,28 +90,32 @@ const Reviews = () => {
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/products/${review.productId}`}
-                    className="block truncate rounded font-medium text-gray-900 hover:underline"
+                    className="block truncate rounded font-medium text-gray-900 dark:text-slate-100 hover:underline"
                   >
                     {review.productName}
                   </Link>
                   <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                     <Rating value={review.rating} />
-                    <span className="text-xs text-gray-500">{review.date}</span>
+                    <span className="text-xs text-gray-500 dark:text-slate-400">{review.date}</span>
                   </div>
                 </div>
               </div>
 
-              <h3 className="mt-4 font-semibold text-gray-900">{review.title}</h3>
-              <p className="mt-1 text-[15px] leading-relaxed text-gray-700">{review.content}</p>
+              <h3 className="mt-4 font-semibold text-gray-900 dark:text-slate-100">
+                {review.title}
+              </h3>
+              <p className="mt-1 text-[15px] leading-relaxed text-gray-700 dark:text-slate-300">
+                {review.content}
+              </p>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
-                <span className="text-sm text-gray-500">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 dark:border-white/5 pt-4">
+                <span className="text-sm text-gray-500 dark:text-slate-400">
                   {review.helpful} {review.helpful === 1 ? 'person' : 'people'} found this helpful
                 </span>
                 <div className="flex gap-2">
                   <Link
                     href={`/products/${review.productId}`}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-300 dark:border-white/15 px-3 text-sm font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                   >
                     <Pencil className="size-3.5" aria-hidden="true" />
                     Edit
@@ -119,7 +123,7 @@ const Reviews = () => {
                   <button
                     type="button"
                     onClick={() => handleDelete(review)}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-300 px-3 text-sm font-medium text-red transition-colors hover:bg-red/5"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-300 dark:border-white/15 px-3 text-sm font-medium text-red transition-colors hover:bg-red/5"
                   >
                     <Trash2 className="size-3.5" aria-hidden="true" />
                     Delete

@@ -17,7 +17,9 @@ const CustomerSegments = ({
 
   return (
     <Panel title="Homes vs businesses" className={className}>
-      <p className="-mt-2 mb-4 text-sm text-gray-600">Share of revenue by customer type.</p>
+      <p className="-mt-2 mb-4 text-sm text-gray-600 dark:text-slate-400">
+        Share of revenue by customer type.
+      </p>
       {/* 2px gap between the segments instead of a border. */}
       <div
         className="flex h-4 gap-0.5"
@@ -32,11 +34,11 @@ const CustomerSegments = ({
           />
         ))}
       </div>
-      <ul className="mt-4 divide-y divide-gray-100">
+      <ul className="mt-4 divide-y divide-gray-100 dark:divide-white/10">
         {segments.map((segment) => (
           <li key={segment.key} className="py-3 first:pt-0 last:pb-0">
             <div className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2 text-sm font-medium text-gray-900">
+              <span className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-slate-100">
                 <span
                   className="size-2.5 rounded-[3px]"
                   style={{ background: COLORS[segment.key] }}
@@ -45,13 +47,13 @@ const CustomerSegments = ({
                 {segment.label}
               </span>
               <span className="flex items-center gap-2">
-                <span className="text-sm font-semibold tabular-nums text-gray-900">
+                <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                   {segment.share.toFixed(0)}%
                 </span>
                 <Delta value={segment.shareChange} suffix=" pts" />
               </span>
             </div>
-            <p className="mt-1 pl-[1.125rem] text-xs text-gray-500">
+            <p className="mt-1 pl-[1.125rem] text-xs text-gray-500 dark:text-slate-400">
               {formatCompactPrice(segment.revenue)} from {segment.orders.toLocaleString('en-US')}{' '}
               orders · {formatCompactPrice(segment.averageOrder)} average
             </p>

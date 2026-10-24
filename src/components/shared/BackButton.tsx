@@ -15,7 +15,7 @@ const BackButton = ({
   <Link
     href={href}
     className={cn(
-      'inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-gray-300 bg-white/90 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-white',
+      'inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900',
       className,
     )}
   >

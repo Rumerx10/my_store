@@ -25,7 +25,12 @@ const profileSchema = yup.object({
 
 type ProfileFormData = yup.InferType<typeof profileSchema>;
 
-const FIELDS: { name: keyof ProfileFormData; label: string; type?: string; autoComplete: string }[] = [
+const FIELDS: {
+  name: keyof ProfileFormData;
+  label: string;
+  type?: string;
+  autoComplete: string;
+}[] = [
   { name: 'firstName', label: 'First name', autoComplete: 'given-name' },
   { name: 'lastName', label: 'Last name', autoComplete: 'family-name' },
   { name: 'email', label: 'Email', type: 'email', autoComplete: 'email' },
@@ -84,7 +89,7 @@ const Profile = () => {
       <PageHeading title="Profile" desc="Your personal details and how we contact you." />
 
       <section className="rounded-xl glass">
-        <div className="flex flex-col items-center gap-5 border-b border-gray-100 p-5 sm:flex-row md:p-6">
+        <div className="flex flex-col items-center gap-5 border-b border-gray-100 dark:border-white/5 p-5 sm:flex-row md:p-6">
           <div className="relative">
             <Avatar className="size-20">
               <AvatarImage src={image} alt="" className="object-cover" />
@@ -93,23 +98,28 @@ const Profile = () => {
                 {profileData.lastName.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <label className="absolute -bottom-1 -right-1 flex size-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-brand text-white transition-colors hover:bg-brand-hover focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
+            <label className="absolute -bottom-1 -right-1 flex size-8 cursor-pointer items-center justify-center rounded-full border-2 border-white dark:border-white/10 bg-brand text-white transition-colors hover:bg-brand-hover focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
               <Camera className="size-4" aria-hidden="true" />
               <span className="sr-only">Change profile photo</span>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="sr-only" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="sr-only"
+              />
             </label>
           </div>
           <div className="flex-1 text-center sm:text-left">
-            <h2 className="text-xl text-gray-900">
+            <h2 className="text-xl text-gray-900 dark:text-slate-100">
               {profileData.firstName} {profileData.lastName}
             </h2>
-            <p className="text-sm text-gray-600">{profileData.email}</p>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{profileData.email}</p>
           </div>
           {!isEditing && (
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 dark:border-white/15 px-4 text-sm font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
             >
               <Pencil className="size-4" aria-hidden="true" />
               Edit details
@@ -123,7 +133,10 @@ const Profile = () => {
               <div className="grid gap-5 sm:grid-cols-2">
                 {FIELDS.map((field) => (
                   <div key={field.name}>
-                    <Label htmlFor={field.name} className="text-sm font-medium text-gray-900">
+                    <Label
+                      htmlFor={field.name}
+                      className="text-sm font-medium text-gray-900 dark:text-slate-100"
+                    >
                       {field.label}
                     </Label>
                     <Input
@@ -153,7 +166,7 @@ const Profile = () => {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="h-11 rounded-lg border border-gray-300 px-5 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                  className="h-11 rounded-lg border border-gray-300 dark:border-white/15 px-5 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                 >
                   Cancel
                 </button>
@@ -163,8 +176,10 @@ const Profile = () => {
             <dl className="grid gap-5 sm:grid-cols-2">
               {FIELDS.map((field) => (
                 <div key={field.name}>
-                  <dt className="text-sm text-gray-500">{field.label}</dt>
-                  <dd className="mt-1 font-medium text-gray-900">{profileData[field.name]}</dd>
+                  <dt className="text-sm text-gray-500 dark:text-slate-400">{field.label}</dt>
+                  <dd className="mt-1 font-medium text-gray-900 dark:text-slate-100">
+                    {profileData[field.name]}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -175,8 +190,8 @@ const Profile = () => {
       <dl className="mt-6 grid grid-cols-3 gap-3 md:gap-4">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-xl glass p-4 md:p-5">
-            <dt className="text-xs text-gray-500 md:text-sm">{stat.label}</dt>
-            <dd className="mt-1 text-xl font-semibold tabular-nums text-gray-900 md:text-2xl">
+            <dt className="text-xs text-gray-500 dark:text-slate-400 md:text-sm">{stat.label}</dt>
+            <dd className="mt-1 text-xl font-semibold tabular-nums text-gray-900 dark:text-slate-100 md:text-2xl">
               {stat.value}
             </dd>
           </div>

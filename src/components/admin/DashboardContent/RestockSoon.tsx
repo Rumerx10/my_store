@@ -33,14 +33,14 @@ const RestockSoon = ({ className }: { className?: string }) => {
         </Link>
       }
     >
-      <ul className="divide-y divide-gray-100">
+      <ul className="divide-y divide-gray-100 dark:divide-white/10">
         {rows.map(({ product, perDay, daysLeft }) => {
           const urgent = daysLeft < 7;
           const soon = !urgent && daysLeft < 21;
           const Icon = urgent ? CircleAlert : Clock;
           return (
             <li key={product.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-              <span className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-gray-200">
+              <span className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white dark:bg-slate-900 ring-1 ring-gray-200 dark:ring-white/10">
                 <Image
                   src={product.thumbnail || '/placeholder.svg'}
                   alt=""
@@ -52,11 +52,11 @@ const RestockSoon = ({ className }: { className?: string }) => {
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/admin/products/edit-product/${product.id}`}
-                  className="block truncate text-sm font-medium text-gray-900 hover:text-brand"
+                  className="block truncate text-sm font-medium text-gray-900 dark:text-slate-100 hover:text-brand"
                 >
                   {product.title}
                 </Link>
-                <p className="text-xs tabular-nums text-gray-500">
+                <p className="text-xs tabular-nums text-gray-500 dark:text-slate-400">
                   {product.stock} in stock · sells about {perDay}/day
                 </p>
               </div>

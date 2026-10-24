@@ -32,17 +32,21 @@ const BusiestTimes = ({ className }: { className?: string }) => {
 
   return (
     <Panel title="Busiest times" className={className}>
-      <p className="-mt-2 mb-4 text-sm text-gray-600">
+      <p className="-mt-2 mb-4 text-sm text-gray-600 dark:text-slate-400">
         Orders by day and time over the last 8 weeks. Run offers and ads just before the peaks.
       </p>
 
-      <p className="mb-3 h-5 text-sm text-gray-700" aria-live="polite">
+      <p className="mb-3 h-5 text-sm text-gray-700 dark:text-slate-300" aria-live="polite">
         {active ? (
-          <span className="font-semibold text-gray-900">{describe(active.day, active.slot)}</span>
+          <span className="font-semibold text-gray-900 dark:text-slate-100">
+            {describe(active.day, active.slot)}
+          </span>
         ) : (
           <>
             Busiest:{' '}
-            <span className="font-semibold text-gray-900">{describe(shown.day, shown.slot)}</span>
+            <span className="font-semibold text-gray-900 dark:text-slate-100">
+              {describe(shown.day, shown.slot)}
+            </span>
           </>
         )}
       </p>
@@ -58,14 +62,17 @@ const BusiestTimes = ({ className }: { className?: string }) => {
           <span
             key={slot}
             role="columnheader"
-            className="pb-1 text-center text-[11px] tabular-nums text-gray-500"
+            className="pb-1 text-center text-[11px] tabular-nums text-gray-500 dark:text-slate-400"
           >
             {slot}
           </span>
         ))}
         {ORDERS_HEATMAP.map((row, day) => (
           <div key={HEATMAP_DAYS[day]} role="row" className="contents">
-            <span role="rowheader" className="flex items-center text-xs text-gray-600">
+            <span
+              role="rowheader"
+              className="flex items-center text-xs text-gray-600 dark:text-slate-400"
+            >
               {HEATMAP_DAYS[day]}
             </span>
             {row.map((value, slot) => {
@@ -82,7 +89,7 @@ const BusiestTimes = ({ className }: { className?: string }) => {
                   onBlur={() => setActive(null)}
                   className={cn(
                     'h-8 rounded-[4px] outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 md:h-9',
-                    isActive && 'ring-2 ring-gray-900/70 ring-offset-1',
+                    isActive && 'ring-2 ring-gray-900/70 ring-offset-1 dark:ring-white/70',
                   )}
                   style={{ background: BLUE_RAMP[level] }}
                 />
@@ -92,7 +99,7 @@ const BusiestTimes = ({ className }: { className?: string }) => {
         ))}
       </div>
 
-      <div className="mt-3 flex items-center justify-end gap-2 text-[11px] text-gray-500">
+      <div className="mt-3 flex items-center justify-end gap-2 text-[11px] text-gray-500 dark:text-slate-400">
         Fewer
         <span className="flex gap-0.5" aria-hidden="true">
           {BLUE_RAMP.map((color) => (

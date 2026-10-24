@@ -19,8 +19,8 @@ const AccountShell = ({ children }: { children: React.ReactNode }) => {
             className="size-11 rounded-full object-cover"
           />
           <div>
-            <p className="font-semibold text-gray-900">Tanvir Hasan</p>
-            <p className="text-xs text-gray-500">Member since 2023</p>
+            <p className="font-semibold text-gray-900 dark:text-slate-100">Tanvir Hasan</p>
+            <p className="text-xs text-gray-500 dark:text-slate-400">Member since 2023</p>
           </div>
         </div>
       }

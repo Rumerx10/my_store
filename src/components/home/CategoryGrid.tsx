@@ -19,7 +19,10 @@ const CategoryGrid = () => {
   return (
     <section aria-labelledby="shop-by-category" className="container mt-8 md:mt-12">
       <div className="rounded-3xl glass p-4 md:p-8">
-        <h2 id="shop-by-category" className="mb-5 text-2xl text-gray-900 md:mb-6 md:text-3xl">
+        <h2
+          id="shop-by-category"
+          className="mb-5 text-2xl text-gray-900 dark:text-slate-100 md:mb-6 md:text-3xl"
+        >
           Shop by category
         </h2>
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
@@ -40,10 +43,10 @@ const CategoryGrid = () => {
                     />
                   )}
                 </div>
-                <p className="mt-2 text-sm font-semibold text-gray-900">
+                <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-slate-100">
                   {categoryLabel(tile.category)}
                 </p>
-                <p className="text-xs tabular-nums text-gray-500">
+                <p className="text-xs tabular-nums text-gray-500 dark:text-slate-400">
                   {tile.count} {tile.count === 1 ? 'product' : 'products'}
                 </p>
               </Link>

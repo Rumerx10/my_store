@@ -55,7 +55,7 @@ const ClientDashboard = () => {
         }
       >
         {orders.length > 0 ? (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-100 dark:divide-white/10">
             {orders.slice(0, 4).map((order) => (
               <li key={order.id} className="py-3 first:pt-0 last:pb-0">
                 <Link
@@ -63,12 +63,16 @@ const ClientDashboard = () => {
                   className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded"
                 >
                   <div>
-                    <p className="text-sm font-medium tabular-nums text-gray-900">{order.id}</p>
-                    <p className="text-xs text-gray-500">Placed {formatOrderDate(order.date)}</p>
+                    <p className="text-sm font-medium tabular-nums text-gray-900 dark:text-slate-100">
+                      {order.id}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
+                      Placed {formatOrderDate(order.date)}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <OrderStatusBadge status={order.status} />
-                    <p className="text-sm font-semibold tabular-nums text-gray-900">
+                    <p className="text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                       {formatPrice(order.totalAmount)}
                     </p>
                   </div>
@@ -77,7 +81,7 @@ const ClientDashboard = () => {
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-slate-400">
             You haven&apos;t placed an order yet.{' '}
             <Link
               href="/products"

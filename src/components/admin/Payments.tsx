@@ -69,7 +69,8 @@ const Payments = () => {
     orders.filter((o) => o.paymentStatus === status).reduce((sum, o) => sum + o.amount, 0);
   const awaiting = orders.filter((o) => o.paymentStatus === 'pending');
   const cashDue = awaiting.filter((o) => o.paymentType === 'cod').length;
-  const headClass = 'h-11 bg-gray-50 px-4 text-xs font-medium text-gray-500';
+  const headClass =
+    'h-11 bg-gray-50 dark:bg-white/5 px-4 text-xs font-medium text-gray-500 dark:text-slate-400';
 
   // Every change can be undone from the toast, so there is no confirm step.
   const changeStatus = (order: Order, status: PaymentStatus) => {
@@ -140,14 +141,18 @@ const Payments = () => {
               onClick={() => setFilter(option.value)}
               className={cn(
                 'flex h-9 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors',
-                active ? 'bg-brand text-white' : 'text-gray-700 hover:bg-white/70',
+                active
+                  ? 'bg-brand text-white'
+                  : 'text-gray-700 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-900/70',
               )}
             >
               {option.label}
               <span
                 className={cn(
                   'rounded-full px-1.5 text-xs tabular-nums',
-                  active ? 'bg-white/20' : 'bg-gray-100 text-gray-600',
+                  active
+                    ? 'bg-white/20'
+                    : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-slate-400',
                 )}
               >
                 {count}
@@ -185,11 +190,13 @@ const Payments = () => {
                       {order.id}
                     </Link>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-600">
+                  <TableCell className="px-4 py-3 text-gray-600 dark:text-slate-400">
                     {formatOrderDate(order.date)}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-900">{order.buyerName}</TableCell>
-                  <TableCell className="px-4 py-3 text-gray-600">
+                  <TableCell className="px-4 py-3 text-gray-900 dark:text-slate-100">
+                    {order.buyerName}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-600 dark:text-slate-400">
                     {METHOD_LABELS[order.paymentType]}
                   </TableCell>
                   <TableCell className="px-4 py-2">
@@ -215,7 +222,7 @@ const Payments = () => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right font-medium tabular-nums text-gray-900">
+                  <TableCell className="px-4 py-3 text-right font-medium tabular-nums text-gray-900 dark:text-slate-100">
                     {formatPrice(order.amount)}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right">
@@ -229,7 +236,7 @@ const Payments = () => {
                         Cash received
                       </button>
                     ) : order.paymentStatus === 'paid' && order.paidAt ? (
-                      <span className="whitespace-nowrap text-xs text-gray-500">
+                      <span className="whitespace-nowrap text-xs text-gray-500 dark:text-slate-400">
                         Marked paid {formatOrderDate(order.paidAt)}
                       </span>
                     ) : null}
@@ -240,7 +247,7 @@ const Payments = () => {
           </TableBody>
         </Table>
         {shown.length === 0 && (
-          <p className="px-4 py-10 text-center text-sm text-gray-600">
+          <p className="px-4 py-10 text-center text-sm text-gray-600 dark:text-slate-400">
             No payments with this status.
           </p>
         )}

@@ -5,8 +5,10 @@ const NotFound = () => {
     <div className="container flex min-h-[60dvh] items-center justify-center py-16">
       <div className="w-full max-w-xl rounded-3xl glass p-8 md:p-12">
         <p className="text-sm font-medium tabular-nums text-brand">404</p>
-        <h1 className="mt-2 text-3xl text-gray-900 md:text-4xl">We can&apos;t find that page</h1>
-        <p className="mt-3 max-w-md text-gray-600">
+        <h1 className="mt-2 text-3xl text-gray-900 dark:text-slate-100 md:text-4xl">
+          We can&apos;t find that page
+        </h1>
+        <p className="mt-3 max-w-md text-gray-600 dark:text-slate-400">
           The link may be out of date, or the page may have moved. Try the home page or browse the
           catalog.
         </p>
@@ -19,7 +21,7 @@ const NotFound = () => {
           </Link>
           <Link
             href="/products"
-            className="rounded text-sm font-medium text-gray-900 underline decoration-gray-300 underline-offset-4 transition-colors hover:decoration-gray-900"
+            className="rounded text-sm font-medium text-gray-900 dark:text-slate-100 underline decoration-gray-300 dark:decoration-slate-600 underline-offset-4 transition-colors hover:decoration-gray-900 dark:hover:decoration-slate-100"
           >
             Browse all products
           </Link>

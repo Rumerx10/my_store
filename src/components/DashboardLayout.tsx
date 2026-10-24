@@ -26,8 +26,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       label={TITLES[role].name}
       header={
         <div>
-          <p className="font-semibold text-gray-900">{TITLES[role].name}</p>
-          <p className="text-xs text-gray-500">{TITLES[role].hint}</p>
+          <p className="font-semibold text-gray-900 dark:text-slate-100">{TITLES[role].name}</p>
+          <p className="text-xs text-gray-500 dark:text-slate-400">{TITLES[role].hint}</p>
         </div>
       }
     >

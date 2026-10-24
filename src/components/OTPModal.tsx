@@ -24,11 +24,16 @@ const OTPModal = ({
         handleOTPSubmit();
       }}
     >
-      <h3 className="text-lg font-semibold text-gray-900">Enter verification code</h3>
-      <p className="mt-1 text-sm text-gray-600">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+        Enter verification code
+      </h3>
+      <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
         We sent a 5-digit code to <span className="font-medium tabular-nums">{phoneNumber}</span>.
       </p>
-      <Label htmlFor="otp" className="mt-5 block text-sm font-medium text-gray-900">
+      <Label
+        htmlFor="otp"
+        className="mt-5 block text-sm font-medium text-gray-900 dark:text-slate-100"
+      >
         Verification code
       </Label>
       <Input
@@ -53,7 +58,7 @@ const OTPModal = ({
         <button
           type="button"
           onClick={onCancel}
-          className="h-11 flex-1 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+          className="h-11 flex-1 rounded-lg border border-gray-300 dark:border-white/15 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
         >
           Back
         </button>

@@ -44,7 +44,7 @@ const ErrorSummary = forwardRef<HTMLDivElement, { problems: FormProblem[] }>(
     >
       <h2
         id="form-errors-title"
-        className="flex items-center gap-2 text-sm font-semibold text-gray-900"
+        className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-100"
       >
         <AlertCircle className="size-4 text-red" aria-hidden="true" />
         {problems.length === 1

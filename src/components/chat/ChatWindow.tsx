@@ -30,35 +30,45 @@ const ChatWindow = ({ chat, messages, onSend, onBack }: ChatWindowProps) => {
   };
 
   return (
-    <section aria-label={`Conversation with ${chat.name}`} className="flex h-full min-w-0 flex-1 flex-col bg-white">
-      <header className="flex items-center justify-between gap-3 border-b border-gray-100 px-3 py-3 md:px-5">
+    <section
+      aria-label={`Conversation with ${chat.name}`}
+      className="flex h-full min-w-0 flex-1 flex-col bg-white dark:bg-slate-900"
+    >
+      <header className="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-white/5 px-3 py-3 md:px-5">
         <div className="flex min-w-0 items-center gap-2">
           {onBack && (
             <button
               type="button"
               onClick={onBack}
               aria-label="Back to conversations"
-              className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100"
+              className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/10"
             >
               <ArrowLeft className="size-5" />
             </button>
           )}
           <ChatAvatar chat={chat} size="sm" />
           <div className="min-w-0">
-            <h2 className="truncate text-[15px] font-semibold text-gray-900">{chat.name}</h2>
-            <p className="text-xs text-gray-500">{chat.isOnline ? 'Online' : chat.role}</p>
+            <h2 className="truncate text-[15px] font-semibold text-gray-900 dark:text-slate-100">
+              {chat.name}
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-slate-400">
+              {chat.isOnline ? 'Online' : chat.role}
+            </p>
           </div>
         </div>
         <button
           type="button"
           aria-label={`Call ${chat.name}`}
-          className="flex size-10 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100"
+          className="flex size-10 items-center justify-center rounded-lg text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/10"
         >
           <Phone className="size-5" />
         </button>
       </header>
 
-      <div className="flex-1 space-y-3 overflow-y-auto bg-gray-50 px-3 py-4 md:px-6" aria-live="polite">
+      <div
+        className="flex-1 space-y-3 overflow-y-auto bg-gray-50 dark:bg-white/5 px-3 py-4 md:px-6"
+        aria-live="polite"
+      >
         {messages.map((message) => (
           <div
             key={message.id}
@@ -69,14 +79,14 @@ const ChatWindow = ({ chat, messages, onSend, onBack }: ChatWindowProps) => {
                 'max-w-[80%] rounded-2xl px-3.5 py-2 md:max-w-md',
                 message.sender === 'user'
                   ? 'rounded-br-md bg-brand text-white'
-                  : 'rounded-bl-md border border-gray-200 bg-white text-gray-900',
+                  : 'rounded-bl-md border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100',
               )}
             >
               <p className="break-words text-sm">{message.text}</p>
               <p
                 className={cn(
                   'mt-1 text-right text-[11px]',
-                  message.sender === 'user' ? 'text-white/70' : 'text-gray-400',
+                  message.sender === 'user' ? 'text-white/70' : 'text-gray-400 dark:text-slate-500',
                 )}
               >
                 {message.timestamp}
@@ -87,11 +97,14 @@ const ChatWindow = ({ chat, messages, onSend, onBack }: ChatWindowProps) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-gray-100 px-3 py-3 md:px-5">
+      <form
+        onSubmit={handleSubmit}
+        className="flex items-center gap-2 border-t border-gray-100 dark:border-white/5 px-3 py-3 md:px-5"
+      >
         <button
           type="button"
           aria-label="Attach a file"
-          className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100"
+          className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/10"
         >
           <Paperclip className="size-5" />
         </button>
@@ -105,7 +118,7 @@ const ChatWindow = ({ chat, messages, onSend, onBack }: ChatWindowProps) => {
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="Write a message"
-          className="h-11 min-w-0 flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 text-sm text-gray-900 placeholder:text-gray-500 transition-colors focus:border-brand focus:bg-white focus:outline-none focus:ring-3 focus:ring-brand/15"
+          className="h-11 min-w-0 flex-1 rounded-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-500 dark:placeholder:text-slate-400 transition-colors focus:border-brand focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-3 focus:ring-brand/15"
         />
         <button
           type="submit"

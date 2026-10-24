@@ -70,9 +70,14 @@ const ToReview = () => {
       />
 
       {pending.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
-          <ClipboardCheck className="mx-auto size-10 text-gray-300" aria-hidden="true" />
-          <p className="mt-3 font-medium text-gray-900">You&apos;re all caught up</p>
+        <div className="rounded-xl border border-dashed border-gray-300 dark:border-white/15 bg-white dark:bg-slate-900 px-6 py-14 text-center">
+          <ClipboardCheck
+            className="mx-auto size-10 text-gray-300 dark:text-slate-600"
+            aria-hidden="true"
+          />
+          <p className="mt-3 font-medium text-gray-900 dark:text-slate-100">
+            You&apos;re all caught up
+          </p>
           <Link
             href="/profile/reviews"
             className="mt-1 inline-block rounded text-sm font-medium text-brand hover:text-brand-hover"
@@ -85,7 +90,7 @@ const ToReview = () => {
           {pending.map((item) => (
             <li key={item.productId} className="rounded-xl glass p-5">
               <div className="flex gap-4">
-                <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-gray-50 dark:bg-white/5">
                   <Image
                     src={item.image}
                     alt=""
@@ -97,14 +102,14 @@ const ToReview = () => {
                 <div className="min-w-0">
                   <Link
                     href={`/products/${item.productId}`}
-                    className="font-medium text-gray-900 hover:underline"
+                    className="font-medium text-gray-900 dark:text-slate-100 hover:underline"
                   >
                     {item.title}
                   </Link>
-                  <p className="mt-1 text-sm tabular-nums text-gray-700">
+                  <p className="mt-1 text-sm tabular-nums text-gray-700 dark:text-slate-300">
                     {formatPrice(item.price)}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-slate-400">
                     Delivered {formatOrderDate(item.deliveredOn)}
                   </p>
                 </div>
@@ -114,10 +119,12 @@ const ToReview = () => {
                 <form
                   onSubmit={handleSubmitReview}
                   noValidate
-                  className="mt-5 space-y-4 border-t border-gray-100 pt-5"
+                  className="mt-5 space-y-4 border-t border-gray-100 dark:border-white/5 pt-5"
                 >
                   <fieldset>
-                    <legend className="text-sm font-medium text-gray-900">Your rating</legend>
+                    <legend className="text-sm font-medium text-gray-900 dark:text-slate-100">
+                      Your rating
+                    </legend>
                     <div className="mt-2 flex gap-1" role="radiogroup" aria-label="Rating">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
@@ -135,7 +142,9 @@ const ToReview = () => {
                           <Star
                             className={cn(
                               'size-7',
-                              star <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300',
+                              star <= rating
+                                ? 'fill-amber-400 text-amber-400'
+                                : 'text-gray-300 dark:text-slate-600',
                             )}
                           />
                         </button>
@@ -145,9 +154,12 @@ const ToReview = () => {
                   <div>
                     <Label
                       htmlFor={`title-${item.productId}`}
-                      className="text-sm font-medium text-gray-900"
+                      className="text-sm font-medium text-gray-900 dark:text-slate-100"
                     >
-                      Headline <span className="font-normal text-gray-500">(optional)</span>
+                      Headline{' '}
+                      <span className="font-normal text-gray-500 dark:text-slate-400">
+                        (optional)
+                      </span>
                     </Label>
                     <Input
                       id={`title-${item.productId}`}
@@ -160,7 +172,7 @@ const ToReview = () => {
                   <div>
                     <Label
                       htmlFor={`content-${item.productId}`}
-                      className="text-sm font-medium text-gray-900"
+                      className="text-sm font-medium text-gray-900 dark:text-slate-100"
                     >
                       Review
                     </Label>
@@ -190,7 +202,7 @@ const ToReview = () => {
                     <button
                       type="button"
                       onClick={() => setReviewingId(null)}
-                      className="h-11 flex-1 rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                      className="h-11 flex-1 rounded-lg border border-gray-300 dark:border-white/15 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                     >
                       Cancel
                     </button>
@@ -200,7 +212,7 @@ const ToReview = () => {
                 <button
                   type="button"
                   onClick={() => startReview(item.productId)}
-                  className="mt-5 h-10 w-full rounded-lg border border-gray-300 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
+                  className="mt-5 h-10 w-full rounded-lg border border-gray-300 dark:border-white/15 text-sm font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                 >
                   Write a review
                 </button>

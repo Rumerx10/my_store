@@ -15,7 +15,7 @@ const Panel = ({
   <section className={cn('rounded-xl glass p-5 md:p-6', className)}>
     {(title || action) && (
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        {title && <h2 className="text-base text-gray-900">{title}</h2>}
+        {title && <h2 className="text-base text-gray-900 dark:text-slate-100">{title}</h2>}
         {action}
       </div>
     )}

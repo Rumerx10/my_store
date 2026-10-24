@@ -25,13 +25,14 @@ const OrderStatus = ({ timeRange, className }: { timeRange: TimeRange; className
         {rows.map((row) => (
           <li key={row.status}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <span className="text-gray-700">{capitalize(row.status)}</span>
-              <span className="tabular-nums text-gray-500">
-                <span className="font-medium text-gray-900">{row.count}</span> · {row.share}%
+              <span className="text-gray-700 dark:text-slate-300">{capitalize(row.status)}</span>
+              <span className="tabular-nums text-gray-500 dark:text-slate-400">
+                <span className="font-medium text-gray-900 dark:text-slate-100">{row.count}</span> ·{' '}
+                {row.share}%
               </span>
             </div>
             <div
-              className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-100"
+              className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10"
               aria-hidden="true"
             >
               <div

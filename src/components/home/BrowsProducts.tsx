@@ -33,14 +33,14 @@ const BrowsProducts = () => {
         <div className="flex-1 w-full lg:w-auto mb-6 lg:mb-0 lg:pr-8">
           {/* Badge with glass effect */}
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full backdrop-blur-md bg-white/20 border border-white/30 mb-3 sm:mb-4">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white animate-pulse"></span>
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white dark:bg-slate-900 animate-pulse"></span>
             <span className="text-xs sm:text-sm font-medium text-white/95">Explore Collection</span>
           </div>
 
           {/* Title */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3 leading-tight">
             Discover Amazing
-            <span className="block bg-gradient-to-r from-white via-orange-100 to-orange-50 bg-clip-text text-transparent drop-shadow-lg mt-1 sm:mt-2">
+            <span className="block bg-gradient-to-r from-white dark:from-slate-900 via-orange-100 to-orange-50 bg-clip-text text-transparent drop-shadow-lg mt-1 sm:mt-2">
               Products Await You
             </span>
           </h2>
@@ -56,7 +56,7 @@ const BrowsProducts = () => {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="group p-2 sm:p-3 rounded-xl backdrop-blur-md bg-white/15 border border-white/20 hover:bg-white/25 hover:border-white/40 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                className="group p-2 sm:p-3 rounded-xl backdrop-blur-md bg-white/15 border border-white/20 hover:bg-white/25 hover:border-white/40 dark:hover:border-white/10 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                   <div className="flex items-center gap-1.5">
@@ -82,7 +82,7 @@ const BrowsProducts = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-white/40 via-orange-200 to-orange-300 rounded-2xl blur-xl opacity-70 group-hover:opacity-100 transition duration-500"></div>
 
             {/* Glass card */}
-            <div className="absolute inset-0 backdrop-blur-xl bg-white/10 rounded-2xl border border-white/30 group-hover:border-white/50 transition-all duration-300"></div>
+            <div className="absolute inset-0 backdrop-blur-xl bg-white/10 rounded-2xl border border-white/30 group-hover:border-white/50 dark:group-hover:border-white/10 transition-all duration-300"></div>
 
             <Link
               href="/products"
@@ -91,7 +91,7 @@ const BrowsProducts = () => {
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative">
                   {/* Icon glow */}
-                  <div className="absolute -inset-1 bg-white/40 rounded-full blur-md opacity-60 group-hover:opacity-80 transition duration-300"></div>
+                  <div className="absolute -inset-1 bg-white/40 dark:bg-slate-900/40 rounded-full blur-md opacity-60 group-hover:opacity-80 transition duration-300"></div>
                   <ShoppingBag className="relative w-5 h-5 sm:w-6 sm:h-6 text-white drop-shadow-lg" />
                 </div>
                 <div className="text-center sm:text-left">
@@ -113,7 +113,7 @@ const BrowsProducts = () => {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white/40 backdrop-blur-sm bg-gradient-to-br from-white/30 to-white/10 shadow-sm"
+                  className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white/40 dark:border-white/10 backdrop-blur-sm bg-gradient-to-br from-white/30 to-white/10 shadow-sm"
                 />
               ))}
             </div>

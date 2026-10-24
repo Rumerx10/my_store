@@ -23,7 +23,7 @@ const PAYMENT_LABELS: Record<Order['paymentType'], string> = {
 };
 
 const actionClass =
-  'inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50';
+  'inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 px-4 text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors hover:bg-gray-50 dark:hover:bg-white/5';
 
 // Seller view of one order: progress, items, buyer details and fulfilment actions.
 const OrderDetails = () => {
@@ -60,10 +60,14 @@ const OrderDetails = () => {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl tabular-nums text-gray-900 md:text-3xl">Order {order.id}</h1>
+            <h1 className="text-2xl tabular-nums text-gray-900 dark:text-slate-100 md:text-3xl">
+              Order {order.id}
+            </h1>
             <OrderStatusBadge status={status} className="text-sm" />
           </div>
-          <p className="mt-1 text-sm text-gray-600">Placed {formatOrderDate(order.date)}</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+            Placed {formatOrderDate(order.date)}
+          </p>
         </div>
         <BackButton href="/admin/orders" className="print:hidden">
           All orders
@@ -94,22 +98,24 @@ const OrderDetails = () => {
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]">
         <Panel title="Items">
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-100 dark:divide-white/10">
             {order.items.map((item) => (
               <li key={item.id} className="flex items-center gap-4 py-3 first:pt-0">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900">{item.name}</p>
-                  <p className="text-sm tabular-nums text-gray-500">
+                  <p className="truncate text-sm font-medium text-gray-900 dark:text-slate-100">
+                    {item.name}
+                  </p>
+                  <p className="text-sm tabular-nums text-gray-500 dark:text-slate-400">
                     {item.quantity} × {formatPrice(item.price)} · SKU {item.sku}
                   </p>
                 </div>
-                <p className="shrink-0 text-sm font-semibold tabular-nums text-gray-900">
+                <p className="shrink-0 text-sm font-semibold tabular-nums text-gray-900 dark:text-slate-100">
                   {formatPrice(item.price * item.quantity)}
                 </p>
               </li>
             ))}
           </ul>
-          <div className="flex justify-between border-t border-gray-100 pt-4 font-semibold">
+          <div className="flex justify-between border-t border-gray-100 dark:border-white/5 pt-4 font-semibold">
             <span>Total</span>
             <span className="tabular-nums">{formatPrice(order.amount)}</span>
           </div>
@@ -117,30 +123,36 @@ const OrderDetails = () => {
 
         <div className="space-y-4">
           <Panel>
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-              <User className="size-4 text-gray-400" aria-hidden="true" />
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-100">
+              <User className="size-4 text-gray-400 dark:text-slate-500" aria-hidden="true" />
               Buyer
             </h2>
-            <p className="mt-2 text-sm text-gray-700">{order.buyerName}</p>
-            <p className="break-words text-sm text-gray-600">{order.buyerEmail}</p>
-            <p className="text-sm tabular-nums text-gray-500">{order.buyerPhone}</p>
+            <p className="mt-2 text-sm text-gray-700 dark:text-slate-300">{order.buyerName}</p>
+            <p className="break-words text-sm text-gray-600 dark:text-slate-400">
+              {order.buyerEmail}
+            </p>
+            <p className="text-sm tabular-nums text-gray-500 dark:text-slate-400">
+              {order.buyerPhone}
+            </p>
 
-            <h2 className="mt-5 flex items-center gap-2 text-sm font-semibold text-gray-900">
-              <MapPin className="size-4 text-gray-400" aria-hidden="true" />
+            <h2 className="mt-5 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-100">
+              <MapPin className="size-4 text-gray-400 dark:text-slate-500" aria-hidden="true" />
               Delivery address
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               {order.shippingAddress.street}, {order.shippingAddress.city},{' '}
               {order.shippingAddress.state} {order.shippingAddress.zipCode},{' '}
               {order.shippingAddress.country}
             </p>
 
-            <h2 className="mt-5 flex items-center gap-2 text-sm font-semibold text-gray-900">
-              <CreditCard className="size-4 text-gray-400" aria-hidden="true" />
+            <h2 className="mt-5 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-100">
+              <CreditCard className="size-4 text-gray-400 dark:text-slate-500" aria-hidden="true" />
               Payment
             </h2>
-            <p className="mt-2 text-sm text-gray-700">{PAYMENT_LABELS[order.paymentType]}</p>
-            <p className="text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-700 dark:text-slate-300">
+              {PAYMENT_LABELS[order.paymentType]}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">
               {order.paymentStatus === 'pending'
                 ? 'Awaiting payment'
                 : capitalize(order.paymentStatus)}
@@ -173,7 +185,7 @@ const OrderDetails = () => {
               <button
                 type="button"
                 onClick={() => setShowCancelModal(true)}
-                className="h-11 rounded-lg border border-red/30 bg-white text-sm font-medium text-red transition-colors hover:bg-red/5"
+                className="h-11 rounded-lg border border-red/30 bg-white dark:bg-slate-900 text-sm font-medium text-red transition-colors hover:bg-red/5"
               >
                 Cancel order
               </button>

@@ -57,7 +57,7 @@ const BottomNav = ({ hidden = false }: { hidden?: boolean }) => {
       aria-hidden={away || undefined}
       inert={away || undefined}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 border-t border-white/70 bg-white/60 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 transition-transform duration-300 ease-out-soft',
+        'fixed inset-x-0 bottom-0 z-40 border-t border-white/70 dark:border-white/10 bg-white/60 dark:bg-slate-900/60 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 transition-transform duration-300 ease-out-soft',
         away && 'translate-y-full',
       )}
     >
@@ -71,7 +71,9 @@ const BottomNav = ({ hidden = false }: { hidden?: boolean }) => {
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors',
-                  active ? 'text-brand' : 'text-gray-500 hover:text-gray-900',
+                  active
+                    ? 'text-brand'
+                    : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100',
                 )}
               >
                 <span className="relative flex size-7 items-center justify-center">

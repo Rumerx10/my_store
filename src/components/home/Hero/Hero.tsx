@@ -34,7 +34,7 @@ const CouponRow = () => {
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 text-white sm:px-5">
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-sun text-sm font-bold tabular-nums text-slate-950">
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-sun text-sm font-bold tabular-nums text-slate-950 dark:text-white">
         -{coupon.discount}%
       </span>
       <div className="min-w-0 flex-1">
@@ -67,11 +67,11 @@ const HeroCard = ({ product }: { product?: IProduct }) => (
     {product && (
       <Link
         href={`/products/${product.id}`}
-        className="group relative hidden overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-sky-100 via-white to-amber-50 p-5 md:block"
+        className="group relative hidden overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-sky-100 via-white to-amber-50 p-5 md:block dark:from-sky-950 dark:via-slate-900 dark:to-amber-950/60"
       >
         <div className="flex items-start justify-between gap-3">
           <p className="text-xs font-medium text-brand">Featured</p>
-          <span className="flex size-8 items-center justify-center rounded-full bg-gray-900 text-white transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+          <span className="flex size-8 items-center justify-center rounded-full bg-gray-900 text-white transition-transform dark:bg-white dark:text-slate-900 duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </span>
         </div>
@@ -85,11 +85,15 @@ const HeroCard = ({ product }: { product?: IProduct }) => (
             className="scale-125 object-contain drop-shadow-[0_18px_24px_rgb(15_23_42_/_0.3)] transition-transform duration-500 ease-out-soft group-hover:scale-[1.32]"
           />
         </div>
-        <p className="mt-3 line-clamp-1 font-semibold text-gray-900">{product.title}</p>
+        <p className="mt-3 line-clamp-1 font-semibold text-gray-900 dark:text-slate-100">
+          {product.title}
+        </p>
         <p className="mt-0.5 flex items-baseline gap-2 tabular-nums">
-          <span className="text-lg font-semibold text-gray-900">{formatPrice(product.price)}</span>
+          <span className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+            {formatPrice(product.price)}
+          </span>
           {product.discountPercentage > 0 && (
-            <span className="text-sm text-gray-500 line-through">
+            <span className="text-sm text-gray-500 dark:text-slate-400 line-through">
               {formatPrice(product.price / (1 - product.discountPercentage / 100))}
             </span>
           )}
@@ -152,7 +156,7 @@ const Hero = () => {
             <div className="hero-rise mt-8 flex flex-wrap gap-3 [--rise-delay:240ms]">
               <Link
                 href="/products"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-sun px-6 text-[15px] font-semibold text-slate-950 shadow-[0_12px_32px_-12px_rgb(251_191_36_/_0.9)] transition-[background-color,transform] hover:bg-amber-300 active:scale-[0.98]"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-sun px-6 text-[15px] font-semibold text-slate-950 dark:text-white shadow-[0_12px_32px_-12px_rgb(251_191_36_/_0.9)] transition-[background-color,transform] hover:bg-amber-300 active:scale-[0.98]"
               >
                 Shop solar
                 <ArrowRight

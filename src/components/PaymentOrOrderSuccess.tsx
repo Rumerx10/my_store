@@ -15,15 +15,18 @@ const PaymentOrOrderSuccess = ({
       <span className="flex size-14 items-center justify-center rounded-full bg-green/10 text-green">
         <Check className="size-7" strokeWidth={2.5} aria-hidden="true" />
       </span>
-      <h1 className="mt-5 text-2xl text-gray-900" tabIndex={-1}>
+      <h1 className="mt-5 text-2xl text-gray-900 dark:text-slate-100" tabIndex={-1}>
         {title}
       </h1>
       {orderId && (
-        <p className="mt-2 text-sm text-gray-600">
-          Order number <span className="font-semibold tabular-nums text-gray-900">{orderId}</span>
+        <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
+          Order number{' '}
+          <span className="font-semibold tabular-nums text-gray-900 dark:text-slate-100">
+            {orderId}
+          </span>
         </p>
       )}
-      {subTitle && <p className="mt-3 text-gray-600">{subTitle}</p>}
+      {subTitle && <p className="mt-3 text-gray-600 dark:text-slate-400">{subTitle}</p>}
       <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
         <Link
           href="/orders"
@@ -33,7 +36,7 @@ const PaymentOrOrderSuccess = ({
         </Link>
         <Link
           href="/products"
-          className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-gray-300 font-medium text-gray-900 transition-colors hover:bg-gray-50"
+          className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-gray-300 dark:border-white/15 font-medium text-gray-900 dark:text-slate-100 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
         >
           Keep shopping
         </Link>
