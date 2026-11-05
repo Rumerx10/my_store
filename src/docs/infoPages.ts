@@ -1,6 +1,6 @@
 import { SITE } from './site';
 
-// Copy for the static information pages, rendered by app/(info)/[slug].
+// Copy for the static information pages, rendered by app/next-power/(info)/[slug].
 // The policy pages are plain-language drafts and need a legal review before launch.
 export interface InfoPage {
   title: string;
@@ -23,7 +23,7 @@ export const INFO_PAGES: Record<string, InfoPage> = {
       {
         heading: 'How we deliver',
         body: [
-          'We deliver across Bangladesh. You can pay with cash on delivery, bKash, Nagad, Rocket or a card.',
+          'We deliver across Bangladesh, and you pay in cash when the order arrives. Online payments (bKash, Nagad, cards) are coming soon.',
           `Our support team is available ${SITE.hours}.`,
         ],
       },
@@ -78,7 +78,7 @@ export const INFO_PAGES: Record<string, InfoPage> = {
       {
         heading: 'Refunds',
         body: [
-          'Once we receive and check the item, we refund the original payment method within 7 days. Cash on delivery orders are refunded to a bKash, Nagad or bank account you choose.',
+          'Once we receive and check the item, we refund you within 7 days, to a bKash, Nagad or bank account you choose.',
         ],
       },
     ],
@@ -89,7 +89,9 @@ export const INFO_PAGES: Record<string, InfoPage> = {
     sections: [
       {
         heading: 'Which payment methods do you accept?',
-        body: ['Cash on delivery, bKash, Nagad, Rocket and cards.'],
+        body: [
+          'Cash on delivery for now: you pay when the order arrives. Online payments (bKash, Nagad and cards) are coming soon.',
+        ],
       },
       {
         heading: 'Can I change or cancel an order?',

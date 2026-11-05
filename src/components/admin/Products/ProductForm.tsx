@@ -6,12 +6,10 @@ import { Controller, FormProvider, useForm, type FieldErrors } from 'react-hook-
 import { yupResolver } from '@hookform/resolvers/yup';
 import toast from 'react-hot-toast';
 import { Copy, Eye } from 'lucide-react';
-import BackButton from '@/components/shared/BackButton';
-import { useDispatch, useSelector } from 'react-redux';
-import Panel from '@/components/dashboard/Panel';
-import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
-import { addProduct, updateProduct } from '@/redux/features/product/productSlice';
-import { RootState } from '@/redux/store';
+import BackButton from '@/components/common/BackButton';
+import Panel from '@/components/common/Panel';
+import RichTextEditor from '@/components/admin/RichTextEditor/RichTextEditor';
+import { useCatalog, useSaveProduct } from '@/lib/query/catalog';
 import { IProduct } from '@/types/api_types';
 import { cn } from '@/lib/utils';
 import {
@@ -31,12 +29,15 @@ import SpecsCard from './productForm/SpecsCard';
 import OrganizationCard from './productForm/OrganizationCard';
 import ErrorSummary, { listProblems, type FormProblem } from './productForm/ErrorSummary';
 import SaveBar, { type SaveIntent } from './productForm/SaveBar';
+import { useAdminHref, useStorefrontUrl } from '@/components/admin/adminStore';
 
 // Shopify-style product form. Pass `product` to edit it, or `duplicateOf` to start from a copy.
 const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf?: IProduct }) => {
+  const href = useAdminHref();
+  const storefront = useStorefrontUrl();
   const router = useRouter();
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.products);
+  const { data: products = [] } = useCatalog();
+  const saveProduct = useSaveProduct();
   const summaryRef = useRef<HTMLDivElement>(null);
   const [problems, setProblems] = useState<FormProblem[]>([]);
   const isNew = !product;
@@ -77,27 +78,35 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
   const save = useCallback(
     (intent: SaveIntent) =>
       handleSubmit(
-        (values) => {
-          const newId = Math.max(0, ...products.map((p) => p.id)) + 1;
+        async (values) => {
+          // The API gives new products their real id; this one only lives until the save.
+          const newId = `new-${Date.now()}`;
           // A copy starts without the original's reviews or rating.
           const base =
             product ??
             (duplicateOf ? { ...duplicateOf, id: newId, reviews: [], rating: 0 } : undefined);
-          const saved = fromFormValues(values, base, newId);
-
-          dispatch(product ? updateProduct(saved) : addProduct(saved));
+          let saved: IProduct;
+          try {
+            saved = await saveProduct.mutateAsync({
+              product: fromFormValues(values, base, newId),
+              isNew,
+            });
+          } catch {
+            // The toast says why (e.g. the SKU is taken); the form keeps what was typed.
+            return;
+          }
           reset(values);
           setProblems([]);
 
           if (intent === 'add-new') {
             toast.success(`${isNew ? 'Product added' : 'Product saved'}. Add the next one.`);
-            router.push(`/admin/products/add-product?n=${Date.now()}`);
+            router.push(href(`/products/add-product?n=${Date.now()}`));
           } else if (intent === 'duplicate') {
             toast.success(`${isNew ? 'Product added' : 'Product saved'}. Now editing a copy.`);
-            router.push(`/admin/products/add-product?duplicate=${saved.id}&n=${Date.now()}`);
+            router.push(href(`/products/add-product?duplicate=${saved.id}&n=${Date.now()}`));
           } else {
             toast.success(isNew ? 'Product added' : 'Product saved');
-            if (isNew) router.replace(`/admin/products/edit-product/${saved.id}`);
+            if (isNew) router.replace(href(`/products/edit-product/${saved.id}`));
           }
         },
         (formErrors: FieldErrors<ProductFormValues>) => {
@@ -105,7 +114,7 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
           requestAnimationFrame(() => summaryRef.current?.focus());
         },
       )(),
-    [handleSubmit, products, product, duplicateOf, dispatch, reset, isNew, router],
+    [handleSubmit, product, duplicateOf, saveProduct, reset, isNew, router, href],
   );
 
   // Ctrl+S / Cmd+S saves, like most editors.
@@ -155,14 +164,14 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
             {product && (
               <>
                 <Link
-                  href={`/admin/products/add-product?duplicate=${product.id}`}
+                  href={href(`/products/add-product?duplicate=${product.id}`)}
                   className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900"
                 >
                   <Copy className="size-4" aria-hidden="true" />
                   Duplicate
                 </Link>
                 <Link
-                  href={`/products/${product.id}`}
+                  href={storefront(`/products/${product.id}`)}
                   className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900"
                 >
                   <Eye className="size-4" aria-hidden="true" />
@@ -170,7 +179,7 @@ const ProductForm = ({ product, duplicateOf }: { product?: IProduct; duplicateOf
                 </Link>
               </>
             )}
-            <BackButton href="/admin/products">Back to products</BackButton>
+            <BackButton href={href('/products')}>Back to products</BackButton>
           </div>
         </div>
 

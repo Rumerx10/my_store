@@ -8,9 +8,13 @@ export const CHART = {
   previous: 'var(--chart-previous)', // de-emphasis grey: the period before
   home: 'var(--chart-current)',
   business: 'var(--chart-business)',
+  profit: 'var(--chart-profit)',
   grid: 'var(--chart-grid)',
   axis: 'var(--chart-axis)',
 };
+
+// Categorical slots for the category donut, largest slice first; "Other" is CHART.previous.
+export const CATEGORY_COLORS = Array.from({ length: 5 }, (_, i) => `var(--chart-cat-${i + 1})`);
 
 // Sequential blue ramp for magnitude (heatmap), faint to strong.
 export const BLUE_RAMP = Array.from({ length: 7 }, (_, i) => `var(--chart-heat-${i})`);

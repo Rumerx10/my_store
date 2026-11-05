@@ -1,4 +1,4 @@
-import { TIME_RANGES, type TimeRange } from '@/docs/adminDashboard';
+import { TIME_RANGES, type TimeRange } from '@/lib/dashboard';
 import { cn } from '@/lib/utils';
 
 // Date range for the whole dashboard: every tile and chart below follows it.
@@ -25,7 +25,7 @@ const TimeRangeSelector = ({
         className={cn(
           'h-8 whitespace-nowrap rounded-full px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand',
           timeRange === range.value
-            ? 'bg-brand text-white shadow-[0_6px_16px_-8px_rgb(29_78_216_/_0.8)]'
+            ? 'bg-brand text-white shadow-[0_6px_16px_-8px_color-mix(in_srgb,var(--color-brand)_80%,transparent)]'
             : 'text-gray-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-900 hover:text-gray-900 dark:hover:text-slate-100',
         )}
       >

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { ChevronLeft, ChevronRight, ImagePlus, Link2, Star, Trash2, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Panel from '@/components/dashboard/Panel';
+import Panel from '@/components/common/Panel';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { isImageFile, readImageFile } from '@/lib/imageFile';
 import { cn } from '@/lib/utils';

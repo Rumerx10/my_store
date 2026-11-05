@@ -1,30 +1,11 @@
-import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  CreditCard,
-  Settings,
-  Star,
-  Ticket,
-} from 'lucide-react';
-import type { SideNavItem } from '@/components/shared/SideNavShell';
+import { LayoutDashboard, Package, Star, Ticket } from 'lucide-react';
+import type { SideNavItem } from '@/components/next-power/shared/SideNavShell';
 
-export type DashboardRole = 'admin' | 'client';
-
-const ITEMS: Record<DashboardRole, SideNavItem[]> = {
-  admin: [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-    { href: '/admin/products', label: 'Products', icon: Package },
-    { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
-    { href: '/admin/payments', label: 'Payments', icon: CreditCard },
-    { href: '/admin/settings', label: 'Settings', icon: Settings },
-  ],
-  client: [
-    { href: '/client', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-    { href: '/client/my-orders', label: 'My orders', icon: Package },
-    { href: '/client/reviews', label: 'Reviews', icon: Star },
-    { href: '/client/coupons', label: 'Coupons', icon: Ticket },
-  ],
-};
-
-export const SidebarItems = (role: DashboardRole) => ITEMS[role];
+// The customer's dashboard menu, /next-power/client/*. The seller centre's menu is
+// components/admin/nav.ts.
+export const CLIENT_NAV: SideNavItem[] = [
+  { href: '/next-power/client', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+  { href: '/next-power/client/my-orders', label: 'My orders', icon: Package },
+  { href: '/next-power/client/reviews', label: 'Reviews', icon: Star },
+  { href: '/next-power/client/coupons', label: 'Coupons', icon: Ticket },
+];

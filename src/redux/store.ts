@@ -1,18 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import cartReducer from '@/redux/features/cart/cartSlice';
-import wishlistReducer from '@/redux/features/wishlist/wishlistSlice';
-import productReducer from '@/redux/features/product/productSlice';
-import orderReducer from '@/redux/features/order/orderSlice';
-import adminOrderReducer from '@/redux/features/adminOrder/adminOrderSlice';
+import checkoutReducer from '@/redux/features/checkout/checkoutSlice';
 
+// Client-side state only. Everything that comes from the API (catalogue, cart, wishlist,
+// orders, account, dashboards) is cached by React Query in lib/query/.
 export const store = configureStore({
   reducer: {
-    cart: cartReducer,
-    products: productReducer,
-    wishlist: wishlistReducer,
-    orderlist: orderReducer,
-    adminOrders: adminOrderReducer,
+    checkout: checkoutReducer,
   },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

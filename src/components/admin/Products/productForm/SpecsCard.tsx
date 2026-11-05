@@ -1,7 +1,7 @@
 'use client';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Plus, X } from 'lucide-react';
-import Panel from '@/components/dashboard/Panel';
+import Panel from '@/components/common/Panel';
 import type { ProductFormValues } from './formModel';
 import { inputClass } from './Field';
 

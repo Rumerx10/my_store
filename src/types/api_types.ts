@@ -22,13 +22,18 @@ interface IProductMeta {
   qrCode: string;
 }
 export interface IProduct {
-  id: number;
+  // UUID from the API.
+  id: string;
+  slug?: string;
+  ratingCount?: number;
   popular: boolean;
   trending: boolean;
   latest: boolean;
   title: string;
   description: string;
+  // Category slug, and its name as the store calls it.
   category: string;
+  categoryName?: string;
   price: number;
   discountPercentage: number;
   rating: number;
@@ -59,7 +64,7 @@ export interface IProduct {
   options?: IProductOption[];
 }
 
-export type ProductStatus = 'active' | 'draft';
+export type ProductStatus = 'active' | 'draft' | 'archived';
 
 export interface IProductOptionValue {
   label: string;
@@ -76,9 +81,12 @@ export interface IProductOption {
 }
 
 export interface ICartItem {
-  // Product id, or `${productId}:${variant}` when the product has options.
-  id: string | number;
-  productId?: number;
+  // The cart line id from the API.
+  id: string;
+  productId?: string;
+  // Why the line can't be bought as it is (from the API), e.g. not_enough_stock.
+  problem?: string | null;
+  stock?: number;
   // Chosen options, e.g. "Capacity: 9.6 kWh / Color: Black".
   variant?: string;
   title: string;
@@ -86,5 +94,16 @@ export interface ICartItem {
   rating: number;
   sold: number;
   quantity: number;
+  image: string;
+}
+
+// A saved product, as the wishlist API lists it.
+export interface IWishlistItem {
+  id: string;
+  title: string;
+  price: number;
+  rating: number;
+  sold: number;
+  stock: number;
   image: string;
 }

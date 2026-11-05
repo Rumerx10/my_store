@@ -56,9 +56,10 @@ export const getStatusColor = (status: string) => {
   }
 };
 
-export const getProductStatus = (stock: number) => {
+// In stock, low or out, against the store's low-stock level (5 unless the store sets one).
+export const getProductStatus = (stock: number, lowStockAt = 5) => {
   if (stock === 0) return 'out_of_stock';
-  if (stock <= 5) return 'low_stock';
+  if (stock <= lowStockAt) return 'low_stock';
   return 'active';
 };
 

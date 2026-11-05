@@ -186,7 +186,7 @@ const availability = (stock: number) =>
   stock === 0 ? 'Out of Stock' : stock <= 5 ? 'Low Stock' : 'In Stock';
 
 // Defaults for fields the form doesn't edit, matching the rest of the catalog.
-const newProductBase = (id: number): IProduct => {
+const newProductBase = (id: string): IProduct => {
   const now = new Date().toISOString();
   return {
     id,
@@ -223,7 +223,7 @@ const unique = (values: string[]) =>
 export const fromFormValues = (
   values: ProductFormValues,
   existing: IProduct | undefined,
-  newId: number,
+  newId: string,
 ): IProduct => {
   const base = existing ?? newProductBase(newId);
   const images = values.media.map((m) => m.src);

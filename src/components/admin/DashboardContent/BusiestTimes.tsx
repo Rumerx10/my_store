@@ -1,43 +1,50 @@
 'use client';
 import { useState } from 'react';
-import Panel from '@/components/dashboard/Panel';
-import { HEATMAP_DAYS, HEATMAP_SLOTS, ORDERS_HEATMAP } from '@/docs/adminDashboard';
+import Panel from '@/components/common/Panel';
+import { rangeInfo, type Dashboard } from '@/lib/dashboard';
 import { cn } from '@/lib/utils';
 import { BLUE_RAMP, DataTable } from './chartKit';
 
+// The API's heatmap: Monday to Sunday, two-hour slots from 8am to 10pm, Dhaka time.
+const HEATMAP_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const HEATMAP_SLOTS = ['8–10am', '10–12', '12–2pm', '2–4pm', '4–6pm', '6–8pm', '8–10pm'];
 const SLOT_STARTS = ['8am', '10am', '12pm', '2pm', '4pm', '6pm', '8pm'];
 
-const max = Math.max(...ORDERS_HEATMAP.flat());
-const min = Math.min(...ORDERS_HEATMAP.flat());
-const step = (value: number) =>
-  Math.min(BLUE_RAMP.length - 1, Math.floor(((value - min) / (max - min || 1)) * BLUE_RAMP.length));
-
-const peak = (() => {
-  let best = { day: 0, slot: 0 };
-  ORDERS_HEATMAP.forEach((row, day) =>
+// Orders by weekday and time of day: when to schedule offers, ads and support staff.
+const BusiestTimes = ({ data, className }: { data: Dashboard; className?: string }) => {
+  const [active, setActive] = useState<{ day: number; slot: number } | null>(null);
+  const heatmap = HEATMAP_DAYS.map((_, day) =>
+    SLOT_STARTS.map((_, slot) => data.heatmap[day]?.[slot] ?? 0),
+  );
+  const values = heatmap.flat();
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const step = (value: number) =>
+    Math.min(
+      BLUE_RAMP.length - 1,
+      Math.floor(((value - min) / (max - min || 1)) * BLUE_RAMP.length),
+    );
+  let peak = { day: 0, slot: 0 };
+  heatmap.forEach((row, day) =>
     row.forEach((value, slot) => {
-      if (value > ORDERS_HEATMAP[best.day][best.slot]) best = { day, slot };
+      if (value > heatmap[peak.day][peak.slot]) peak = { day, slot };
     }),
   );
-  return best;
-})();
-
-const describe = (day: number, slot: number) =>
-  `${HEATMAP_DAYS[day]} ${HEATMAP_SLOTS[slot]}: ${ORDERS_HEATMAP[day][slot]} orders`;
-
-// Orders by weekday and time of day: when to schedule offers, ads and support staff.
-const BusiestTimes = ({ className }: { className?: string }) => {
-  const [active, setActive] = useState<{ day: number; slot: number } | null>(null);
+  const describe = (day: number, slot: number) =>
+    `${HEATMAP_DAYS[day]} ${HEATMAP_SLOTS[slot]}: ${heatmap[day][slot]} ${heatmap[day][slot] === 1 ? 'order' : 'orders'}`;
   const shown = active ?? peak;
 
   return (
     <Panel title="Busiest times" className={className}>
       <p className="-mt-2 mb-4 text-sm text-gray-600 dark:text-slate-400">
-        Orders by day and time over the last 8 weeks. Run offers and ads just before the peaks.
+        Orders by day and time, {rangeInfo(data.range).label.toLowerCase()}. Run offers and ads just
+        before the peaks.
       </p>
 
       <p className="mb-3 h-5 text-sm text-gray-700 dark:text-slate-300" aria-live="polite">
-        {active ? (
+        {max === 0 ? (
+          'No orders in this period yet.'
+        ) : active ? (
           <span className="font-semibold text-gray-900 dark:text-slate-100">
             {describe(active.day, active.slot)}
           </span>
@@ -67,7 +74,7 @@ const BusiestTimes = ({ className }: { className?: string }) => {
             {slot}
           </span>
         ))}
-        {ORDERS_HEATMAP.map((row, day) => (
+        {heatmap.map((row, day) => (
           <div key={HEATMAP_DAYS[day]} role="row" className="contents">
             <span
               role="rowheader"
@@ -110,9 +117,9 @@ const BusiestTimes = ({ className }: { className?: string }) => {
       </div>
 
       <DataTable
-        caption="Orders by weekday and time of day, last 8 weeks"
+        caption="Orders by weekday and time of day"
         headers={['Day', ...SLOT_STARTS]}
-        rows={ORDERS_HEATMAP.map((row, day) => [HEATMAP_DAYS[day], ...row])}
+        rows={heatmap.map((row, day) => [HEATMAP_DAYS[day], ...row])}
       />
     </Panel>
   );

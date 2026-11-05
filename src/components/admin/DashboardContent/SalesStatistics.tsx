@@ -1,13 +1,6 @@
-import { ShoppingCart, Wallet, Receipt, Users, type LucideIcon } from 'lucide-react';
-import {
-  SALES_SERIES,
-  TIME_RANGES,
-  changeFrom,
-  funnelFor,
-  totalsFor,
-  type TimeRange,
-} from '@/docs/adminDashboard';
-import { formatCompact, formatCompactPrice, formatPrice } from '@/lib/utils';
+import { PiggyBank, ShoppingCart, Wallet, Receipt, type LucideIcon } from 'lucide-react';
+import { changeFrom, rangeInfo, type Dashboard } from '@/lib/dashboard';
+import { formatCompactPrice, formatPrice } from '@/lib/utils';
 import { CHART, Delta } from './chartKit';
 
 // Tiny trend line for a stat tile; drawn in plain SVG so it stays light.
@@ -76,11 +69,11 @@ const StatTile = ({
   </div>
 );
 
-const SalesStatistics = ({ timeRange }: { timeRange: TimeRange }) => {
-  const range = TIME_RANGES.find((r) => r.value === timeRange)!;
-  const series = SALES_SERIES[timeRange];
-  const totals = totalsFor(timeRange);
-  const funnel = funnelFor(timeRange);
+const SalesStatistics = ({ data }: { data: Dashboard }) => {
+  const range = rangeInfo(data.range);
+  const series = data.series;
+  const totals = data.totals;
+  const margin = totals.revenue > 0 ? (totals.profit / totals.revenue) * 100 : 0;
 
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
@@ -109,13 +102,16 @@ const SalesStatistics = ({ timeRange }: { timeRange: TimeRange }) => {
         icon={Receipt}
       />
       <StatTile
-        title="Conversion rate"
-        value={`${funnel.conversion.toFixed(1)}%`}
-        change={funnel.conversion - funnel.prevConversion}
-        changeSuffix=" pts"
+        title="Profit"
+        value={formatCompactPrice(totals.profit)}
+        change={changeFrom(totals.profit, totals.prevProfit)}
         previous={range.previous}
-        note={`${formatCompact(funnel.visits)} visits → ${totals.orders.toLocaleString('en-US')} orders`}
-        icon={Users}
+        note={
+          totals.revenue > 0
+            ? `${margin.toFixed(0)}% margin, on products with a cost price`
+            : 'Add cost prices to products to see profit'
+        }
+        icon={PiggyBank}
       />
     </div>
   );

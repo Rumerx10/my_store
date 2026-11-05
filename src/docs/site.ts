@@ -1,10 +1,10 @@
-// Store-wide details used in the header, footer, and info pages.
-// Contact details are placeholders until the real ones are available.
+// Store-wide copy for the header, footer and info pages. The contact details here are only
+// the fallback: pages show the ones set in the seller centre (lib/query/storeInfo.ts).
 export const SITE = {
   name: 'NextPower',
   tagline: 'Solar power for homes and businesses across Bangladesh',
   description:
-    'GoodWe solar panels, inverters, batteries and EV chargers, delivered and installed across Bangladesh. Pay with cash on delivery, bKash, Nagad, Rocket or card.',
+    'GoodWe solar panels, inverters, batteries and EV chargers, delivered and installed across Bangladesh. Pay with cash on delivery.',
   email: 'support@nextpower.com.bd',
   phone: '+880 9612-345678',
   phoneHref: '+8809612345678',
@@ -16,28 +16,28 @@ export const FOOTER_LINKS = [
   {
     title: 'Shop',
     links: [
-      { label: 'All products', href: '/products' },
-      { label: 'Categories', href: '/categories' },
-      { label: 'Deals', href: '/deals' },
-      { label: 'Wishlist', href: '/wish-list' },
+      { label: 'All products', href: '/next-power/products' },
+      { label: 'Categories', href: '/next-power/categories' },
+      { label: 'Deals', href: '/next-power/deals' },
+      { label: 'Wishlist', href: '/next-power/wish-list' },
     ],
   },
   {
     title: 'Help',
     links: [
-      { label: 'Contact us', href: '/contact' },
-      { label: 'Shipping', href: '/shipping' },
-      { label: 'Returns', href: '/returns' },
-      { label: 'FAQ', href: '/faq' },
+      { label: 'Contact us', href: '/next-power/contact' },
+      { label: 'Shipping', href: '/next-power/shipping' },
+      { label: 'Returns', href: '/next-power/returns' },
+      { label: 'FAQ', href: '/next-power/faq' },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About NextPower', href: '/about' },
-      { label: 'Privacy policy', href: '/privacy' },
-      { label: 'Terms of service', href: '/terms' },
-      { label: 'Cookie policy', href: '/cookies' },
+      { label: 'About NextPower', href: '/next-power/about' },
+      { label: 'Privacy policy', href: '/next-power/privacy' },
+      { label: 'Terms of service', href: '/next-power/terms' },
+      { label: 'Cookie policy', href: '/next-power/cookies' },
     ],
   },
 ];

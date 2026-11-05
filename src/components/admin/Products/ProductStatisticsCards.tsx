@@ -1,11 +1,17 @@
 import { Package, AlertTriangle, XCircle, Wallet } from 'lucide-react';
-import DashboardCard from '@/components/DashboardCard';
+import DashboardCard from '@/components/common/DashboardCard';
 import { formatPrice, getProductStatus } from '@/lib/utils';
 import { IProduct } from '@/types/api_types';
 
-const ProductStatisticsCards = ({ products }: { products: IProduct[] }) => {
+const ProductStatisticsCards = ({
+  products,
+  lowStockAt,
+}: {
+  products: IProduct[];
+  lowStockAt: number;
+}) => {
   const count = (status: string) =>
-    products.filter((product) => getProductStatus(product.stock) === status).length;
+    products.filter((product) => getProductStatus(product.stock, lowStockAt) === status).length;
   const inventoryValue = products.reduce((sum, product) => sum + product.price * product.stock, 0);
 
   return (

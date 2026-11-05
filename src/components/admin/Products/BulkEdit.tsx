@@ -4,11 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Check, Coins, Layers, Percent, Search, SearchX, TriangleAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
-import DashboardCard from '@/components/DashboardCard';
-import BackButton from '@/components/shared/BackButton';
-import { categoryLabel } from '@/docs/navLinks';
-import { CATEGORIES } from '@/docs/products';
+import DashboardCard from '@/components/common/DashboardCard';
+import BackButton from '@/components/common/BackButton';
+import { ErrorState, PageLoader } from '@/components/common/QueryState';
 import {
   Select,
   SelectContent,
@@ -17,9 +15,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn, formatPrice } from '@/lib/utils';
-import { updateProduct } from '@/redux/features/product/productSlice';
-import { RootState } from '@/redux/store';
+import type { ApiCategory } from '@/lib/api/types';
+import { useStoreSettings } from '@/lib/query/admin';
+import {
+  useCatalog,
+  useSaveProductChanges,
+  type BulkProductChange,
+  type ProductFieldsChange,
+} from '@/lib/query/catalog';
+import { useCategories } from '@/lib/query/shop';
 import type { IProduct, ProductStatus } from '@/types/api_types';
+import { useAdminHref } from '@/components/admin/adminStore';
 
 // Spreadsheet-style editor for many products at once, like Shopify's bulk editor.
 // Edits are kept as strings per row and only reach the catalog on Save.
@@ -90,8 +96,14 @@ const errorsOf = (row: Row, takenSkus: Set<string>): Partial<Record<Field, strin
   return errors;
 };
 
-const availability = (stock: number) =>
-  stock === 0 ? 'Out of Stock' : stock <= 5 ? 'Low Stock' : 'In Stock';
+const STATUSES: ProductStatus[] = ['active', 'draft', 'archived'];
+const STATUS_LABELS: Record<ProductStatus, string> = {
+  active: 'Active',
+  draft: 'Draft',
+  archived: 'Archived',
+};
+const toApiStatus = (status: ProductStatus) =>
+  status.toUpperCase() as NonNullable<BulkProductChange['status']>;
 
 const BULK_ACTIONS = [
   { value: 'status', label: 'Set status' },
@@ -117,17 +129,18 @@ const toolbarSelect =
 const toolbarInput =
   'h-9 rounded-full border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 px-4 text-sm outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-slate-500 hover:bg-white dark:hover:bg-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/15';
 
-const pressable = 'transition-[background-color,transform] active:scale-[0.97]';
+const pressable = 'transition-[background-color,transform,translate,scale] active:scale-[0.97]';
 
 const STATUS_DOT: Record<ProductStatus, string> = {
   active: 'bg-green',
   draft: 'bg-gray-400 dark:bg-white/30',
+  archived: 'bg-gray-300 dark:bg-white/20',
 };
 
 const StatusLabel = ({ status }: { status: ProductStatus }) => (
   <span className="flex items-center gap-2">
     <span className={cn('size-2 rounded-full', STATUS_DOT[status])} aria-hidden="true" />
-    {status === 'active' ? 'Active' : 'Draft'}
+    {STATUS_LABELS[status]}
   </span>
 );
 
@@ -174,23 +187,55 @@ const COLUMNS: {
   { field: 'brand', label: 'Vendor', width: 'w-36', group: 'organisation' },
 ];
 
+// Waits for the catalogue and categories, then starts the editor from them.
 const BulkEdit = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.products);
+  const catalog = useCatalog();
+  const categories = useCategories();
+  const lowStockAt = useStoreSettings().data?.lowStockThreshold ?? 5;
+  if (catalog.isPending || categories.isPending) return <PageLoader label="Loading products" />;
+  if (!catalog.data || !categories.data) {
+    return (
+      <ErrorState
+        error={catalog.error ?? categories.error}
+        onRetry={() => {
+          catalog.refetch();
+          categories.refetch();
+        }}
+      />
+    );
+  }
+  return (
+    <BulkEditor products={catalog.data} categories={categories.data} lowStockAt={lowStockAt} />
+  );
+};
+
+const BulkEditor = ({
+  products,
+  categories,
+  lowStockAt,
+}: {
+  products: IProduct[];
+  categories: ApiCategory[];
+  lowStockAt: number;
+}) => {
+  const href = useAdminHref();
+  const saveChanges = useSaveProductChanges();
+  const availability = (stock: number) =>
+    stock === 0 ? 'Out of Stock' : stock <= lowStockAt ? 'Low Stock' : 'In Stock';
   const productById = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
-  const [initial, setInitial] = useState<Record<number, Row>>(() =>
+  const [initial, setInitial] = useState<Record<string, Row>>(() =>
     Object.fromEntries(products.map((p) => [p.id, toRow(p)])),
   );
-  const [rows, setRows] = useState<Record<number, Row>>(initial);
+  const [rows, setRows] = useState<Record<string, Row>>(initial);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [editedOnly, setEditedOnly] = useState(false);
-  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [action, setAction] = useState<BulkAction>('discount');
   const [actionValue, setActionValue] = useState('');
 
   const ids = products.map((p) => p.id).filter((id) => rows[id]);
-  const isChanged = (id: number) =>
+  const isChanged = (id: string) =>
     (Object.keys(rows[id]) as (keyof Row)[]).some((key) => rows[id][key] !== initial[id][key]);
   const changedIds = ids.filter(isChanged);
 
@@ -203,7 +248,7 @@ const BulkEdit = () => {
     });
     return counts;
   }, [rows]);
-  const rowErrors = (id: number) => {
+  const rowErrors = (id: string) => {
     const sku = rows[id].sku.trim().toLowerCase();
     const taken = new Set((skuCounts.get(sku) ?? 0) > 1 ? [sku] : []);
     return errorsOf(rows[id], taken);
@@ -232,7 +277,7 @@ const BulkEdit = () => {
       const stock = num(row.stock);
       const cost = num(row.cost);
       if (current > 0 && stock > 0) value += current * stock;
-      if (stock >= 0 && stock <= 5) lowStock += 1;
+      if (stock >= 0 && stock <= lowStockAt) lowStock += 1;
       if (current > 0 && row.cost.trim() && cost >= 0) {
         marginSum += (current - cost) / current;
         marginCount += 1;
@@ -245,7 +290,7 @@ const BulkEdit = () => {
       margin: marginCount ? (marginSum / marginCount) * 100 : undefined,
       marginCount,
     };
-  }, [rows]);
+  }, [rows, lowStockAt]);
 
   const clearFilters = () => {
     setSearch('');
@@ -262,7 +307,7 @@ const BulkEdit = () => {
     return () => window.removeEventListener('beforeunload', onBeforeUnload);
   }, [dirty]);
 
-  const setField = (id: number, field: keyof Row, value: string) =>
+  const setField = (id: string, field: keyof Row, value: string) =>
     setRows((current) => ({ ...current, [id]: { ...current[id], [field]: value } }));
 
   const applyToSelected = () => {
@@ -271,7 +316,7 @@ const BulkEdit = () => {
     // The status and category pickers start on their first choice before any change.
     const value =
       actionValue.trim() ||
-      (action === 'status' ? 'active' : action === 'category' ? CATEGORIES[0] : '');
+      (action === 'status' ? 'active' : action === 'category' ? (categories[0]?.slug ?? '') : '');
     const amount = Number(value);
     const needsNumber = ['discount', 'price-percent', 'stock'].includes(action);
     if (needsNumber && (value === '' || Number.isNaN(amount))) {
@@ -324,7 +369,38 @@ const BulkEdit = () => {
     toast.success(`Applied to ${targets.length} ${targets.length === 1 ? 'product' : 'products'}`);
   };
 
-  const save = () => {
+  // Only what changed in each row is sent.
+  const changesOf = (id: string): ProductFieldsChange => {
+    const before = initial[id];
+    const row = rows[id];
+    const change: ProductFieldsChange = { id };
+    if (row.price !== before.price || row.discount !== before.discount) {
+      change.price = currentOf(row);
+      change.discountPercent = discountOf(row);
+    }
+    if (row.cost !== before.cost) change.costPrice = row.cost.trim() ? num(row.cost) : null;
+    if (row.stock !== before.stock) change.stock = num(row.stock);
+    if (row.status !== before.status) change.status = toApiStatus(row.status);
+    if (row.title !== before.title) change.title = row.title.trim();
+    if (row.sku !== before.sku) change.sku = row.sku.trim();
+    if (row.category !== before.category) {
+      change.categoryId = categories.find((c) => c.slug === row.category)?.id;
+    }
+    if (row.brand !== before.brand) change.brand = row.brand.trim();
+    if (row.tags !== before.tags) {
+      change.tags = Array.from(
+        new Set(
+          row.tags
+            .split(',')
+            .map((t) => t.trim().toLowerCase())
+            .filter(Boolean),
+        ),
+      );
+    }
+    return change;
+  };
+
+  const save = async () => {
     const invalid = changedIds.find((id) => Object.keys(rowErrors(id)).length > 0);
     if (invalid !== undefined) {
       const field = Object.keys(rowErrors(invalid))[0];
@@ -332,43 +408,24 @@ const BulkEdit = () => {
       document.querySelector<HTMLElement>(`[data-cell="${invalid}-${field}"]`)?.focus();
       return;
     }
-    const now = new Date().toISOString();
-    changedIds.forEach((id) => {
-      const product = productById.get(id);
-      if (!product) return;
-      const row = rows[id];
-      const stock = num(row.stock);
-      dispatch(
-        updateProduct({
-          ...product,
-          title: row.title.trim(),
-          sku: row.sku.trim(),
-          status: row.status,
-          category: row.category,
-          brand: row.brand.trim() || undefined,
-          tags: Array.from(
-            new Set(
-              row.tags
-                .split(',')
-                .map((t) => t.trim().toLowerCase())
-                .filter(Boolean),
-            ),
-          ),
-          price: currentOf(row),
-          discountPercentage: discountOf(row),
-          costPerItem: row.cost.trim() ? num(row.cost) : undefined,
-          stock,
-          availabilityStatus: availability(stock),
-          meta: { ...product.meta, updatedAt: now },
-        }),
-      );
-    });
-    // Store values are normalised (e.g. rounded discount), so take rows from what was saved.
-    setInitial((current) => ({
-      ...current,
-      ...Object.fromEntries(changedIds.map((id) => [id, rows[id]])),
-    }));
-    toast.success(`Saved ${changedIds.length} ${changedIds.length === 1 ? 'product' : 'products'}`);
+    const BULK_FIELDS = new Set(['id', 'price', 'discountPercent', 'costPrice', 'stock', 'status']);
+    const bulk: BulkProductChange[] = [];
+    const single: ProductFieldsChange[] = [];
+    for (const id of changedIds) {
+      const change = changesOf(id);
+      if (Object.keys(change).every((key) => BULK_FIELDS.has(key))) bulk.push(change);
+      else single.push(change);
+    }
+    try {
+      const saved = await saveChanges.mutateAsync({ bulk, single });
+      setInitial((current) => ({
+        ...current,
+        ...Object.fromEntries(changedIds.map((id) => [id, rows[id]])),
+      }));
+      toast.success(`Saved ${saved} ${saved === 1 ? 'product' : 'products'}`);
+    } catch {
+      // The toast says what the server refused; unsaved rows stay marked.
+    }
   };
 
   const discard = () => {
@@ -377,7 +434,7 @@ const BulkEdit = () => {
   };
 
   // Enter and the up/down arrows move to the same column in the next or previous row.
-  const onCellKeyDown = (event: React.KeyboardEvent<HTMLElement>, id: number, field: Field) => {
+  const onCellKeyDown = (event: React.KeyboardEvent<HTMLElement>, id: string, field: Field) => {
     const isSelect = event.currentTarget.tagName === 'SELECT';
     const down = event.key === 'Enter' || (event.key === 'ArrowDown' && !isSelect);
     const up = event.key === 'ArrowUp' && !isSelect;
@@ -391,7 +448,7 @@ const BulkEdit = () => {
 
   const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selected.has(id));
 
-  const renderCell = (id: number, field: Field) => {
+  const renderCell = (id: string, field: Field) => {
     const row = rows[id];
     const errors = rowErrors(id);
     const error = errors[field];
@@ -426,14 +483,14 @@ const BulkEdit = () => {
           </SelectTrigger>
           <SelectContent>
             {field === 'status'
-              ? (['active', 'draft'] as const).map((status) => (
+              ? STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
                     <StatusLabel status={status} />
                   </SelectItem>
                 ))
-              : CATEGORIES.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {categoryLabel(c)}
+              : categories.map((c) => (
+                  <SelectItem key={c.slug} value={c.slug}>
+                    {c.name}
                   </SelectItem>
                 ))}
           </SelectContent>
@@ -507,7 +564,7 @@ const BulkEdit = () => {
                   ? 'bg-gray-300 dark:bg-white/20'
                   : stock === 0
                     ? 'bg-red'
-                    : stock <= 5
+                    : stock <= lowStockAt
                       ? 'bg-sun'
                       : 'bg-green',
               )}
@@ -589,7 +646,7 @@ const BulkEdit = () => {
               ? `${changedIds.length} unsaved ${changedIds.length === 1 ? 'product' : 'products'}`
               : 'All changes saved'}
           </p>
-          <BackButton href="/admin/products">Back to products</BackButton>
+          <BackButton href={href('/products')}>Back to products</BackButton>
         </div>
       </header>
 
@@ -617,7 +674,7 @@ const BulkEdit = () => {
         <DashboardCard
           title="Low stock"
           value={summary.lowStock}
-          subtitle="5 units or fewer"
+          subtitle={`${lowStockAt} units or fewer`}
           trend={summary.lowStock > 0 ? 'down' : undefined}
           icon={TriangleAlert}
         />
@@ -649,9 +706,9 @@ const BulkEdit = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All categories</SelectItem>
-              {CATEGORIES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {categoryLabel(c)}
+              {categories.map((c) => (
+                <SelectItem key={c.slug} value={c.slug}>
+                  {c.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -722,7 +779,7 @@ const BulkEdit = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {(['active', 'draft'] as const).map((status) => (
+                  {STATUSES.map((status) => (
                     <SelectItem key={status} value={status}>
                       <StatusLabel status={status} />
                     </SelectItem>
@@ -730,14 +787,14 @@ const BulkEdit = () => {
                 </SelectContent>
               </Select>
             ) : action === 'category' ? (
-              <Select value={actionValue || CATEGORIES[0]} onValueChange={setActionValue}>
+              <Select value={actionValue || categories[0]?.slug} onValueChange={setActionValue}>
                 <SelectTrigger aria-label="Category to apply" className={cn(toolbarSelect, 'w-48')}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {categoryLabel(c)}
+                  {categories.map((c) => (
+                    <SelectItem key={c.slug} value={c.slug}>
+                      {c.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -883,7 +940,7 @@ const BulkEdit = () => {
                           className="size-4 shrink-0 accent-brand"
                         />
                         <Link
-                          href={`/admin/products/edit-product/${id}`}
+                          href={href(`/products/edit-product/${id}`)}
                           className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white dark:bg-slate-900 ring-1 ring-gray-200 dark:ring-white/10 transition-shadow hover:ring-2 hover:ring-brand/40"
                           aria-label={`Open ${row.title} in the full editor`}
                         >
@@ -978,14 +1035,14 @@ const BulkEdit = () => {
             <button
               type="button"
               onClick={save}
-              disabled={!dirty}
+              disabled={!dirty || saveChanges.isPending}
               className={cn(
-                'inline-flex h-9 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white shadow-[0_10px_24px_-12px_rgb(29_78_216_/_0.8)] hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none',
+                'inline-flex h-9 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white shadow-[0_10px_24px_-12px_color-mix(in_srgb,var(--color-brand)_80%,transparent)] hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none',
                 pressable,
               )}
             >
               <Check className="size-4" aria-hidden="true" />
-              Save changes
+              {saveChanges.isPending ? 'Saving…' : 'Save changes'}
             </button>
           </div>
         </div>
