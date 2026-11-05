@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Plus, Sheet } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   useReactTable,
   getCoreRowModel,
@@ -13,16 +12,18 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import DataTable from '@/components/DataTable';
-import PageHeading from '@/components/profilePages/PageHeading';
-import { FILTER_CATEGORIES } from '@/docs/categories';
+import DataTable from '@/components/admin/DataTable';
+import PageHeading from '@/components/common/PageHeading';
+import { ErrorState, PageLoader } from '@/components/common/QueryState';
+import { useStoreSettings } from '@/lib/query/admin';
+import { useCatalog, useDeleteProduct } from '@/lib/query/catalog';
+import { useCategories } from '@/lib/query/shop';
 import { getProductStatus } from '@/lib/utils';
-import { removeProduct } from '@/redux/features/product/productSlice';
-import { RootState } from '@/redux/store';
 import { IProduct } from '@/types/api_types';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import ProductColumns from './ProductColumns';
 import ProductStatisticsCards from './ProductStatisticsCards';
+import { useAdminHref } from '@/components/admin/adminStore';
 
 const STOCK_TABS = [
   { value: 'active', label: 'In stock' },
@@ -30,21 +31,27 @@ const STOCK_TABS = [
   { value: 'out_of_stock', label: 'Out of stock' },
 ];
 
-const AddProductLink = () => (
-  <Link
-    href="/admin/products/add-product"
-    className="inline-flex h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-white transition-[background-color,transform] hover:bg-brand-hover active:scale-[0.98]"
-  >
-    <Plus className="size-4" aria-hidden="true" />
-    Add product
-  </Link>
-);
+const AddProductLink = () => {
+  const href = useAdminHref();
+  return (
+    <Link
+      href={href('/products/add-product')}
+      className="inline-flex h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-white transition-[background-color,transform,translate,scale] hover:bg-brand-hover active:scale-[0.98]"
+    >
+      <Plus className="size-4" aria-hidden="true" />
+      Add product
+    </Link>
+  );
+};
 
 const Products = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.products);
+  const href = useAdminHref();
+  const { data: products = [], isPending, error, refetch } = useCatalog();
+  const { data: categories = [] } = useCategories();
+  const lowStockAt = useStoreSettings().data?.lowStockThreshold ?? 5;
+  const deleteProduct = useDeleteProduct();
   const [globalFilter, setGlobalFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState(FILTER_CATEGORIES[0]);
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockStatusFilter, setStockStatusFilter] = useState('all');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -54,30 +61,39 @@ const Products = () => {
     { value: 'all', label: 'All', count: products.length },
     ...STOCK_TABS.map((tab) => ({
       ...tab,
-      count: products.filter((product) => getProductStatus(product.stock) === tab.value).length,
+      count: products.filter((product) => getProductStatus(product.stock, lowStockAt) === tab.value)
+        .length,
     })),
   ];
 
   const handleDeleteConfirm = () => {
     if (!productToDelete) return;
-    dispatch(removeProduct(productToDelete.id));
-    toast.success(`Deleted ${productToDelete.title}`);
+    const { id, title } = productToDelete;
     setProductToDelete(null);
+    // Products that were ordered are archived instead, so old orders keep their item.
+    deleteProduct.mutate(id, { onSuccess: () => toast.success(`Removed ${title}`) });
   };
 
   const handleDeleteClick = useCallback((product: IProduct) => setProductToDelete(product), []);
-  const columns = useMemo(() => ProductColumns(handleDeleteClick), [handleDeleteClick]);
+  const categoryName = useCallback(
+    (slug: string) => categories.find((c) => c.slug === slug)?.name ?? slug,
+    [categories],
+  );
+  const columns = useMemo(
+    () => ProductColumns(handleDeleteClick, categoryName, lowStockAt, href),
+    [handleDeleteClick, categoryName, lowStockAt, href],
+  );
 
   const filteredData = useMemo(
     () =>
       products.filter((product) => {
-        const matchesCategory =
-          categoryFilter === FILTER_CATEGORIES[0] || product.category === categoryFilter;
+        const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
         const matchesStock =
-          stockStatusFilter === 'all' || getProductStatus(product.stock) === stockStatusFilter;
+          stockStatusFilter === 'all' ||
+          getProductStatus(product.stock, lowStockAt) === stockStatusFilter;
         return matchesCategory && matchesStock;
       }),
-    [products, categoryFilter, stockStatusFilter],
+    [products, categoryFilter, stockStatusFilter, lowStockAt],
   );
 
   const table = useReactTable<IProduct>({
@@ -100,6 +116,9 @@ const Products = () => {
     },
   });
 
+  if (isPending) return <PageLoader label="Loading products" />;
+  if (error) return <ErrorState error={error} onRetry={() => refetch()} />;
+
   return (
     <div>
       <PageHeading
@@ -108,7 +127,7 @@ const Products = () => {
         action={
           <div className="flex flex-wrap gap-2">
             <Link
-              href="/admin/products/bulk-edit"
+              href={href('/products/bulk-edit')}
               className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 dark:border-white/15 bg-white/90 dark:bg-slate-900/90 px-4 text-sm font-medium text-gray-800 dark:text-slate-200 transition-colors hover:bg-white dark:hover:bg-slate-900"
             >
               <Sheet className="size-4" aria-hidden="true" />
@@ -119,7 +138,7 @@ const Products = () => {
         }
       />
       <div className="space-y-4">
-        <ProductStatisticsCards products={products} />
+        <ProductStatisticsCards products={products} lowStockAt={lowStockAt} />
         <DataTable
           table={table}
           noun="products"
@@ -130,6 +149,7 @@ const Products = () => {
           setGlobalFilter={setGlobalFilter}
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
+          categoryOptions={categories.map((c) => ({ value: c.slug, label: c.name }))}
           columnLength={columns.length}
           emptyAction={<AddProductLink />}
         />

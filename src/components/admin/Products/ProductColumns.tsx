@@ -2,13 +2,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
 import { createColumnHelper } from '@tanstack/react-table';
-import SortHeader from '@/components/dashboard/SortHeader';
-import { categoryLabel } from '@/docs/navLinks';
+import SortHeader from '@/components/admin/SortHeader';
 import { cn, formatPrice, getProductStatus, getStatusBadge } from '@/lib/utils';
-import { isDraft } from '@/lib/products';
 import { IProduct } from '@/types/api_types';
 
-const ProductColumns = (onDelete: (product: IProduct) => void) => {
+const ProductColumns = (
+  onDelete: (product: IProduct) => void,
+  categoryLabel: (slug: string) => string,
+  lowStockAt: number,
+  // Seller-centre links for the store on screen (useAdminHref).
+  href: (path?: string) => string,
+) => {
   const columnHelper = createColumnHelper<IProduct>();
   return [
     columnHelper.accessor('title', {
@@ -32,9 +36,9 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
             </p>
             <p className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
               {categoryLabel(row.original.category)}
-              {isDraft(row.original) && (
-                <span className="rounded bg-gray-200 dark:bg-white/15 px-1.5 py-px font-medium text-gray-700 dark:text-slate-300">
-                  Draft
+              {row.original.status && row.original.status !== 'active' && (
+                <span className="rounded bg-gray-200 dark:bg-white/15 px-1.5 py-px font-medium capitalize text-gray-700 dark:text-slate-300">
+                  {row.original.status}
                 </span>
               )}
             </p>
@@ -79,7 +83,7 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
     columnHelper.display({
       id: 'status',
       header: 'Status',
-      cell: ({ row }) => getStatusBadge(getProductStatus(row.original.stock)),
+      cell: ({ row }) => getStatusBadge(getProductStatus(row.original.stock, lowStockAt)),
     }),
     columnHelper.display({
       id: 'actions',
@@ -88,7 +92,7 @@ const ProductColumns = (onDelete: (product: IProduct) => void) => {
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1">
           <Link
-            href={`/admin/products/edit-product/${row.original.id}`}
+            href={href(`/products/edit-product/${row.original.id}`)}
             aria-label={`Edit ${row.original.title}`}
             className="flex size-9 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-slate-100"
           >

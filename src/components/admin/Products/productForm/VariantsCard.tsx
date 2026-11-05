@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import { ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
-import Panel from '@/components/dashboard/Panel';
+import Panel from '@/components/common/Panel';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { isColorOption, priceRange } from '@/lib/products';
 import { cn, formatPrice } from '@/lib/utils';

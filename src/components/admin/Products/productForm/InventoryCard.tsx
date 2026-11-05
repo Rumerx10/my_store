@@ -1,6 +1,6 @@
 'use client';
 import { useFormContext } from 'react-hook-form';
-import Panel from '@/components/dashboard/Panel';
+import Panel from '@/components/common/Panel';
 import { cn } from '@/lib/utils';
 import type { ProductFormValues } from './formModel';
 import Field, { fieldAria, inputClass } from './Field';

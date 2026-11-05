@@ -1,5 +1,5 @@
 // Reads an image the admin picked and returns a data URL, downscaled so the catalog stays light.
-// There is no upload backend yet, so images live in the store as data URLs.
+// The result is uploaded with the form (lib/api/client.ts uploadImage).
 
 const MAX_FILE_BYTES = 15 * 1024 * 1024;
 

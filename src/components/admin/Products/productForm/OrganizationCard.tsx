@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Plus, X } from 'lucide-react';
-import Panel from '@/components/dashboard/Panel';
+import toast from 'react-hot-toast';
+import Panel from '@/components/common/Panel';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -11,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { categoryLabel } from '@/docs/navLinks';
-import { CATEGORIES } from '@/docs/products';
+import { useCategoryActions } from '@/lib/query/admin';
+import { useCategories } from '@/lib/query/shop';
 import { cn } from '@/lib/utils';
 import type { ProductFormValues } from './formModel';
 import Field, { inputClass } from './Field';
@@ -90,10 +91,86 @@ const TagsInput = ({
   );
 };
 
+// Creates a category without leaving the product form, then picks it for the product.
+const NewCategory = ({ onCreated }: { onCreated: (slug: string) => void }) => {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const { save } = useCategoryActions();
+
+  const create = () => {
+    if (!name.trim() || save.isPending) return;
+    save.mutate(
+      { name: name.trim() },
+      {
+        onSuccess: (category) => {
+          onCreated(category.slug);
+          toast.success(`${category.name} created`);
+          setName('');
+          setOpen(false);
+        },
+      },
+    );
+  };
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
+      >
+        <Plus className="size-4" aria-hidden="true" />
+        New category
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        aria-label="New category name"
+        autoFocus
+        value={name}
+        maxLength={100}
+        placeholder="Category name"
+        onChange={(e) => setName(e.target.value)}
+        // Enter adds the category here instead of submitting the product form.
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            create();
+          } else if (e.key === 'Escape') {
+            setOpen(false);
+          }
+        }}
+        className={inputClass}
+      />
+      <button
+        type="button"
+        onClick={create}
+        disabled={!name.trim() || save.isPending}
+        className="h-10 shrink-0 rounded-lg bg-brand px-4 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-60"
+      >
+        {save.isPending ? 'Adding…' : 'Add'}
+      </button>
+      <button
+        type="button"
+        onClick={() => setOpen(false)}
+        aria-label="Cancel new category"
+        className="flex size-10 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-white/10"
+      >
+        <X className="size-4" />
+      </button>
+    </div>
+  );
+};
+
 const OrganizationCard = () => {
+  const { data: categories = [] } = useCategories();
   const {
     control,
     register,
+    setValue,
     formState: { errors },
   } = useFormContext<ProductFormValues>();
 
@@ -147,9 +224,10 @@ const OrganizationCard = () => {
                     <SelectValue placeholder="Choose a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {CATEGORIES.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {categoryLabel(category)}
+                    {categories.map((category) => (
+                      <SelectItem key={category.slug} value={category.slug}>
+                        {category.name}
+                        {!category.isActive && ' (hidden)'}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -157,6 +235,11 @@ const OrganizationCard = () => {
               )}
             />
           </Field>
+          <NewCategory
+            onCreated={(slug) =>
+              setValue('category', slug, { shouldDirty: true, shouldValidate: true })
+            }
+          />
 
           <Field id="brand" label="Vendor">
             <input id="brand" className={inputClass} autoComplete="off" {...register('brand')} />

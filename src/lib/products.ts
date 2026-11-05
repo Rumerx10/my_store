@@ -1,5 +1,4 @@
-import { ICartItem, IProduct, IProductOption } from '@/types/api_types';
-import { IWishlistItem } from '@/redux/features/wishlist/wishlistSlice';
+import { ICartItem, IProduct, IProductOption, IWishlistItem } from '@/types/api_types';
 
 // Chosen value label per option name, e.g. { Capacity: '9.6 kWh', Color: 'Black' }.
 export type OptionSelection = Record<string, string>;
@@ -94,3 +93,7 @@ export const hasNotableDiscount = (product: Pick<IProduct, 'discountPercentage'>
   product.discountPercentage >= 5;
 
 export const isDraft = (product: Pick<IProduct, 'status'>) => product.status === 'draft';
+
+// Hidden from shoppers: drafts and archived products.
+export const isHidden = (product: Pick<IProduct, 'status'>) =>
+  (product.status ?? 'active') !== 'active';

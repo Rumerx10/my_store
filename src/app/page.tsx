@@ -1,7 +1,7 @@
-import Home from '@/components/home/Home';
+import { redirect } from 'next/navigation';
 
-const page = () => {
-  return <Home />;
+const RootPage = () => {
+  redirect('/next-power');
 };
 
-export default page;
+export default RootPage;

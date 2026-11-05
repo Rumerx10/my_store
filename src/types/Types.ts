@@ -5,6 +5,10 @@ export interface TabsDataType {
 }
 
 export interface FilterContentProps {
+  // What the store has to filter by.
+  categories: { slug: string; name: string }[];
+  brands: string[];
+  priceCeiling: number;
   selectedBrands: string[];
   selectedCategories: string[];
   priceRange: number[];
